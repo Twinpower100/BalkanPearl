@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Апартаменты - Balkan Pearl
+{% endblock %}
+
+{% block content %}
+<head>
+    <meta charset="UTF-8">
+    </head>
+<h2>Список апартаментов</h2>
+
+{% if apartments %}
+    <ul>
+        {% for apartment in apartments %}
+            <li>
+                <h3>{{ apartment.name }}</h3>
+                <p><strong>Описание:</strong> {{ apartment.description }}</p>
+                <p><strong>Цена за ночь:</strong> {{ apartment.price_per_night }} €</p>
+                <p><strong>Максимальное количество гостей:</strong> {{ apartment.max_guests }}</p>
+                <a href="{% url 'booking_form' apartment.id %}">Забронировать</a>
+            </li>
+            <hr>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>В данный момент апартаменты недоступны.</p>
+{% endif %}
+
+{% endblock %}

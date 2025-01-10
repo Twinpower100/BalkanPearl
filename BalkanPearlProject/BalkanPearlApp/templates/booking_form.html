@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Бронирование апартамента - {{ apartment.name }}
+{% endblock %}
+
+{% block content %}
+<head>
+    <meta charset="UTF-8">
+    </head>
+<h2>Бронирование апартамента "{{ apartment.name }}"</h2>
+<p>Описание: {{ apartment.description }}</p>
+<p>Цена за ночь: {{ apartment.price_per_night }} €</p>
+
+<form method="post">
+    {% csrf_token %}
+    <!-- Поля для ввода данных бронирования -->
+    <label for="checkin_date">Дата заезда:</label>
+    <input type="date" id="checkin_date" name="checkin_date" required>
+    <label for="checkout_date">Дата выезда:</label>
+    <input type="date" id="checkout_date" name="checkout_date" required>
+    <button type="submit">Забронировать</button>
+</form>
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Главная - Balkan Pearl
+{% endblock %}
+
+{% block content %}
+<head>
+    <meta charset="UTF-8">
+    </head>
+<div class="content">
+    <h2>Описание отеля</h2>
+    <p>{{ hotel.description }}</p>
+
+    <h3>Контакты</h3>
+    <ul>
+        <li><strong>Адрес:</strong> {{ hotel.address }}</li>
+        <li><strong>Электронная почта:</strong> <a href="mailto:{{ hotel.contact_email }}">{{ hotel.contact_email }}</a></li>
+        <li><strong>Телефон:</strong> <a href="tel:{{ hotel.contact_phone }}">{{ hotel.contact_phone }}</a></li>
+    </ul>
+
+    <h3>Найти нас на карте</h3>
+    <iframe
+
+        src="https://www.google.com/maps/embed/v1/place?key={{ google_maps_key }}&q={{ hotel.latitude }},{{ hotel.longitude }}"
+        width="600"
+        height="450"
+        style="border:0;"
+        allowfullscreen=""
+        loading="lazy">
+        </iframe>
+    <p>
+        <a href="{{ hotel.get_google_maps_url }}" target="_blank" style="color: #0080ff; font-weight: bold;">
+            Открыть в Google Картах
+        </a>
+    </p>
+</div>
+{% endblock %}

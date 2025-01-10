@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Блог - Balkan Pearl
+{% endblock %}
+
+{% block content %}
+<head>
+    <meta charset="UTF-8">
+    </head>
+<h2>Блог</h2>
+
+{% if blog_posts %}
+    <ul>
+        {% for post in blog_posts %}
+            <li>{{ post.title }}</li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>Пока записей в блоге нет.</p>
+{% endif %}
+{% endblock %}
