@@ -1,38 +1,79 @@
 {% extends 'base.html' %}
 
-{% block title %}
-Главная - Balkan Pearl
-{% endblock %}
+{% block title %}Главная - Balkan Pearl{% endblock %}
 
 {% block content %}
-<head>
-    <meta charset="UTF-8">
-    </head>
 <div class="content">
     <h2>Описание отеля</h2>
-    <p>{{ hotel.description }}</p>
+    <p>{{ hotel.description|default:"Описание недоступно." }}</p>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+
+    <div class="photo-carousel">
+        <div class="carousel-container">
+            <button class="prev">&laquo;</button>
+            <div class="carousel-images">
+                {% for photo in hotel.hotel_photos.all %}
+                    <img src="{{ photo.image.url }}" alt="{{ photo.description|default:'Фото отеля' }}">
+                {% endfor %}
+            </div>
+            <button class="next">&raquo;</button>
+        </div>
+    </div>
 
     <h3>Контакты</h3>
     <ul>
-        <li><strong>Адрес:</strong> {{ hotel.address }}</li>
-        <li><strong>Электронная почта:</strong> <a href="mailto:{{ hotel.contact_email }}">{{ hotel.contact_email }}</a></li>
-        <li><strong>Телефон:</strong> <a href="tel:{{ hotel.contact_phone }}">{{ hotel.contact_phone }}</a></li>
+        <li><strong>Адрес:</strong> {{ hotel.address|default:"Не указан" }}</li>
+        <li><strong>Электронная почта:</strong> <a href="mailto:{{ hotel.contact_email }}">{{ hotel.contact_email|default:"Нет данных" }}</a></li>
+        <li><strong>Телефон:</strong> <a href="tel:{{ hotel.contact_phone }}">{{ hotel.contact_phone|default:"Нет данных" }}</a></li>
     </ul>
 
     <h3>Найти нас на карте</h3>
-    <iframe
-
-        src="https://www.google.com/maps/embed/v1/place?key={{ google_maps_key }}&q={{ hotel.latitude }},{{ hotel.longitude }}"
-        width="600"
-        height="450"
-        style="border:0;"
-        allowfullscreen=""
-        loading="lazy">
+    <div class="map-container">
+        <iframe
+            width="100%"
+            height="400"
+            style="border:0;"
+            loading="lazy"
+            allowfullscreen
+            referrerpolicy="no-referrer-when-downgrade"
+            title="Карта расположения отеля"
+            aria-label="Карта расположения отеля"
+            src="https://www.google.com/maps/embed/v1/place?key={{ google_maps_key }}&q={{ search_query|urlencode }}">
         </iframe>
+    </div>
     <p>
-        <a href="{{ hotel.get_google_maps_url }}" target="_blank" style="color: #0080ff; font-weight: bold;">
+        <a href="{{ hotel.get_google_maps_url }}" target="_blank" class="map-link">
             Открыть в Google Картах
         </a>
     </p>
 </div>
 {% endblock %}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const prevButton = document.querySelector('.prev');
+    const nextButton = document.querySelector('.next');
+    const carouselImages = document.querySelector('.carousel-images');
+
+    if (!prevButton || !nextButton || !carouselImages) {
+        console.error('Карусель не найдена.');
+        return;
+    }
+
+    prevButton.addEventListener('click', () => {
+        carouselImages.scrollBy({
+            left: -carouselImages.offsetWidth,
+            behavior: 'smooth'
+        });
+    });
+
+    nextButton.addEventListener('click', () => {
+        carouselImages.scrollBy({
+            left: carouselImages.offsetWidth,
+            behavior: 'smooth'
+        });
+    });
+});
+
+</script>
