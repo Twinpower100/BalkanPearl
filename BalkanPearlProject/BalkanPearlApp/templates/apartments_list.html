@@ -1,24 +1,20 @@
+<!-- apartments_list.html -->
 {% extends 'base.html' %}
 
-{% block title %}
-Апартаменты - Balkan Pearl
-{% endblock %}
+{% block title %}Апартаменты - Balkan Pearl{% endblock %}
 
 {% block content %}
-<head>
-    <meta charset="UTF-8">
-    </head>
 <h2>Список апартаментов</h2>
 
 {% if apartments %}
-    <ul>
+    <ul class="apartment-list">
         {% for apartment in apartments %}
             <li>
                 <h3>{{ apartment.name }}</h3>
                 <p><strong>Описание:</strong> {{ apartment.description }}</p>
                 <p><strong>Цена за ночь:</strong> {{ apartment.price_per_night }} €</p>
                 <p><strong>Максимальное количество гостей:</strong> {{ apartment.max_guests }}</p>
-                <a href="{% url 'booking_form' apartment.id %}">Забронировать</a>
+                <a href="{% url 'booking_form' apartment.id %}" class="booking-link">Забронировать</a>
             </li>
             <hr>
         {% endfor %}
@@ -26,5 +22,4 @@
 {% else %}
     <p>В данный момент апартаменты недоступны.</p>
 {% endif %}
-
 {% endblock %}

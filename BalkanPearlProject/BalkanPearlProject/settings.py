@@ -11,21 +11,22 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
-import os
+from decouple import config
+from django.utils.translation import gettext_lazy as _
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-2qt0n+w+b-()$$e9oas+im2uxvw94)oatvnzxy_d6s-wb5o=4k'
+SECRET_KEY = config('SECRET_KEY')
+GOOGLE_MAPS_KEY = config('GOOGLE_MAPS_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
+LOGIN_URL = 'login'  # Путь на страницу входа
 ALLOWED_HOSTS = []
 
 
@@ -38,12 +39,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'BalkanPearlApartApp',
+    'BalkanPearlApp',
+    'phonenumber_field',
+    'phonenumbers',
 ]
-
+INSTALLED_APPS += ['modeltranslation']
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',  # для мультиязычности
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -52,10 +56,16 @@ MIDDLEWARE = [
 ]
 
 LANGUAGES = [
-    ('en', 'English'),
-    ('ru', 'Русский'),
-    ('me', 'Crnogorski'),
+    ('en', _('English')),
+    ('ru', _('Russian')),
+    ('me', _('Montenegrian')),
 ]
+
+LOCALE_PATHS = [
+    BASE_DIR / 'locale',
+]
+
+USE_I18N = True
 
 ROOT_URLCONF = 'BalkanPearlProject.urls'
 
@@ -63,7 +73,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            os.path.join(BASE_DIR, 'templates'),
+            BASE_DIR / 'templates',  # Используем Path вместо os.path.join
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -72,6 +82,9 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.i18n',  # Это важно для мультиязычности
+                'BalkanPearlApp.context_processors.site_image', # Это важно для отображения загруженного рисунка на всех страницах
+
             ],
         },
     },
@@ -85,15 +98,14 @@ WSGI_APPLICATION = 'BalkanPearlProject.wsgi.application'
 
 DATABASES = {
     'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': 'BalkanPearlApart',
-            'USER': 'admin',
-            'PASSWORD': 'q1w2e3',
-            'HOST': 'localhost',
-            'PORT': '5433'
-        }
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': config('DB_NAME'),
+        'USER': config('DB_USER'),
+        'PASSWORD': config('DB_PASSWORD'),
+        'HOST': config('DB_HOST'),
+        'PORT': config('DB_PORT'),
     }
-
+}
 
 
 # Password validation
@@ -118,11 +130,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'en'
 
 TIME_ZONE = 'UTC'
-
-USE_I18N = True
 
 USE_TZ = True
 
@@ -136,3 +146,11 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',  # Используем Path вместо os.path.join
+]
+STATIC_ROOT = BASE_DIR / 'staticfiles'  # Используем Path вместо os.path.join
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'  # Используем Path вместо os.path.join

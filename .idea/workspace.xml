@@ -1,31 +1,89 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
-    <list default="true" id="0ff082ee-8a75-425f-b889-1e11787c2ed4" name="Changes" comment="" />
+    <list default="true" id="0ff082ee-8a75-425f-b889-1e11787c2ed4" name="Changes" comment="Добавил 2 строки в home.html&#10;    &lt;script src=&quot;https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js&quot;&gt;&lt;/script&gt;&#10;    &lt;script src=&quot;https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js&quot;&gt;&lt;/script&gt;&#10;    &#10;карусель не ожила">
+      <change beforePath="$PROJECT_DIR$/.idea/BalkanPearl.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/BalkanPearl.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/context_processors.py" beforeDir="false" afterPath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/context_processors.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/templates/apartments_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/templates/apartments_list.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/templates/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/templates/base.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/templates/base_old.html" beforeDir="false" afterPath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/templates/base_old.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/templates/blog_home.html" beforeDir="false" afterPath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/templates/blog_home.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/templates/booking_form.html" beforeDir="false" afterPath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/templates/booking_form.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/templates/home.html" beforeDir="false" afterPath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/templates/home.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/templates/home_old.html" beforeDir="false" afterPath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/templates/home_old.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/templates/reviews.html" beforeDir="false" afterPath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/templates/reviews.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/translation.py" beforeDir="false" afterPath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/translation.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlProject/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlProject/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlProject/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlProject/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BalkanPearlProject/static/css/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/BalkanPearlProject/static/css/style.css" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 2
-}]]></component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="HTML File" />
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;Twinpower100&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/Twinpower100/BalkanPearl.git&quot;,
+    &quot;accountId&quot;: &quot;c0ce6cf8-563a-486f-bc7c-24fd812a663b&quot;
+  }
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 2
+}</component>
   <component name="ProjectId" id="2pvlrl5hWjnsfq5ivjZ9136qy4T" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
+    &quot;Python.raw_translate.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Mail.ru/CodeIt/Django/BalkanPearl/BalkanPearlProject/BalkanPearlApp/templates&quot;,
+    &quot;run.code.analysis.last.selected.profile&quot;: &quot;aDefault&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.fileTypes&quot;
   }
-}]]></component>
+}</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Mail.ru\CodeIt\Django\BalkanPearl\BalkanPearlProject\BalkanPearlApp\templates" />
+    </key>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-python-sdk-fb887030ada0-aa17d162503b-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-243.21565.199" />
+        <option value="bundled-python-sdk-495700d161d3-aa17d162503b-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-243.22562.220" />
       </set>
     </attachedChunks>
   </component>
@@ -38,6 +96,19 @@
       <option name="presentableId" value="Default" />
       <updated>1733654630724</updated>
     </task>
+    <task id="LOCAL-00001" summary="Добавил 2 строки в home.html&#10;    &lt;script src=&quot;https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js&quot;&gt;&lt;/script&gt;&#10;    &lt;script src=&quot;https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js&quot;&gt;&lt;/script&gt;&#10;    &#10;карусель не ожила">
+      <option name="closed" value="true" />
+      <created>1737214635018</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1737214635018</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Добавил 2 строки в home.html&#10;    &lt;script src=&quot;https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js&quot;&gt;&lt;/script&gt;&#10;    &lt;script src=&quot;https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js&quot;&gt;&lt;/script&gt;&#10;    &#10;карусель не ожила" />
+    <option name="LAST_COMMIT_MESSAGE" value="Добавил 2 строки в home.html&#10;    &lt;script src=&quot;https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js&quot;&gt;&lt;/script&gt;&#10;    &lt;script src=&quot;https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js&quot;&gt;&lt;/script&gt;&#10;    &#10;карусель не ожила" />
   </component>
 </project>

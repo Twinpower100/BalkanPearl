@@ -6,18 +6,15 @@
 <div class="content">
     <h2>Описание отеля</h2>
     <p>{{ hotel.description|default:"Описание недоступно." }}</p>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
-
+    <!-- Карусель изображений -->
     <div class="photo-carousel">
         <div class="carousel-container">
-            <button class="prev">&laquo;</button>
-            <div class="carousel-images">
-                {% for photo in hotel.hotel_photos.all %}
-                    <img src="{{ photo.image.url }}" alt="{{ photo.description|default:'Фото отеля' }}">
-                {% endfor %}
+            <div class="carousel-image-wrapper">
+                <!-- Первое изображение загружается по умолчанию -->
+                <img id="carousel-image" src="{{ hotel_photos.first.photo.url }}" alt="{{ hotel_photos.first.description|default:'Фото отеля' }}">
             </div>
+            <button class="prev">&laquo;</button>
             <button class="next">&raquo;</button>
         </div>
     </div>
@@ -40,7 +37,7 @@
             referrerpolicy="no-referrer-when-downgrade"
             title="Карта расположения отеля"
             aria-label="Карта расположения отеля"
-            src="https://www.google.com/maps/embed/v1/place?key={{ google_maps_key }}&q={{ search_query|urlencode }}">
+            src="https://www.google.com/maps/embed/v1/place?key={{ google_maps_key }}&q={{ search_query|urlencode }}&zoom=15">
         </iframe>
     </div>
     <p>
@@ -50,30 +47,41 @@
     </p>
 </div>
 {% endblock %}
+
 <script>
 document.addEventListener('DOMContentLoaded', () => {
     const prevButton = document.querySelector('.prev');
     const nextButton = document.querySelector('.next');
-    const carouselImages = document.querySelector('.carousel-images');
+    const carouselImage = document.querySelector('#carousel-image');
 
-    if (!prevButton || !nextButton || !carouselImages) {
-        console.error('Карусель не найдена.');
-        return;
+    // Получение списка изображений
+    const photos = [
+        {% for photo in hotel_photos %}
+        { url: "{{ photo.photo.url }}", alt: "{{ photo.description|default:'Фото отеля' }}" },
+        {% endfor %}
+    ];
+
+    let currentIndex = 0;
+
+    // Функция для обновления изображения
+    function updateImage() {
+        const photo = photos[currentIndex];
+        carouselImage.src = photo.url;
+        carouselImage.alt = photo.alt;
     }
 
+    // Обработчики для кнопок
     prevButton.addEventListener('click', () => {
-        carouselImages.scrollBy({
-            left: -carouselImages.offsetWidth,
-            behavior: 'smooth'
-        });
+        currentIndex = (currentIndex - 1 + photos.length) % photos.length;
+        updateImage();
     });
 
     nextButton.addEventListener('click', () => {
-        carouselImages.scrollBy({
-            left: carouselImages.offsetWidth,
-            behavior: 'smooth'
-        });
+        currentIndex = (currentIndex + 1) % photos.length;
+        updateImage();
     });
-});
 
+    // Инициализация карусели
+    updateImage();
+});
 </script>

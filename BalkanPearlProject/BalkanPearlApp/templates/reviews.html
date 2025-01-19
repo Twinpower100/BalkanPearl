@@ -1,17 +1,13 @@
+<!-- reviews.html -->
 {% extends 'base.html' %}
 
-{% block title %}
-Отзывы - Balkan Pearl
-{% endblock %}
+{% block title %}Отзывы - Balkan Pearl{% endblock %}
 
 {% block content %}
-<head>
-    <meta charset="UTF-8">
-    </head>
 <h2>Отзывы</h2>
 
 {% if reviews %}
-    <ul>
+    <ul class="review-list">
         {% for review in reviews %}
             <li>
                 <strong>{{ review.author }}</strong>: {{ review.text }}

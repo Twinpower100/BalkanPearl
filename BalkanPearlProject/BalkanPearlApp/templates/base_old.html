@@ -1,10 +1,118 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Balkan Pearl{% endblock %}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to bottom, #87CEFA, #FFFFFF);
+            color: #333;
+        }
+        header {
+            background: #004d99;
+            color: white;
+            padding: 20px 0;
+            font-size: 24px;
+            text-transform: uppercase;
+        }
+        header div {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+        nav {
+            display: flex;
+            justify-content: center;
+            background: #0080ff;
+            padding: 10px 0;
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: bold;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+        .hero {
+            background-image: url('https://example.com/path/to/mountain-sea-image.jpg'); /* Заменить на реальный путь к изображению */
+            background-size: cover;
+            background-position: center;
+            height: 300px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+            font-size: 32px;
+            font-weight: bold;
+        }
+        .hotel-image {
+            display: block;
+            margin: 20px auto;
+            max-width: 90%;
+            border: 5px solid #0080ff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        main {
+            padding: 20px;
+        }
+        footer {
+            background: #004d99;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+            margin-top: 20px;
+        }
+        .language-switcher {
+            font-size: 14px;
+            padding: 5px;
+            background: #f0f0f0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+    </style>
 </head>
 <body>
-$END$
+    <header>
+        <div>
+            <h1>Balkan Pearl — Отдых у моря и гор Черногории</h1>
+            <div>
+                <form method="get" action="{% url 'set_language' %}">
+                    <select name="language" class="language-switcher" onchange="this.form.submit()">
+                        <option value="en" {% if LANGUAGE_CODE == 'en' %}selected{% endif %}>English</option>
+                        <option value="ru" {% if LANGUAGE_CODE == 'ru' %}selected{% endif %}>Русский</option>
+                        <option value="me" {% if LANGUAGE_CODE == 'me' %}selected{% endif %}>Crnogorski</option>
+                    </select>
+                </form>
+            </div>
+        </div>
+        <nav>
+            <a href="{% url 'home' %}">Главная</a>
+            <a href="{% url 'apartments_list' %}">Апартаменты</a>
+            <a href="{% url 'booking_form' 1 %}">Бронирование</a> <!-- 1 заменить на актуальный id -->
+            <a href="{% url 'reviews' %}">Отзывы</a>
+            <a href="{% url 'blog_home' %}">Блог</a>
+        </nav>
+    </header>
+    <div class="hero">
+        Добро пожаловать в Черногорию — страну моря и гор!
+    </div>
+    <img src="{% block hotel_image_url %}https://example.com/path/to/hotel-photo.jpg{% endblock %}"
+         alt="Фото отеля" class="hotel-image">
+    <main>
+        {% block content %}
+        <p>Здесь будет контент страницы.</p>
+        {% endblock %}
+    </main>
+    <footer>
+        &copy; 2024 Balkan Pearl. Все права защищены.
+    </footer>
 </body>
 </html>
