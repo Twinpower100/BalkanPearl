@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="content">
+    <h2>Описание отеля</h2>
+    <p>{{ hotel.description }}</p>
+
+    <div class="carousel">
+        <button class="prev">&laquo;</button>
+        <img id="carousel-image" src="" alt="">
+        <button class="next">&raquo;</button>
+    </div>
+
+    <div class="map-container">
+        <iframe src="https://www.google.com/maps/embed/v1/place?key={{ google_maps_key }}&q={{ search_query }}"
+                width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+        <a href="https://www.google.com/maps/search/?api=1&query={{ search_query }}" target="_blank" class="map-link">Открыть в Google Maps</a>
+    </div>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const prevButton = document.querySelector('.prev');
+    const nextButton = document.querySelector('.next');
+    const carouselImage = document.querySelector('#carousel-image');
+
+    const photos = [
+        {% for photo in hotel_photos %}
+        { url: "{{ photo.photo.url }}", alt: "{{ photo.description|default:'Фото отеля' }}" },
+        {% endfor %}
+    ];
+
+    let currentIndex = 0;
+
+    function updateImage() {
+        const photo = photos[currentIndex];
+        carouselImage.src = photo.url;
+        carouselImage.alt = photo.alt;
+    }
+
+    prevButton.addEventListener('click', () => {
+        currentIndex = (currentIndex - 1 + photos.length) % photos.length;
+        updateImage();
+    });
+
+    nextButton.addEventListener('click', () => {
+        currentIndex = (currentIndex + 1) % photos.length;
+        updateImage();
+    });
+
+    updateImage();
+});
+</script>
+{% endblock %}

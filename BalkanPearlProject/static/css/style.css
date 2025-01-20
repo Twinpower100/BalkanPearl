@@ -1,4 +1,3 @@
-/* Основной стиль */
 body, html {
     height: 100%;
     margin: 0;
@@ -13,67 +12,103 @@ header, footer {
     text-align: center;
 }
 
+header h1 {
+    margin: 0;
+    font-size: 1.8rem;
+}
+
+nav {
+    display: flex;
+    justify-content: center;
+    margin: 10px 0;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    margin: 0 15px;
+    font-size: 1rem;
+}
+
+nav a:hover {
+    text-decoration: underline;
+}
+
+.language-switcher {
+    background-color: rgba(255, 255, 255, 0.8);
+    color: black;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 5px;
+    cursor: pointer;
+}
+
 main {
     flex-grow: 1;
     padding: 20px;
     overflow-y: auto;
     background-color: rgba(255, 255, 255, 0.8);
     border-radius: 10px;
-}
-
-/* Контейнер карусели */
-.photo-carousel {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
-    max-width: 100vw;
-    max-height: 100vh;
-    overflow: hidden;
 }
 
-/* Контейнер для изображения */
-.carousel-container {
-    position: relative;
+footer {
+    font-size: 0.9rem;
+    padding: 5px;
+}
+
+.background-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background-size: cover;
+    background-position: center;
+    opacity: 0.3;
+}
+
+.content {
+    max-width: 1200px;
+    width: 100%;
+}
+
+.map-container {
     width: 100%;
     max-width: 800px;
-    height: 60vh;
+    margin: 0 auto;
+}
+
+.map-link {
+    display: block;
+    text-align: center;
+    margin-top: 10px;
+}
+
+.carousel {
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
+    margin: 20px 0;
 }
 
-/* Изображение в карусели */
-.carousel-image-wrapper img {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
+.carousel img {
+    max-width: 600px;
     border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-/* Кнопки */
-button.prev,
-button.next {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background-color: rgba(0, 0, 0, 0.7);
+button.prev, button.next {
+    background: rgba(0, 0, 0, 0.5);
     color: white;
     border: none;
-    border-radius: 50%;
-    font-size: 1.5rem;
     padding: 10px;
     cursor: pointer;
 }
 
-button.prev {
-    left: 10px;
-}
-
-button.next {
-    right: 10px;
-}
-
-button.prev:hover,
-button.next:hover {
-    background-color: rgba(0, 0, 0, 0.9);
+button.prev:hover, button.next:hover {
+    background: rgba(0, 0, 0, 0.8);
 }

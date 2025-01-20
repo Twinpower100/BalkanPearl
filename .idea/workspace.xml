@@ -4,25 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0ff082ee-8a75-425f-b889-1e11787c2ed4" name="Changes" comment="Добавил 2 строки в home.html&#10;    &lt;script src=&quot;https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js&quot;&gt;&lt;/script&gt;&#10;    &lt;script src=&quot;https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js&quot;&gt;&lt;/script&gt;&#10;    &#10;карусель не ожила">
-      <change beforePath="$PROJECT_DIR$/.idea/BalkanPearl.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/BalkanPearl.iml" afterDir="false" />
+    <list default="true" id="0ff082ee-8a75-425f-b889-1e11787c2ed4" name="Changes" comment="Last version">
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/templates/home1.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/admin.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/context_processors.py" beforeDir="false" afterPath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/context_processors.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/templates/apartments_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/templates/apartments_list.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/templates/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/templates/base.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/templates/base_old.html" beforeDir="false" afterPath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/templates/base_old.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/templates/blog_home.html" beforeDir="false" afterPath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/templates/blog_home.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/templates/booking_form.html" beforeDir="false" afterPath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/templates/booking_form.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/templates/home.html" beforeDir="false" afterPath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/templates/home.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/templates/home_old.html" beforeDir="false" afterPath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/templates/home_old.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/templates/reviews.html" beforeDir="false" afterPath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/templates/reviews.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/translation.py" beforeDir="false" afterPath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/translation.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlProject/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlProject/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlProject/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlProject/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/BalkanPearlProject/static/css/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/BalkanPearlProject/static/css/style.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -33,8 +19,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="HTML File" />
         <option value="Python Script" />
+        <option value="HTML File" />
       </list>
     </option>
   </component>
@@ -104,11 +90,20 @@
       <option name="project" value="LOCAL" />
       <updated>1737214635018</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Last version">
+      <option name="closed" value="true" />
+      <created>1737300274709</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1737300274709</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Добавил 2 строки в home.html&#10;    &lt;script src=&quot;https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js&quot;&gt;&lt;/script&gt;&#10;    &lt;script src=&quot;https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js&quot;&gt;&lt;/script&gt;&#10;    &#10;карусель не ожила" />
-    <option name="LAST_COMMIT_MESSAGE" value="Добавил 2 строки в home.html&#10;    &lt;script src=&quot;https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js&quot;&gt;&lt;/script&gt;&#10;    &lt;script src=&quot;https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js&quot;&gt;&lt;/script&gt;&#10;    &#10;карусель не ожила" />
+    <MESSAGE value="Last version" />
+    <option name="LAST_COMMIT_MESSAGE" value="Last version" />
   </component>
 </project>

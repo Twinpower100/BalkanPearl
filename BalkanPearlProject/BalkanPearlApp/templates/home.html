@@ -8,15 +8,20 @@
     <p>{{ hotel.description|default:"Описание недоступно." }}</p>
 
     <!-- Карусель изображений -->
-    <div class="photo-carousel">
-        <div class="carousel-container">
-            <div class="carousel-image-wrapper">
-                <!-- Первое изображение загружается по умолчанию -->
-                <img id="carousel-image" src="{{ hotel_photos.first.photo.url }}" alt="{{ hotel_photos.first.description|default:'Фото отеля' }}">
-            </div>
-            <button class="prev">&laquo;</button>
-            <button class="next">&raquo;</button>
-        </div>
+<!--    <div class="photo-carousel">-->
+<!--        <div class="carousel-container">-->
+<!--            <div class="carousel-image-wrapper">-->
+<!--                &lt;!&ndash; Первое изображение загружается по умолчанию &ndash;&gt;-->
+<!--                <img id="carousel-image" src="{{ hotel_photos.first.photo.url }}" alt="{{ hotel_photos.first.description|default:'Фото отеля' }}">-->
+<!--            </div>-->
+<!--            <button class="prev">&laquo;</button>-->
+<!--            <button class="next">&raquo;</button>-->
+<!--        </div>-->
+<!--    </div>-->
+    <div class="carousel">
+        <button class="prev">&laquo;</button>
+        <img id="carousel-image" src="" alt="">
+        <button class="next">&raquo;</button>
     </div>
 
     <h3>Контакты</h3>
@@ -46,7 +51,7 @@
         </a>
     </p>
 </div>
-{% endblock %}
+
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
@@ -85,3 +90,4 @@ document.addEventListener('DOMContentLoaded', () => {
     updateImage();
 });
 </script>
+{% endblock %}
