@@ -50,8 +50,10 @@ main {
     background-color: rgba(255, 255, 255, 0.8);
     border-radius: 10px;
     display: flex;
-    flex-direction: column;
-    align-items: center;
+    justify-content: center;
+    align-items: flex-start;
+    width: 100%;
+    height: 100%;
 }
 
 footer {
@@ -71,32 +73,34 @@ footer {
     opacity: 0.3;
 }
 
-.content {
+.main-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
     max-width: 1200px;
-    width: 100%;
+    gap: 20px;
 }
 
-.map-container {
-    width: 100%;
-    max-width: 800px;
-    margin: 0 auto;
-}
-
-.map-link {
-    display: block;
-    text-align: center;
-    margin-top: 10px;
+.description {
+    flex: 1;
+    max-width: 50%;
+    text-align: left;
 }
 
 .carousel {
+    flex: 1;
+    max-width: 50%;
     display: flex;
     align-items: center;
-    justify-content: center;
-    margin: 20px 0;
+    justify-content: right;
+    height: 300px; /* Установлена фиксированная высота */
 }
 
 .carousel img {
-    max-width: 600px;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: cover;
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }

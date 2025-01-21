@@ -4,11 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0ff082ee-8a75-425f-b889-1e11787c2ed4" name="Changes" comment="Last version">
-      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/templates/home1.html" afterDir="false" />
+    <list default="true" id="0ff082ee-8a75-425f-b889-1e11787c2ed4" name="Changes" comment="1. работает карусель фото&#10;2. показано фото фона&#10;3. работает карта&#10;4. работает переключатель языков&#10;5. не работает: не могу всю страницу Home отразить на одном экране">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/templates/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/templates/base.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/templates/home.html" beforeDir="false" afterPath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/templates/home.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/BalkanPearlProject/static/css/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/BalkanPearlProject/static/css/style.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -98,12 +95,21 @@
       <option name="project" value="LOCAL" />
       <updated>1737300274709</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="1. работает карусель фото&#10;2. показано фото фона&#10;3. работает карта&#10;4. работает переключатель языков&#10;5. не работает: не могу всю страницу Home отразить на одном экране">
+      <option name="closed" value="true" />
+      <created>1737358809718</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1737358809718</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Добавил 2 строки в home.html&#10;    &lt;script src=&quot;https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js&quot;&gt;&lt;/script&gt;&#10;    &lt;script src=&quot;https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js&quot;&gt;&lt;/script&gt;&#10;    &#10;карусель не ожила" />
     <MESSAGE value="Last version" />
-    <option name="LAST_COMMIT_MESSAGE" value="Last version" />
+    <MESSAGE value="1. работает карусель фото&#10;2. показано фото фона&#10;3. работает карта&#10;4. работает переключатель языков&#10;5. не работает: не могу всю страницу Home отразить на одном экране" />
+    <option name="LAST_COMMIT_MESSAGE" value="1. работает карусель фото&#10;2. показано фото фона&#10;3. работает карта&#10;4. работает переключатель языков&#10;5. не работает: не могу всю страницу Home отразить на одном экране" />
   </component>
 </project>
