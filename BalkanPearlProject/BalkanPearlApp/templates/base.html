@@ -1,10 +1,17 @@
+
 <!DOCTYPE html>
+{% load static %}
 <html lang="en">
+{% load i18n %}
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!--    <link rel="icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}">-->
+<!--    <link rel="icon" type="image/png" href="{% static 'images/favicon.png' %}">-->
+    <link rel="icon" type="image/jpg" href="{% static 'images/BalkanPearlLogo.jpeg' %}">
     <title>{% block title %}Balkan Pearl{% endblock %}</title>
     {% load static %}
+
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
@@ -12,13 +19,13 @@
         <div class="background-image" style="background-image: url('{{ site_image.image.url }}');"></div>
     {% endif %}
     <header>
-        <h1>Balkan Pearl — Отдых у моря и гор Черногории</h1>
+        <h1>Balkan Pearl — {% trans "Отдых у моря и гор Черногории" %}</h1>
         <nav>
-            <a href="{% url 'home' %}">Главная</a>
-            <a href="{% url 'apartments_list' %}">Апартаменты</a>
-            <a href="{% url 'booking_form' 1 %}">Бронирование</a>
-            <a href="{% url 'reviews' %}">Отзывы</a>
-            <a href="{% url 'blog_home' %}">Блог</a>
+            <a href="{% url 'home' %}">{% trans "Главная" %}</a>
+            <a href="{% url 'apartments_list' %}">{% trans "Апартаменты" %}</a>
+            <a href="{% url 'booking_form' 1 %}">{% trans "Бронирование" %}</a>
+            <a href="{% url 'reviews' %}">{% trans "Отзывы" %}</a>
+            <a href="{% url 'blog_home' %}">{% trans "Блог" %}</a>
         </nav>
         <div style="text-align: right; padding: 5px;">
             <form method="post" action="{% url 'set_language' %}">

@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'phonenumbers',
 ]
 INSTALLED_APPS += ['modeltranslation']
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
