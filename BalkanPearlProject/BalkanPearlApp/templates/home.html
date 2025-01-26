@@ -3,55 +3,45 @@
 {% block title %}Главная - Balkan Pearl{% endblock %}
 
 {% block content %}
-<div class="content">
-    <h2>Описание отеля</h2>
-    <p>{{ hotel.description|default:"Описание недоступно." }}</p>
+<div class="content-container" style="display: flex; height: 100%;">
+    <!-- Левый блок: Описание -->
+    <section class="description" style="flex: 2; display: flex; flex-direction: column;">
+        <h2>Описание отеля</h2>
+        <p>{{ hotel.description|default:"Описание недоступно." }}</p>
 
-    <!-- Карусель изображений -->
-<!--    <div class="photo-carousel">-->
-<!--        <div class="carousel-container">-->
-<!--            <div class="carousel-image-wrapper">-->
-<!--                &lt;!&ndash; Первое изображение загружается по умолчанию &ndash;&gt;-->
-<!--                <img id="carousel-image" src="{{ hotel_photos.first.photo.url }}" alt="{{ hotel_photos.first.description|default:'Фото отеля' }}">-->
-<!--            </div>-->
-<!--            <button class="prev">&laquo;</button>-->
-<!--            <button class="next">&raquo;</button>-->
-<!--        </div>-->
-<!--    </div>-->
-    <div class="carousel">
-        <button class="prev">&laquo;</button>
-        <img id="carousel-image" src="" alt="">
-        <button class="next">&raquo;</button>
-    </div>
+        <h3>Контакты</h3>
+        <ul>
+            <li><strong>Адрес:</strong> {{ hotel.address|default:"Не указан" }}</li>
+            <li><strong>Электронная почта:</strong> <a href="mailto:{{ hotel.contact_email }}">{{ hotel.contact_email|default:"Нет данных" }}</a></li>
+            <li><strong>Телефон:</strong> <a href="tel:{{ hotel.contact_phone }}">{{ hotel.contact_phone|default:"Нет данных" }}</a></li>
+        </ul>
+    </section>
 
-    <h3>Контакты</h3>
-    <ul>
-        <li><strong>Адрес:</strong> {{ hotel.address|default:"Не указан" }}</li>
-        <li><strong>Электронная почта:</strong> <a href="mailto:{{ hotel.contact_email }}">{{ hotel.contact_email|default:"Нет данных" }}</a></li>
-        <li><strong>Телефон:</strong> <a href="tel:{{ hotel.contact_phone }}">{{ hotel.contact_phone|default:"Нет данных" }}</a></li>
-    </ul>
+    <!-- Правый блок: Карусель и карта -->
+    <section class="media-section" style="flex: 1; display: flex; flex-direction: column;">
+        <!-- Карусель -->
+        <div class="carousel" style="flex: 1; display: flex; align-items: center; justify-content: center; position: relative;">
+            <button class="prev">&laquo;</button>
+            <img id="carousel-image" src="" alt="" style="max-height: 100%; max-width: 100%; object-fit: contain;">
+            <button class="next">&raquo;</button>
+        </div>
 
-    <h3>Найти нас на карте</h3>
-    <div class="map-container">
-        <iframe
-            width="100%"
-            height="400"
-            style="border:0;"
-            loading="lazy"
-            allowfullscreen
-            referrerpolicy="no-referrer-when-downgrade"
-            title="Карта расположения отеля"
-            aria-label="Карта расположения отеля"
-            src="https://www.google.com/maps/embed/v1/place?key={{ google_maps_key }}&q={{ search_query|urlencode }}&zoom=15">
-        </iframe>
-    </div>
-    <p>
-        <a href="{{ hotel.get_google_maps_url }}" target="_blank" class="map-link">
-            Открыть в Google Картах
-        </a>
-    </p>
+        <!-- Карта -->
+        <div class="map-container" style="flex: 1;">
+            <iframe
+                width="100%"
+                height="100%"
+                style="border:0;"
+                loading="lazy"
+                allowfullscreen
+                referrerpolicy="no-referrer-when-downgrade"
+                title="Карта расположения отеля"
+                aria-label="Карта расположения отеля"
+                src="https://www.google.com/maps/embed/v1/place?key={{ google_maps_key }}&q={{ search_query|urlencode }}&zoom=15">
+            </iframe>
+        </div>
+    </section>
 </div>
-
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {

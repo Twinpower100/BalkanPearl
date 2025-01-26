@@ -15,23 +15,9 @@ header, footer {
     text-align: center;
 }
 
-.language-switcher {
-    background-color: rgba(255, 255, 255, 0.8);
-    color: black;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    padding: 5px;
-    cursor: pointer;
-}
-
 header h1 {
     margin: 0;
     font-size: 1.8rem;
-}
-
-.content-container {
-    display: flex;
-    height: calc(100vh - 50px); /* Убираем высоту хедера */
 }
 
 nav {
@@ -121,25 +107,16 @@ footer {
 .description {
     flex: 1;
     max-width: 50%;
-    display: flex;
     text-align: left;
-    align-items: left;
-    padding: 20px;
-    overflow-y: auto;
-    background-color: #f9f9f9;
 }
 
 .carousel {
-    flex: 2;
+    flex: 1;
     max-width: 50%;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: right;
     height: 300px; /* Установлена фиксированная высота */
-    position: relative;
-    background-color: #fff;
-    border-bottom: 1px solid #ccc;
-
 }
 
 .carousel img {

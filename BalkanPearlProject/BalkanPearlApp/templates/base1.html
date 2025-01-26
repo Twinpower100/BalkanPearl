@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 {% load static %}
 <html lang="en">
@@ -5,8 +6,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!--    <link rel="icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}">-->
+<!--    <link rel="icon" type="image/png" href="{% static 'images/favicon.png' %}">-->
     <link rel="icon" type="image/jpg" href="{% static 'images/BalkanPearlLogo.jpeg' %}">
     <title>{% block title %}Balkan Pearl{% endblock %}</title>
+    {% load static %}
+
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
@@ -22,7 +27,7 @@
             <a href="{% url 'reviews' %}">{% trans "Отзывы" %}</a>
             <a href="{% url 'blog_home' %}">{% trans "Блог" %}</a>
         </nav>
-      <div style="text-align: right; padding: 5px;">
+        <div style="text-align: right; padding: 5px;">
             <form method="post" action="{% url 'set_language' %}">
                 {% csrf_token %}
                 <select name="language" class="language-switcher" onchange="this.form.submit()">
@@ -33,7 +38,7 @@
             </form>
         </div>
     </header>
-    <main style="height: 100vh; display: flex; flex-direction: column;">
+    <main>
         {% block content %}
         {% endblock %}
     </main>
