@@ -3,42 +3,35 @@
 {% block title %}Главная - Balkan Pearl{% endblock %}
 
 {% block content %}
-<div class="content-container" style="display: flex; flex-wrap: nowrap; height: calc(100vh - 120px);">
-    <!-- Левый блок: Описание и контакты -->
-    <section class="description" style="flex: 1; padding: 20px; overflow-y: auto; min-width: 300px;">
+<div class="content-container" style="display: flex; height: 100%;">
+    <!-- Левый блок: Описание -->
+    <section class="description" style="flex: 2; display: flex; flex-direction: column;">
         <h2>Описание отеля</h2>
-        <p>
-            {{ hotel.description|default:"Описание недоступно." }}
-        </p>
+        <p>{{ hotel.description|default:"Описание недоступно." }}</p>
+
         <h3>Контакты</h3>
         <ul>
             <li><strong>Адрес:</strong> {{ hotel.address|default:"Не указан" }}</li>
-            <li><strong>Электронная почта:</strong>
-                <a href="mailto:{{ hotel.contact_email }}">{{ hotel.contact_email|default:"Нет данных" }}</a>
-            </li>
-            <li><strong>Телефон:</strong>
-                <a href="tel:{{ hotel.contact_phone }}">{{ hotel.contact_phone|default:"Нет данных" }}</a>
-            </li>
+            <li><strong>Электронная почта:</strong> <a href="mailto:{{ hotel.contact_email }}">{{ hotel.contact_email|default:"Нет данных" }}</a></li>
+            <li><strong>Телефон:</strong> <a href="tel:{{ hotel.contact_phone }}">{{ hotel.contact_phone|default:"Нет данных" }}</a></li>
         </ul>
     </section>
 
     <!-- Правый блок: Карусель и карта -->
-    <section class="map-carousel-section" style="flex: 2; padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
-        <div class="carousel-container" style="flex: 1; margin-bottom: 20px;">
-            <h3>Фото отеля</h3>
-            <div class="carousel" style="position: relative; text-align: center;">
-                <button class="prev">&laquo;</button>
-                <img id="carousel-image" src="" alt="Фото отеля" style="max-width: 100%; max-height: 300px; display: block; margin: 0 auto;">
-                <button class="next">&raquo;</button>
-            </div>
+    <section class="media-section" style="flex: 1; display: flex; flex-direction: column;">
+        <!-- Карусель -->
+        <div class="carousel" style="flex: 1; display: flex; align-items: center; justify-content: center; position: relative;">
+            <button class="prev">&laquo;</button>
+            <img id="carousel-image" src="" alt="" style="max-height: 100%; max-width: 100%; object-fit: contain;">
+            <button class="next">&raquo;</button>
         </div>
 
+        <!-- Карта -->
         <div class="map-container" style="flex: 1;">
-            <h3>Найти нас на карте</h3>
             <iframe
                 width="100%"
                 height="100%"
-                style="border: 0;"
+                style="border:0;"
                 loading="lazy"
                 allowfullscreen
                 referrerpolicy="no-referrer-when-downgrade"
@@ -46,11 +39,6 @@
                 aria-label="Карта расположения отеля"
                 src="https://www.google.com/maps/embed/v1/place?key={{ google_maps_key }}&q={{ search_query|urlencode }}&zoom=15">
             </iframe>
-            <p>
-                <a href="{{ hotel.get_google_maps_url }}" target="_blank" class="map-link">
-                    Открыть в Google Картах
-                </a>
-            </p>
         </div>
     </section>
 </div>

@@ -10,7 +10,7 @@ def home(request):
     search_query = f"{hotel.name}, {hotel.address}" if hotel else "Unknown location"
     site_image = SiteImage.objects.last()
     hotel_photos = HotelPhoto.objects.filter(hotel=hotel)
-    return render(request, 'home2.html', {
+    return render(request, 'home.html', {
         'hotel': hotel,
         'google_maps_key': config('GOOGLE_MAPS_KEY'),
         'search_query': search_query,  # Передаём строку поиска в контекст
