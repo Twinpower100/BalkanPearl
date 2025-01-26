@@ -1,22 +1,22 @@
 {% extends 'base.html' %}
-
-{% block title %}Главная - Balkan Pearl{% endblock %}
+{% load i18n %}
+{% block title %} {% trans "Главная" %} - Balkan Pearl{% endblock %}
 
 {% block content %}
 <div class="content-container" style="display: flex; flex-wrap: nowrap; height: calc(100vh - 120px);">
     <!-- Левый блок: Описание и контакты -->
     <section class="description" style="flex: 1; padding: 20px; overflow-y: auto; min-width: 300px;">
-        <h2>Описание отеля</h2>
+        <h2>{% trans "Описание отеля" %}</h2>
         <p>
             {{ hotel.description|default:"Описание недоступно." }}
         </p>
         <h3>Контакты</h3>
         <ul>
-            <li><strong>Адрес:</strong> {{ hotel.address|default:"Не указан" }}</li>
-            <li><strong>Электронная почта:</strong>
+            <li><strong>{% trans "Адрес" %}:</strong> {{ hotel.address|default:"Не указан" }}</li>
+            <li><strong>{% trans "Электронная почта" %}:</strong>
                 <a href="mailto:{{ hotel.contact_email }}">{{ hotel.contact_email|default:"Нет данных" }}</a>
             </li>
-            <li><strong>Телефон:</strong>
+            <li><strong>{% trans "Телефон" %}:</strong>
                 <a href="tel:{{ hotel.contact_phone }}">{{ hotel.contact_phone|default:"Нет данных" }}</a>
             </li>
         </ul>
@@ -33,22 +33,22 @@
             </div>
         </div>
 
-        <div class="map-container" style="flex: 1;">
-            <h3>Найти нас на карте</h3>
+        <div class="map-container" style="flex: 1; width=100%; height=80%">
+            <h3>{% trans "Найти нас на карте" %}</h3>
             <iframe
                 width="100%"
-                height="100%"
+                height="75%"
                 style="border: 0;"
                 loading="lazy"
                 allowfullscreen
                 referrerpolicy="no-referrer-when-downgrade"
-                title="Карта расположения отеля"
-                aria-label="Карта расположения отеля"
+                title="{% trans 'Карта расположения отеля' %}"
+                aria-label="{% trans 'Карта расположения отеля' %}"
                 src="https://www.google.com/maps/embed/v1/place?key={{ google_maps_key }}&q={{ search_query|urlencode }}&zoom=15">
             </iframe>
             <p>
                 <a href="{{ hotel.get_google_maps_url }}" target="_blank" class="map-link">
-                    Открыть в Google Картах
+                    {% trans "Открыть в Google Картах" %}
                 </a>
             </p>
         </div>
