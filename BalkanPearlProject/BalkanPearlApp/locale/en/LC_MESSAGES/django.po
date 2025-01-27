@@ -3,7 +3,7 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <twinpower1973@gmail.com>, 2025.
 #
-
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: BalkanPearl 1.0\n"
