@@ -1,0 +1,415 @@
+# Montenegrin transcription here.
+# Copyright (C) 2025 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <twinpower1973@gmail.com>, 2025.
+#
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: BalkanPearl-1.0\n"
+"Report-Msgid-Bugs-To: <twinpower1973@gmail.com>\n"
+"POT-Creation-Date: 2025-01-27 19:41+0300\n"
+"PO-Revision-Date: 2025-01-27 20:00+0300\n"
+"Last-Translator: Andrey Derevyanko <twinpower1973@gmail.com>\n"
+"Language-Team: Me <twinpower1973@gmail.com>\n"
+"Language: Me\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: .\BalkanPearlApp\models.py:13
+msgid "Street"
+msgstr "Ulica"
+
+#: .\BalkanPearlApp\models.py:14
+msgid "City"
+msgstr "Grad"
+
+#: .\BalkanPearlApp\models.py:15
+msgid "State/Province"
+msgstr "Država/Provincija"
+
+#: .\BalkanPearlApp\models.py:16
+msgid "Postal Code"
+msgstr "Poštanski broj"
+
+#: .\BalkanPearlApp\models.py:17
+msgid "Country"
+msgstr "Država"
+
+#: .\BalkanPearlApp\models.py:20 .\BalkanPearlApp\models.py:32
+msgid "Address"
+msgstr "Adresa"
+
+#: .\BalkanPearlApp\models.py:21
+msgid "Addresses"
+msgstr "Adrese"
+
+#: .\BalkanPearlApp\models.py:29 .\BalkanPearlApp\models.py:48
+#: .\BalkanPearlApp\models.py:60 .\BalkanPearlApp\models.py:88
+msgid "Hotel"
+msgstr "Hotel"
+
+#: .\BalkanPearlApp\models.py:30
+msgid "Hotel description"
+msgstr "Opis hotela"
+
+#: .\BalkanPearlApp\models.py:31
+msgid "Floors quantity"
+msgstr "Broj spratova"
+
+#: .\BalkanPearlApp\models.py:33
+msgid "Our E-Mail"
+msgstr "Naš E-Mail"
+
+#: .\BalkanPearlApp\models.py:34
+msgid "Our phone (WatsApp, Telegram, Viber)"
+msgstr "Naš telefon (WatsApp, Telegram, Viber)"
+
+#: .\BalkanPearlApp\models.py:49
+msgid "Hotels"
+msgstr "Hoteli"
+
+#: .\BalkanPearlApp\models.py:61
+msgid "Hotel photo"
+msgstr "Fotografija hotela"
+
+#: .\BalkanPearlApp\models.py:62 .\BalkanPearlApp\models.py:90
+#: .\BalkanPearlApp\models.py:181 .\BalkanPearlApp\models.py:285
+msgid "Description"
+msgstr "Opis"
+
+#: .\BalkanPearlApp\models.py:63 .\BalkanPearlApp\models.py:182
+msgid "Upload date"
+msgstr "Datum otpremanja"
+
+#: .\BalkanPearlApp\models.py:66 .\BalkanPearlApp\models.py:185
+msgid "Photo"
+msgstr "Fotografija"
+
+#: .\BalkanPearlApp\models.py:67 .\BalkanPearlApp\models.py:186
+msgid "Photos"
+msgstr "Fotografije"
+
+#: .\BalkanPearlApp\models.py:74
+msgid "Window view"
+msgstr "Pogled s prozora"
+
+#: .\BalkanPearlApp\models.py:81 .\BalkanPearlApp\models.py:103
+msgid "Apartment type"
+msgstr "Tip apartmana"
+
+#: .\BalkanPearlApp\models.py:89 .\BalkanPearlApp\models.py:200
+msgid "Apartment number"
+msgstr "Broj apartmana"
+
+#: .\BalkanPearlApp\models.py:92
+msgid "Floor"
+msgstr "Sprat"
+
+#: .\BalkanPearlApp\models.py:99
+msgid "The floor number you've entered is bigger than the Hotel's floors quantity"
+msgstr "Uneti broj sprata je veći od broja spratova hotela"
+
+#: .\BalkanPearlApp\models.py:109
+msgid "Balcony type"
+msgstr "Tip balkona"
+
+#: .\BalkanPearlApp\models.py:110
+msgid "Rooms quantity"
+msgstr "Broj soba"
+
+#: .\BalkanPearlApp\models.py:111
+msgid "Mini kitchen in apartment"
+msgstr "Mini kuhinja u apartmanu"
+
+#: .\BalkanPearlApp\models.py:112
+msgid "Bathrooms quantity"
+msgstr "Broj kupatila"
+
+#: .\BalkanPearlApp\models.py:113
+msgid "Beds quantity"
+msgstr "Broj kreveta"
+
+#: .\BalkanPearlApp\models.py:116 .\BalkanPearlApp\models.py:179
+#: .\BalkanPearlApp\models.py:248
+msgid "Apartment"
+msgstr "Apartman"
+
+#: .\BalkanPearlApp\models.py:117
+msgid "Apartments"
+msgstr "Apartmani"
+
+#: .\BalkanPearlApp\models.py:125
+msgid "Sofa"
+msgstr "Kauč"
+
+#: .\BalkanPearlApp\models.py:126
+msgid "Washing machine"
+msgstr "Mašina za pranje veša"
+
+#: .\BalkanPearlApp\models.py:127
+msgid "desk"
+msgstr "Sto"
+
+#: .\BalkanPearlApp\models.py:128
+msgid "Iron and ironing board"
+msgstr "Pegla i daska za peglanje"
+
+#: .\BalkanPearlApp\models.py:129
+msgid "Child bed"
+msgstr "Dečji krevet"
+
+#: .\BalkanPearlApp\models.py:130
+msgid "Microwave"
+msgstr "Mikrotalasna pećnica"
+
+#: .\BalkanPearlApp\models.py:131
+msgid "Square"
+msgstr "Kvadratura"
+
+#: .\BalkanPearlApp\models.py:132
+msgid "Max capacity, people"
+msgstr "Maksimalni kapacitet, osobe"
+
+#: .\BalkanPearlApp\models.py:136
+msgid "Apartment is closed"
+msgstr "Apartman je zatvoren"
+
+#: .\BalkanPearlApp\models.py:158
+msgid "Season's name"
+msgstr "Ime sezone"
+
+#: .\BalkanPearlApp\models.py:159
+msgid "Start date"
+msgstr "Datum početka"
+
+#: .\BalkanPearlApp\models.py:160
+msgid "End date"
+msgstr "Datum završetka"
+
+#: .\BalkanPearlApp\models.py:162
+msgid "Price coefficient"
+msgstr "Koeficijent cene"
+
+#: .\BalkanPearlApp\models.py:167
+msgid "Start date must be earlier than end date"
+msgstr "Datum početka mora biti pre datuma završetka"
+
+#: .\BalkanPearlApp\models.py:173
+msgid "Season"
+msgstr "Sezona"
+
+#: .\BalkanPearlApp\models.py:174
+msgid "Seasons"
+msgstr "Sezone"
+
+#: .\BalkanPearlApp\models.py:180
+msgid "Apartment photo"
+msgstr "Fotografija apartmana"
+
+#: .\BalkanPearlApp\models.py:194
+msgid "Confirmed"
+msgstr "Potvrđeno"
+
+#: .\BalkanPearlApp\models.py:195
+msgid "Cancelled by User"
+msgstr "Otkaže korisnik"
+
+#: .\BalkanPearlApp\models.py:196
+msgid "Cancelled by Admin"
+msgstr "Otkaže admin"
+
+#: .\BalkanPearlApp\models.py:201
+msgid "User"
+msgstr "Korisnik"
+
+#: .\BalkanPearlApp\models.py:202
+msgid "Check in date"
+msgstr "Datum prijave"
+
+#: .\BalkanPearlApp\models.py:203
+msgid "Check out date"
+msgstr "Datum odjave"
+
+#: .\BalkanPearlApp\models.py:204
+msgid "Paid"
+msgstr "Plaćeno"
+
+#: .\BalkanPearlApp\models.py:205
+msgid "Created at"
+msgstr "Kreirano"
+
+#: .\BalkanPearlApp\models.py:206
+msgid "Status"
+msgstr "Status"
+
+#: .\BalkanPearlApp\models.py:207
+msgid "Cancellation reason"
+msgstr "Razlog otkazivanja"
+
+#: .\BalkanPearlApp\models.py:213 .\BalkanPearlApp\models.py:239
+msgid "Booking"
+msgstr "Rezervacija"
+
+#: .\BalkanPearlApp\models.py:214
+msgid "Bookings"
+msgstr "Rezervacije"
+
+#: .\BalkanPearlApp\models.py:225
+msgid "Cannot cancel a booking that is not confirmed."
+msgstr "Ne možete otkazati rezervaciju koja nije potvrđena."
+
+#: .\BalkanPearlApp\models.py:232
+msgid "Invalid cancellation initiator. Must be 'user' or 'admin'."
+msgstr "Nevažeći inicijator otkazivanja. Mora biti 'korisnik' ili 'admin'."
+
+#: .\BalkanPearlApp\models.py:240
+msgid "Action"
+msgstr "Akcija"
+
+#: .\BalkanPearlApp\models.py:241
+msgid "Performed by"
+msgstr "Izveo"
+
+#: .\BalkanPearlApp\models.py:242
+msgid "Timestamp"
+msgstr "Vremenska oznaka"
+
+#: .\BalkanPearlApp\models.py:247
+msgid "Username"
+msgstr "Korisničko ime"
+
+#: .\BalkanPearlApp\models.py:250
+msgid "Rating"
+msgstr "Ocena"
+
+#: .\BalkanPearlApp\models.py:251
+msgid "Commentary"
+msgstr "Komentar"
+
+#: .\BalkanPearlApp\models.py:253
+msgid "Approved"
+msgstr "Odobreno"
+
+#: .\BalkanPearlApp\models.py:256
+msgid "Review"
+msgstr "Recenzija"
+
+#: .\BalkanPearlApp\models.py:257
+msgid "Reviews"
+msgstr "Recenzije"
+
+#: .\BalkanPearlApp\models.py:261
+msgid "Rating must be between 1 and 5"
+msgstr "Ocena mora biti između 1 i 5"
+
+#: .\BalkanPearlApp\models.py:269
+msgid "Header"
+msgstr "Naslov"
+
+#: .\BalkanPearlApp\models.py:270
+msgid "Content"
+msgstr "Sadržaj"
+
+#: .\BalkanPearlApp\models.py:271
+msgid "Author"
+msgstr "Autor"
+
+#: .\BalkanPearlApp\models.py:276
+msgid "Blog post"
+msgstr "Blog post"
+
+#: .\BalkanPearlApp\models.py:277
+msgid "Blog posts"
+msgstr "Blog postovi"
+
+#: .\BalkanPearlApp\models.py:289
+msgid "No description"
+msgstr "Nema opisa"
+
+#: .\BalkanPearlApp\templates\archive\base1.html:22
+msgid "Отдых у моря и гор Черногории"
+msgstr "Odmor uz more i planine Crne Gore"
+
+#: .\BalkanPearlApp\templates\archive\base1.html:24
+#: .\BalkanPearlApp\templates\base.html:19
+msgid "Главная"
+msgstr "Početna"
+
+#: .\BalkanPearlApp\templates\archive\base1.html:25
+#: .\BalkanPearlApp\templates\base.html:20
+msgid "Апартаменты"
+msgstr "Apartmani"
+
+#: .\BalkanPearlApp\templates\archive\base1.html:26
+#: .\BalkanPearlApp\templates\base.html:21
+msgid "Бронирование"
+msgstr "Rezervacija"
+
+#: .\BalkanPearlApp\templates\archive\base1.html:27
+#: .\BalkanPearlApp\templates\base.html:22
+msgid "Отзывы"
+msgstr "Recenzije"
+
+#: .\BalkanPearlApp\templates\archive\base1.html:28
+#: .\BalkanPearlApp\templates\base.html:23
+msgid "Блог"
+msgstr "Blog"
+
+#: .\BalkanPearlApp\templates\base.html:9
+msgid "Balkan Pearl"
+msgstr "Balkan Pearl"
+
+#: .\BalkanPearlApp\templates\base.html:17
+msgid "Balkan Pearl: Отдых у моря и гор Черногории"
+msgstr "Balkan Pearl: Odmor uz more i planine Crne Gore"
+
+#: .\BalkanPearlApp\templates\base.html:29
+msgid "English"
+msgstr "Engleski"
+
+#: .\BalkanPearlApp\templates\base.html:30
+msgid "Русский"
+msgstr "Ruski"
+
+#: .\BalkanPearlApp\templates\base.html:31
+msgid "Crnogorski"
+msgstr "Crnogorski"
+
+#: .\BalkanPearlApp\templates\base.html:41
+msgid "2025 Balkan Pearl. All rights reserved."
+msgstr "2025 Balkan Pearl. Sva prava pridržana."
+
+#: .\BalkanPearlApp\templates\home.html:3
+msgid "Главная - Balkan Pearl"
+msgstr "Početna - Balkan Pearl"
+
+#: .\BalkanPearlApp\templates\home.html:9
+msgid "Описание отеля"
+msgstr "Opis hotela"
+
+#: .\BalkanPearlApp\templates\home.html:15
+msgid "Адрес"
+msgstr "Adresa"
+
+#: .\BalkanPearlApp\templates\home.html:16
+msgid "Электронная почта"
+msgstr "E-pošta"
+
+#: .\BalkanPearlApp\templates\home.html:19
+msgid "Телефон"
+msgstr "Broj telefona"
+
+#: .\BalkanPearlApp\templates\home.html:37
+msgid "Найти нас на карте"
+msgstr "Pronađite nas na mapi"
+
+#: .\BalkanPearlApp\templates\home.html:45
+#: .\BalkanPearlApp\templates\home.html:46
+msgid "Карта расположения отеля"
+msgstr "Mapa lokacije hotela"
+
+#: .\BalkanPearlApp\templates\home.html:51
+msgid "Открыть в Google Картах"
+msgstr "Otvorite u Google mapama"

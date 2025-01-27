@@ -107,9 +107,8 @@ msgid "Floor"
 msgstr "Floor"
 
 #: .\BalkanPearlApp\models.py:98
-msgid ""
-"The floor number you've entered is bigger than the Hotel's floors quantity"
-msgstr ""
+msgid "The floor number you've entered is bigger than the Hotel's floors quantity"
+msgstr "The floor number you've entered is bigger than the Hotel's floors quantity"
 
 #: .\BalkanPearlApp\models.py:108
 msgid "Balcony type"
