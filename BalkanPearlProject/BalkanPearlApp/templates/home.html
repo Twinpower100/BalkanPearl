@@ -10,7 +10,7 @@
         <p>
             {{ hotel.description|default:"Описание недоступно." }}
         </p>
-        <h3>Контакты</h3>
+        <h3>{% trans 'Контакты' %}</h3>
         <ul>
             <li><strong>{% trans 'Адрес' %}:</strong> {{ hotel.address|default:"Не указан" }}</li>
             <li><strong>{% trans 'Электронная почта' %}:</strong>

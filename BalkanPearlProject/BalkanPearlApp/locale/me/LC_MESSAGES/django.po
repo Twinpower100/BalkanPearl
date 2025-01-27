@@ -2,13 +2,13 @@
 # Copyright (C) 2025 THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <twinpower1973@gmail.com>, 2025.
-#
-#
+# 
+# 
 msgid ""
 msgstr ""
 "Project-Id-Version: BalkanPearl-1.0\n"
-"Report-Msgid-Bugs-To: <twinpower1973@gmail.com>\n"
-"POT-Creation-Date: 2025-01-27 19:41+0300\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-01-27 21:50+0300\n"
 "PO-Revision-Date: 2025-01-27 20:00+0300\n"
 "Last-Translator: Andrey Derevyanko <twinpower1973@gmail.com>\n"
 "Language-Team: Me <twinpower1973@gmail.com>\n"
@@ -388,6 +388,10 @@ msgstr "Početna - Balkan Pearl"
 #: .\BalkanPearlApp\templates\home.html:9
 msgid "Описание отеля"
 msgstr "Opis hotela"
+
+#: .\BalkanPearlApp\templates\home.html:13
+msgid "Контакты"
+msgstr "Kontakti"
 
 #: .\BalkanPearlApp\templates\home.html:15
 msgid "Адрес"

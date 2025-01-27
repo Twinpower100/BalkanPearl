@@ -59,7 +59,7 @@ MIDDLEWARE = [
 LANGUAGES = [
     ('en', _('English')),
     ('ru', _('Russian')),
-    ('me', _('Montenegrin')),
+    ('me', _('Montenegrian')),
 ]
 
 LOCALE_PATHS = [
