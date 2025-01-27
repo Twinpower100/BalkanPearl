@@ -6,17 +6,17 @@
 <div class="content-container" style="display: flex; flex-wrap: nowrap; height: calc(100vh - 120px); ">
     <!-- Левый блок: Описание и контакты -->
     <section class="description" style="flex: 1; padding: 20px; overflow-y: auto; min-width: 300px;">
-        <h2>{% trans "Описание отеля" %}</h2>
+        <h2>{% trans 'Описание отеля' %}</h2>
         <p>
             {{ hotel.description|default:"Описание недоступно." }}
         </p>
         <h3>Контакты</h3>
         <ul>
-            <li><strong>{% trans "Адрес" %}:</strong> {{ hotel.address|default:"Не указан" }}</li>
-            <li><strong>{% trans "Электронная почта" %}:</strong>
+            <li><strong>{% trans 'Адрес' %}:</strong> {{ hotel.address|default:"Не указан" }}</li>
+            <li><strong>{% trans 'Электронная почта' %}:</strong>
                 <a href="mailto:{{ hotel.contact_email }}">{{ hotel.contact_email|default:"Нет данных" }}</a>
             </li>
-            <li><strong>{% trans "Телефон" %}:</strong>
+            <li><strong>{% trans 'Телефон' %}:</strong>
                 <a href="tel:{{ hotel.contact_phone }}">{{ hotel.contact_phone|default:"Нет данных" }}</a>
             </li>
         </ul>
@@ -34,7 +34,7 @@
         </div>
 
         <div class="map-container" style="flex: 1; width=100%; height=80%">
-            <h3>{% trans "Найти нас на карте" %}</h3>
+            <h3>{% trans 'Найти нас на карте' %}</h3>
             <iframe
                 width="100%"
                 height="75%"
@@ -48,7 +48,7 @@
             </iframe>
             <p>
                 <a href="{{ hotel.get_google_maps_url }}" target="_blank" class="map-link">
-                    {% trans "Открыть в Google Картах" %}
+                    {% trans 'Открыть в Google Картах' %}
                 </a>
             </p>
         </div>

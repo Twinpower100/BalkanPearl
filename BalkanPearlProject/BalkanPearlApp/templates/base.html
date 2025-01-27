@@ -14,13 +14,13 @@
         <div class="background-image" style="background-image: url('{{ site_image.image.url }}');"></div>
     {% endif %}
     <header>
-        <h1>Balkan Pearl: {% trans "Отдых у моря и гор Черногории" %}</h1>
+        <h1>Balkan Pearl: {% trans 'Отдых у моря и гор Черногории' %}</h1>
         <nav class="full-width-nav">
-            <a href="{% url 'home' %}">{% trans "Главная" %}</a>
-            <a href="{% url 'apartments_list' %}">{% trans "Апартаменты" %}</a>
-            <a href="{% url 'booking_form' 1 %}">{% trans "Бронирование" %}</a>
-            <a href="{% url 'reviews' %}">{% trans "Отзывы" %}</a>
-            <a href="{% url 'blog_home' %}">{% trans "Блог" %}</a>
+            <a href="{% url 'home' %}">{% trans 'Главная' %}</a>
+            <a href="{% url 'apartments_list' %}">{% trans 'Апартаменты' %}</a>
+            <a href="{% url 'booking_form' 1 %}">{% trans 'Бронирование' %}</a>
+            <a href="{% url 'reviews' %}">{% trans 'Отзывы' %}</a>
+            <a href="{% url 'blog_home' %}">{% trans 'Блог' %}</a>
         </nav>
       <div style="text-align: right; padding: 5px;">
             <form method="post" action="{% url 'set_language' %}">
