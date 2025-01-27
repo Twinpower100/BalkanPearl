@@ -4,9 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0ff082ee-8a75-425f-b889-1e11787c2ed4" name="Changes" comment="1. работает карусель фото&#10;2. показано фото фона&#10;3. работает карта&#10;4. работает переключатель языков&#10;5. не работает: не могу всю страницу Home отразить на одном экране">
+    <list default="true" id="0ff082ee-8a75-425f-b889-1e11787c2ed4" name="Changes" comment="1. работает карусель фото&#10;2. показано фото фона&#10;3. работает карта&#10;4. работает переключатель языков&#10;5. не работает: не могу всю страницу Home отразить на одном экране&#10;6. Добавлены иконки и лого&#10;7. Добавлены архивы">
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/locale/archive/django-en.po" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/locale/archive/django-me.po" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/locale/archive/django-ru.po" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BalkanPearlProject/static/css/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/BalkanPearlProject/static/css/style.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/locale/en/LC_MESSAGES/django.po" beforeDir="false" afterPath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/locale/en/LC_MESSAGES/django.po" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/locale/me/LC_MESSAGES/django.po" beforeDir="false" afterPath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/locale/me/LC_MESSAGES/django.po" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/locale/ru/LC_MESSAGES/django.po" beforeDir="false" afterPath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/locale/ru/LC_MESSAGES/django.po" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/templates/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/templates/base.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/templates/home.html" beforeDir="false" afterPath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/templates/home.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -53,14 +60,22 @@
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;master&quot;,
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Mail.ru/CodeIt/Django/BalkanPearl/BalkanPearlProject/BalkanPearlApp/templates&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Mail.ru/CodeIt/Django/BalkanPearl/BalkanPearlProject/BalkanPearlApp/locale/archive&quot;,
     &quot;run.code.analysis.last.selected.profile&quot;: &quot;aDefault&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;preferences.fileTypes&quot;
   }
 }</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Mail.ru\CodeIt\Django\BalkanPearl\BalkanPearlProject\BalkanPearlApp\locale\archive" />
+      <recent name="C:\Mail.ru\CodeIt\Django\BalkanPearl\BalkanPearlProject\BalkanPearlApp\templates\archive" />
+      <recent name="C:\Mail.ru\CodeIt\Django\BalkanPearl\BalkanPearlProject\static" />
       <recent name="C:\Mail.ru\CodeIt\Django\BalkanPearl\BalkanPearlProject\BalkanPearlApp\templates" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Mail.ru\CodeIt\Django\BalkanPearl\BalkanPearlProject\static\css\archive" />
+      <recent name="C:\Mail.ru\CodeIt\Django\BalkanPearl\BalkanPearlProject\BalkanPearlApp\templates\archive" />
+      <recent name="C:\Mail.ru\CodeIt\Django\BalkanPearl\BalkanPearlProject\static\images" />
     </key>
   </component>
   <component name="SharedIndexes">
@@ -103,13 +118,71 @@
       <option name="project" value="LOCAL" />
       <updated>1737358809718</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="1. работает карусель фото&#10;2. показано фото фона&#10;3. работает карта&#10;4. работает переключатель языков&#10;5. не работает: не могу всю страницу Home отразить на одном экране">
+      <option name="closed" value="true" />
+      <created>1737455327081</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1737455327081</updated>
+    </task>
+    <task id="LOCAL-00005" summary="1. работает карусель фото&#10;2. показано фото фона&#10;3. работает карта&#10;4. работает переключатель языков&#10;5. не работает: не могу всю страницу Home отразить на одном экране&#10;6. Добавлены иконки и лого">
+      <option name="closed" value="true" />
+      <created>1737830924782</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1737830924782</updated>
+    </task>
+    <task id="LOCAL-00006" summary="1. работает карусель фото&#10;2. показано фото фона&#10;3. работает карта&#10;4. работает переключатель языков&#10;5. не работает: не могу всю страницу Home отразить на одном экране&#10;6. Добавлены иконки и лого">
+      <option name="closed" value="true" />
+      <created>1737876484919</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1737876484919</updated>
+    </task>
+    <task id="LOCAL-00007" summary="1. работает карусель фото&#10;2. показано фото фона&#10;3. работает карта&#10;4. работает переключатель языков&#10;5. не работает: не могу всю страницу Home отразить на одном экране&#10;6. Добавлены иконки и лого&#10;7. Добавлены архивы">
+      <option name="closed" value="true" />
+      <created>1737881158943</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1737881158943</updated>
+    </task>
+    <task id="LOCAL-00008" summary="1. работает карусель фото&#10;2. показано фото фона&#10;3. работает карта&#10;4. работает переключатель языков&#10;5. не работает: не могу всю страницу Home отразить на одном экране&#10;6. Добавлены иконки и лого&#10;7. Добавлены архивы">
+      <option name="closed" value="true" />
+      <created>1737915496799</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1737915496799</updated>
+    </task>
+    <task id="LOCAL-00009" summary="1. работает карусель фото&#10;2. показано фото фона&#10;3. работает карта&#10;4. работает переключатель языков&#10;5. не работает: не могу всю страницу Home отразить на одном экране&#10;6. Добавлены иконки и лого&#10;7. Добавлены архивы">
+      <option name="closed" value="true" />
+      <created>1737915507520</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1737915507520</updated>
+    </task>
+    <task id="LOCAL-00010" summary="1. работает карусель фото&#10;2. показано фото фона&#10;3. работает карта&#10;4. работает переключатель языков&#10;5. не работает: не могу всю страницу Home отразить на одном экране&#10;6. Добавлены иконки и лого&#10;7. Добавлены архивы">
+      <option name="closed" value="true" />
+      <created>1737959303119</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1737959303119</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Добавил 2 строки в home.html&#10;    &lt;script src=&quot;https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js&quot;&gt;&lt;/script&gt;&#10;    &lt;script src=&quot;https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js&quot;&gt;&lt;/script&gt;&#10;    &#10;карусель не ожила" />
     <MESSAGE value="Last version" />
     <MESSAGE value="1. работает карусель фото&#10;2. показано фото фона&#10;3. работает карта&#10;4. работает переключатель языков&#10;5. не работает: не могу всю страницу Home отразить на одном экране" />
-    <option name="LAST_COMMIT_MESSAGE" value="1. работает карусель фото&#10;2. показано фото фона&#10;3. работает карта&#10;4. работает переключатель языков&#10;5. не работает: не могу всю страницу Home отразить на одном экране" />
+    <MESSAGE value="1. работает карусель фото&#10;2. показано фото фона&#10;3. работает карта&#10;4. работает переключатель языков&#10;5. не работает: не могу всю страницу Home отразить на одном экране&#10;6. Добавлены иконки и лого" />
+    <MESSAGE value="1. работает карусель фото&#10;2. показано фото фона&#10;3. работает карта&#10;4. работает переключатель языков&#10;5. не работает: не могу всю страницу Home отразить на одном экране&#10;6. Добавлены иконки и лого&#10;7. Добавлены архивы" />
+    <option name="LAST_COMMIT_MESSAGE" value="1. работает карусель фото&#10;2. показано фото фона&#10;3. работает карта&#10;4. работает переключатель языков&#10;5. не работает: не могу всю страницу Home отразить на одном экране&#10;6. Добавлены иконки и лого&#10;7. Добавлены архивы" />
   </component>
 </project>
