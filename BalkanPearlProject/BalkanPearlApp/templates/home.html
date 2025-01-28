@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-<!--{% load i18n %}-->
+{% load i18n %}
 {% block title %} {% trans 'Главная - Balkan Pearl' %}{% endblock %}
 
 {% block content %}
@@ -28,7 +28,7 @@
             <h3>Фото отеля</h3>
             <div class="carousel" style="position: relative; text-align: center;">
                 <button class="prev">&laquo;</button>
-                <img id="carousel-image" src="" alt="Фото отеля" style="max-width: 100%; max-height: 300px; display: block; margin: 0 auto;">
+                <img id="carousel-image" src="" alt="{% trans 'Фото отеля' %}" style="max-width: 100%; max-height: 300px; display: block; margin: 0 auto;">
                 <button class="next">&raquo;</button>
             </div>
         </div>

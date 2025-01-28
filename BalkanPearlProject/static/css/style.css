@@ -4,8 +4,22 @@ body, html {
     padding: 0;
     width: 100%;
     height: 100%;
+    overflow-x: hidden; /* Чтобы избежать горизонтальной прокрутки */
+    position: relative; /* Нужно, чтобы фон относился ко всему экрану */
     font-size: 16px;
     box-sizing: border-box;
+}
+
+.background-image {
+    position: fixed; /* Чтобы фон оставался на месте при прокрутке */
+    top: 0;
+    left: 0;
+    width: 100vw; /* Полная ширина экрана */
+    height: 100vh; /* Полная высота экрана */
+    z-index: -1; /* Фон находится позади остальных элементов */
+    background-size: cover;
+    background-position: center;
+    opacity: 0.3; /* Прозрачность фона */
 }
 
 /* Общие стили */
@@ -49,6 +63,11 @@ footer {
 }
 
 /* Контейнеры */
+.content-wrapper {
+    position: relative;
+    z-index: 1; /* Чтобы контент оказался поверх фона */
+}
+
 .content-container {
     display: flex;
     flex-wrap: nowrap;
@@ -115,3 +134,4 @@ footer {
 .carousel button:hover {
     background-color: rgba(0, 0, 0, 0.8);
 }
+

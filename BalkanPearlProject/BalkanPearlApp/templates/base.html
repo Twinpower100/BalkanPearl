@@ -13,7 +13,7 @@
     {% if site_image %}
         <div class="background-image" style="background-image: url('{{ site_image.image.url }}');"></div>
     {% endif %}
-    <header>
+    <header class="content-wrapper">
         <h1>{% trans "Balkan Pearl: Отдых у моря и гор Черногории" %}</h1>
         <nav class="full-width-nav">
             <a href="{% url 'home' %}">{% trans "Главная" %}</a>
@@ -33,11 +33,11 @@
             </form>
         </div>
     </header>
-    <main style="min-height: 100vh; display: flex; flex-direction: column;">
+    <main class="content-wrapper" style="min-height: 100vh; display: flex; flex-direction: column;">
         {% block content %}
         {% endblock %}
     </main>
-    <footer>
+    <footer class="content-wrapper">
         &copy; {% trans "2025 Balkan Pearl. All rights reserved." %}
     </footer>
 </body>
