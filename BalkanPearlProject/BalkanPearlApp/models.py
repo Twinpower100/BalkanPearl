@@ -32,17 +32,18 @@ class Hotel(models.Model):
     address = models.OneToOneField(Address, on_delete=models.CASCADE, verbose_name=_('Address'))
     contact_email = models.EmailField(verbose_name=_('Our E-Mail'))
     contact_phone = PhoneNumberField(verbose_name=_('Our phone (WatsApp, Telegram, Viber)'))
-
+    instagram_link = models.URLField(verbose_name=_('Instagram link'), blank=True, null=True)
+    facebook_link = models.URLField(verbose_name=_('Facebook link'), blank=True, null=True)
     # latitude = models.DecimalField(max_digits=17, decimal_places=15, verbose_name=_('Latitude'), default=0)
     # longitude = models.DecimalField(max_digits=17, decimal_places=15, verbose_name=_('Longitude'), default=0)
 
-    def save(self, *args, **kwargs):
-        if isinstance(self.latitude, str):
-            self.latitude = Decimal(self.latitude.replace(',', '.'))
-        if isinstance(self.longitude, str):
-            self.longitude = Decimal(self.longitude.replace(',', '.'))
-
-        super().save(*args, **kwargs)
+    # def save(self, *args, **kwargs):
+    #     if isinstance(self.latitude, str):
+    #         self.latitude = Decimal(self.latitude.replace(',', '.'))
+    #     if isinstance(self.longitude, str):
+    #         self.longitude = Decimal(self.longitude.replace(',', '.'))
+    #
+    #     super().save(*args, **kwargs)
 
     class Meta:
         verbose_name = _('Hotel')

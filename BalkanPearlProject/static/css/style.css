@@ -3,11 +3,25 @@ body, html {
     margin: 0;
     padding: 0;
     width: 100%;
-    height: 100%;
+    height: auto; /* Высота страницы будет динамической */
+    /*height: 100%;*/
     overflow-x: hidden; /* Чтобы избежать горизонтальной прокрутки */
     position: relative; /* Нужно, чтобы фон относился ко всему экрану */
     font-size: 16px;
     box-sizing: border-box;
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+    height: auto; /* Вместо min-height: 100vh */
+}
+
+main.content-wrapper {
+    height: auto; /* Убирает фиксированную минимальную высоту */
+    min-height: unset; /* На случай, если где-то в наследовании применяется */
+    margin-bottom: 0;
+    padding-bottom: 0;
 }
 
 .background-image {
@@ -24,10 +38,11 @@ body, html {
 
 /* Общие стили */
 header {
-    background-color: #00274d;
+    background-color: #003366;
     color: white;
     padding: 10px;
     text-align: center;
+    /*height: 10vh;*/
 }
 
 header h1 {
@@ -60,6 +75,7 @@ footer {
     position: relative;
     bottom: 0;
     width: 100%;
+    margin-top: 0; /* Убирает лишний отступ сверху */
 }
 
 /* Контейнеры */
@@ -71,9 +87,11 @@ footer {
 .content-container {
     display: flex;
     flex-wrap: nowrap;
-    height: calc(100vh - 120px);
+    height: auto;
+    /*height: calc(100vh - 120px);*/
     width: 100%;
     position: relative;
+    /*flex-grow: 1;*/ /* Позволяет элементу растягиваться */
     /*background: rgba(0, 0, 0, 0.5);*/ /* Затемнение для лучшей читаемости текста */
 }
 
@@ -139,5 +157,45 @@ footer {
 
 .carousel button:hover {
     background-color: rgba(0, 0, 0, 0.8);
+}
+
+.messenger-icons {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.messenger-icons a {
+    display: inline-block;
+}
+
+.messenger-icons img.icon {
+    width: 24px; /* Размер иконок */
+    height: 24px;
+    transition: transform 0.2s ease;
+}
+
+.messenger-icons img.icon:hover {
+    transform: scale(1.2); /* Анимация увеличения при наведении */
+}
+
+.social-media-icons {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.social-media-icons a {
+    display: inline-block;
+}
+
+.social-media-icons img.icon {
+    width: 24px;
+    height: 24px;
+    transition: transform 0.2s ease;
+}
+
+.social-media-icons img.icon:hover {
+    transform: scale(1.2);
 }
 

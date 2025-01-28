@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load i18n %}
+{% load static %}
 {% block title %} {% trans 'Главная - Balkan Pearl' %}{% endblock %}
 
 {% block content %}
@@ -18,6 +19,33 @@
             </li>
             <li><strong>{% trans 'Телефон' %}:</strong>
                 <a href="tel:{{ hotel.contact_phone }}">{{ hotel.contact_phone|default:"Нет данных" }}</a>
+                <!-- Иконки мессенджеров -->
+                <div class="messenger-icons">
+                    <a href="https://wa.me/{{ hotel.contact_phone|cut:'+' }}" target="_blank" title="WhatsApp">
+                    <img src="{% static 'images/whatsapp-icon.svg' %}" alt="WhatsApp" class="icon">
+                    </a>
+                    <a href="viber://chat?number={{ hotel.contact_phone|cut:'+' }}" target="_blank" title="Viber">
+                        <img src="{% static 'images/viber-icon.svg' %}" alt="Viber" class="icon">
+                    </a>
+                    <a href="https://t.me/{{ hotel.contact_phone }}" target="_blank" title="Telegram">
+                        <img src="{% static 'images/telegram-icon.svg' %}" alt="Telegram" class="icon">
+                    </a>
+                </div>
+            </li>
+            <li>
+                <strong>{% trans "Мы в соцсетях" %}:</strong>
+                <div class="social-media-icons" style="display: flex; gap: 10px; margin-top: 10px;">
+                    {% if hotel.facebook_link %}
+                    <a href="{{ hotel.facebook_link }}" target="_blank" title="Facebook">
+                        <img src="{% static 'images/facebook-icon.svg' %}" alt="Facebook" class="icon">
+                    </a>
+                    {% endif %}
+                    {% if hotel.instagram_link %}
+                    <a href="{{ hotel.instagram_link }}" target="_blank" title="Instagram">
+                        <img src="{% static 'images/instagram-icon.svg' %}" alt="Instagram" class="icon">
+                    </a>
+                    {% endif %}
+                </div>
             </li>
         </ul>
     </section>

@@ -4,8 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0ff082ee-8a75-425f-b889-1e11787c2ed4" name="Changes" comment="1. работает карусель фото&#10;2. показано фото фона&#10;3. работает карта&#10;4. работает переключатель языков, включая шаблоны&#10;5. не работает: не могу всю страницу Home отразить на одном экране&#10;6. Добавлены иконки и лого&#10;7. Добавлены архивы">
+    <list default="true" id="0ff082ee-8a75-425f-b889-1e11787c2ed4" name="Changes" comment="1. работает карусель фото&#10;2. показано фото фона на весь экран&#10;3. работает карта&#10;4. работает переключатель языков, включая шаблоны&#10;5. не работает: не могу всю страницу Home отразить на одном экране&#10;6. Добавлены иконки и лого&#10;7. Добавлены архивы">
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/static/images/facebook-icon.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/static/images/instagram-icon.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/static/images/telegram-icon.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/static/images/viber-icon.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/static/images/whatsapp-icon.svg" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/templates/home.html" beforeDir="false" afterPath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/templates/home.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/BalkanPearlProject/static/css/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/BalkanPearlProject/static/css/style.css" afterDir="false" />
     </list>
@@ -68,9 +75,9 @@
       <recent name="C:\Mail.ru\CodeIt\Django\BalkanPearl\BalkanPearlProject\BalkanPearlApp\templates" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Mail.ru\CodeIt\Django\BalkanPearl\BalkanPearlProject\static\images" />
       <recent name="C:\Mail.ru\CodeIt\Django\BalkanPearl\BalkanPearlProject\static\css\archive" />
       <recent name="C:\Mail.ru\CodeIt\Django\BalkanPearl\BalkanPearlProject\BalkanPearlApp\templates\archive" />
-      <recent name="C:\Mail.ru\CodeIt\Django\BalkanPearl\BalkanPearlProject\static\images" />
     </key>
   </component>
   <component name="SharedIndexes">
@@ -241,7 +248,15 @@
       <option name="project" value="LOCAL" />
       <updated>1738082459321</updated>
     </task>
-    <option name="localTasksCounter" value="20" />
+    <task id="LOCAL-00020" summary="1. работает карусель фото&#10;2. показано фото фона на весь экран&#10;3. работает карта&#10;4. работает переключатель языков, включая шаблоны&#10;5. не работает: не могу всю страницу Home отразить на одном экране&#10;6. Добавлены иконки и лого&#10;7. Добавлены архивы">
+      <option name="closed" value="true" />
+      <created>1738087589755</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1738087589755</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -251,6 +266,7 @@
     <MESSAGE value="1. работает карусель фото&#10;2. показано фото фона&#10;3. работает карта&#10;4. работает переключатель языков&#10;5. не работает: не могу всю страницу Home отразить на одном экране&#10;6. Добавлены иконки и лого" />
     <MESSAGE value="1. работает карусель фото&#10;2. показано фото фона&#10;3. работает карта&#10;4. работает переключатель языков&#10;5. не работает: не могу всю страницу Home отразить на одном экране&#10;6. Добавлены иконки и лого&#10;7. Добавлены архивы" />
     <MESSAGE value="1. работает карусель фото&#10;2. показано фото фона&#10;3. работает карта&#10;4. работает переключатель языков, включая шаблоны&#10;5. не работает: не могу всю страницу Home отразить на одном экране&#10;6. Добавлены иконки и лого&#10;7. Добавлены архивы" />
-    <option name="LAST_COMMIT_MESSAGE" value="1. работает карусель фото&#10;2. показано фото фона&#10;3. работает карта&#10;4. работает переключатель языков, включая шаблоны&#10;5. не работает: не могу всю страницу Home отразить на одном экране&#10;6. Добавлены иконки и лого&#10;7. Добавлены архивы" />
+    <MESSAGE value="1. работает карусель фото&#10;2. показано фото фона на весь экран&#10;3. работает карта&#10;4. работает переключатель языков, включая шаблоны&#10;5. не работает: не могу всю страницу Home отразить на одном экране&#10;6. Добавлены иконки и лого&#10;7. Добавлены архивы" />
+    <option name="LAST_COMMIT_MESSAGE" value="1. работает карусель фото&#10;2. показано фото фона на весь экран&#10;3. работает карта&#10;4. работает переключатель языков, включая шаблоны&#10;5. не работает: не могу всю страницу Home отразить на одном экране&#10;6. Добавлены иконки и лого&#10;7. Добавлены архивы" />
   </component>
 </project>

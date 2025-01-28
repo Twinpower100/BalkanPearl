@@ -32,7 +32,7 @@ class HotelAdminForm(forms.ModelForm):
 class HotelAdmin(admin.ModelAdmin):
     form = HotelAdminForm  # Используем пользовательскую форму
     list_display = ('name', 'description', 'floors', 'address', 'contact_email',
-                    'contact_phone', )
+                    'contact_phone', 'instagram_link', 'facebook_link',)
     list_filter = ('name',)
 
 
