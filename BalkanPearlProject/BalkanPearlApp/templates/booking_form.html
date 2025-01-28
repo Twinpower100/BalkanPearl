@@ -1,19 +1,19 @@
 <!-- booking_form.html -->
 {% extends 'base.html' %}
 
-{% block title %}Бронирование апартамента - {{ apartment.name }}{% endblock %}
+{% block title %}{% trans 'Бронирование' %}{{ apartment.name }}{% endblock %}
 
 {% block content %}
-<h2>Бронирование апартамента "{{ apartment.name }}"</h2>
-<p>Описание: {{ apartment.description }}</p>
-<p>Цена за ночь: {{ apartment.price_per_night }} €</p>
+<h2>{% trans 'Бронирование' %}"{{ apartment.name }}"</h2>
+<p>{% trans 'Описание:' %} {{ apartment.description }}</p>
+<p>{% trans 'Цена за ночь:' %} {{ apartment.price_per_night }} €</p>
 
 <form method="post">
     {% csrf_token %}
-    <label for="checkin_date">Дата заезда:</label>
+    <label for="checkin_date">{% trans 'Дата заезда' %}:</label>
     <input type="date" id="checkin_date" name="checkin_date" required>
-    <label for="checkout_date">Дата выезда:</label>
+    <label for="checkout_date">{% trans 'Дата выезда:' %}</label>
     <input type="date" id="checkout_date" name="checkout_date" required>
-    <button type="submit">Забронировать</button>
+    <button type="submit">{% trans 'Забронировать' %}</button>
 </form>
 {% endblock %}

@@ -1,25 +1,25 @@
 <!-- apartments_list.html -->
 {% extends 'base.html' %}
-
-{% block title %}Апартаменты - Balkan Pearl{% endblock %}
+<!--{% load i18n %}-->
+{% block title %}{% trans 'Апартаменты - Balkan Pearl' %}{% endblock %}
 
 {% block content %}
-<h2>Список апартаментов</h2>
+<h2>{% trans 'Список апартаментов' %}</h2>
 
 {% if apartments %}
     <ul class="apartment-list">
         {% for apartment in apartments %}
             <li>
                 <h3>{{ apartment.name }}</h3>
-                <p><strong>Описание:</strong> {{ apartment.description }}</p>
-                <p><strong>Цена за ночь:</strong> {{ apartment.price_per_night }} €</p>
-                <p><strong>Максимальное количество гостей:</strong> {{ apartment.max_guests }}</p>
-                <a href="{% url 'booking_form' apartment.id %}" class="booking-link">Забронировать</a>
+                <p><strong>{% trans 'Описание' %}:</strong> {{ apartment.description }}</p>
+                <p><strong>{% trans 'Цена за ночь' %}:</strong> {{ apartment.price_per_night }} €</p>
+                <p><strong>{% trans 'Максимальное количество гостей' %}:</strong> {{ apartment.max_guests }}</p>
+                <a href="{% url 'booking_form' apartment.id %}" class="booking-link">{% trans 'Забронировать' %}</a>
             </li>
-            <hr>
+            <!--<hr>-->
         {% endfor %}
     </ul>
 {% else %}
-    <p>В данный момент апартаменты недоступны.</p>
+    <p>{% trans 'В данный момент апартаменты недоступны.' %}</p>
 {% endif %}
 {% endblock %}

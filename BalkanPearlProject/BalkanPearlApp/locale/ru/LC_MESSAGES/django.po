@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: BalkanPearl-1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-01-27 21:50+0300\n"
+"POT-Creation-Date: 2025-01-27 22:12+0300\n"
 "PO-Revision-Date: 2025-01-27 20:00+0300\n"
 "Last-Translator: Andrey Derevyanko <twinpower1973@gmail.com>\n"
 "Language-Team: Ru <twinpower1973@gmail.com>\n"
@@ -331,32 +331,54 @@ msgstr "Записи в блоге"
 msgid "No description"
 msgstr "Без описания"
 
-#: .\BalkanPearlApp\templates\archive\base1.html:22
-msgid "Отдых у моря и гор Черногории"
-msgstr "Отдых у моря и гор Черногории"
+#: .\BalkanPearlApp\templates\apartments_list.html:4
+msgid "Апартаменты - Balkan Pearl"
+msgstr "Апартаменты - Balkan Pearl"
 
-#: .\BalkanPearlApp\templates\archive\base1.html:24
-#: .\BalkanPearlApp\templates\base.html:19
-msgid "Главная"
-msgstr "Главная"
-
-#: .\BalkanPearlApp\templates\archive\base1.html:25
+#: .\BalkanPearlApp\templates\apartments_list.html:7
 #: .\BalkanPearlApp\templates\base.html:20
 msgid "Апартаменты"
 msgstr "Апартаменты"
 
-#: .\BalkanPearlApp\templates\archive\base1.html:26
+#: .\BalkanPearlApp\templates\booking_form.html:8
+#: .\BalkanPearlApp\templates\apartments_list.html:14
+#: .\BalkanPearlApp\templates\home.html:9
+msgid "Описание отеля"
+msgstr "Описание отеля"
+
+#: .\BalkanPearlApp\templates\apartments_list.html:15
+msgid "Цена за ночь"
+msgstr "Цена за ночь"
+
+#: .\BalkanPearlApp\templates\apartments_list.html:16
+msgid "Максимальное количество гостей"
+msgstr "Максимальное количество гостей"
+
+#: .\BalkanPearlApp\templates\apartments_list.html:17
+msgid "Забронировать"
+msgstr "Забронировать"
+
 #: .\BalkanPearlApp\templates\base.html:21
+#: .\BalkanPearlApp\templates\booking_form.html:4
+#: .\BalkanPearlApp\templates\booking_form.html:7
 msgid "Бронирование"
 msgstr "Бронирование"
 
-#: .\BalkanPearlApp\templates\archive\base1.html:27
+#: .\BalkanPearlApp\templates\apartments_list.html:23
+msgid "В данный момент апартаменты недоступны."
+msgstr "В данный момент апартаменты недоступны."
+
+#: .\BalkanPearlApp\templates\base.html:19
+msgid "Главная"
+msgstr "Главная"
+
 #: .\BalkanPearlApp\templates\base.html:22
+#: .\BalkanPearlApp\templates\reviews.html:7
 msgid "Отзывы"
 msgstr "Отзывы"
 
-#: .\BalkanPearlApp\templates\archive\base1.html:28
 #: .\BalkanPearlApp\templates\base.html:23
+#: .\BalkanPearlApp\templates\blog_home.html:11
 msgid "Блог"
 msgstr "Блог"
 
@@ -384,13 +406,29 @@ msgstr "Черногорский"
 msgid "2025 Balkan Pearl. All rights reserved."
 msgstr "2025 Balkan Pearl. Все права защищены."
 
+#: .\BalkanPearlApp\templates\blog_home.html:4
+msgid "Блог - Balkan Pearl"
+msgstr "Блог - Balkan Pearl"
+
+#: .\BalkanPearlApp\templates\blog_home.html:20
+msgid "Пока записей в блоге нет."
+msgstr "Пока записей в блоге нет."
+
+#: .\BalkanPearlApp\templates\booking_form.html:9
+msgid "Цена за ночь:"
+msgstr "Цена за ночь:"
+
+#: .\BalkanPearlApp\templates\booking_form.html:13
+msgid "Дата заезда"
+msgstr "Дата заезда"
+
+#: .\BalkanPearlApp\templates\booking_form.html:15
+msgid "Дата выезда:"
+msgstr "Дата выезда:"
+
 #: .\BalkanPearlApp\templates\home.html:3
 msgid "Главная - Balkan Pearl"
 msgstr "Главная - Balkan Pearl"
-
-#: .\BalkanPearlApp\templates\home.html:9
-msgid "Описание отеля"
-msgstr "Описание отеля"
 
 #: .\BalkanPearlApp\templates\home.html:13
 msgid "Контакты"
@@ -420,3 +458,15 @@ msgstr "Карта расположения отеля"
 #: .\BalkanPearlApp\templates\home.html:51
 msgid "Открыть в Google Картах"
 msgstr "Открыть в Google Картах"
+
+#: .\BalkanPearlApp\templates\reviews.html:4
+msgid "Отзывы - Balkan Pearl"
+msgstr "Отзывы - Balkan Pearl"
+
+#: .\BalkanPearlApp\templates\reviews.html:14
+msgid "Оценка:"
+msgstr "Оценка"
+
+#: .\BalkanPearlApp\templates\reviews.html:19
+msgid "Пока отзывов нет."
+msgstr "Пока отзывов нет."
