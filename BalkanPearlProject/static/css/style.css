@@ -73,13 +73,19 @@ footer {
     flex-wrap: nowrap;
     height: calc(100vh - 120px);
     width: 100%;
+    position: relative;
+    /*background: rgba(0, 0, 0, 0.5);*/ /* Затемнение для лучшей читаемости текста */
 }
 
 .description {
+    background-color: transparent; /* Убираем белый фон */
     flex: 1;
     padding: 20px;
     overflow-y: auto;
-    background-color: #f9f9f9;
+    border-radius: 10px;
+    position: relative; /* Для корректного позиционирования */
+    z-index: 1; /* Поднимаем контент над фоном */
+    background-color: rgba(255, 255, 255, 0.8); /*Можно убрать строчку, чтобы не было белого фона вообще*/
 }
 
 .map-carousel-section {
