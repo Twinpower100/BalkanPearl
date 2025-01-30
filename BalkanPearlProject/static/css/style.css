@@ -33,7 +33,7 @@ main.content-wrapper {
     z-index: -1; /* Фон находится позади остальных элементов */
     background-size: cover;
     background-position: center;
-    opacity: 0.3; /* Прозрачность фона */
+    opacity: 0.5; /* Прозрачность фона */
 }
 
 /* Общие стили */
@@ -92,7 +92,7 @@ footer {
     width: 100%;
     position: relative;
     /*flex-grow: 1;*/ /* Позволяет элементу растягиваться */
-    /*background: rgba(0, 0, 0, 0.5);*/ /* Затемнение для лучшей читаемости текста */
+    /*background: rgba(0, 0, 0, 0.5) !important;*/ /* Затемнение для лучшей читаемости текста */
 }
 
 .description {
@@ -103,7 +103,7 @@ footer {
     border-radius: 10px;
     position: relative; /* Для корректного позиционирования */
     z-index: 1; /* Поднимаем контент над фоном */
-    background-color: rgba(255, 255, 255, 0.8); /*Можно убрать строчку, чтобы не было белого фона вообще*/
+    background-color: rgba(255, 255, 255, 0.5) !important; /*Можно убрать строчку, чтобы не было белого фона вообще*/
 }
 
 .apartment-list {
@@ -123,7 +123,7 @@ footer {
     border-radius: 10px;
     position: relative; /* Для корректного позиционирования */
     z-index: 1; /* Поднимаем контент над фоном */
-    background-color: rgba(255, 255, 255, 0.8); /*Можно убрать строчку, чтобы не было белого фона вообще*/
+    background-color: rgba(255, 255, 255, 0.6) !important; /*Можно убрать строчку, чтобы не было белого фона вообще*/
 }
 
 .map-carousel-section {

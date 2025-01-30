@@ -25,11 +25,9 @@
                     <div class="carousel" data-carousel-id="{{ forloop.counter }}">
                         <button class="prev">&laquo;</button>
                         {% if item.apartment_photos %}
-                            {% for photo in item.apartment_photos %}
-                                <img src="{{ photo.photo.url }}"
-                                     alt="{% trans 'Фото апартамента' %}"
-                                     style="max-width: 100%; height: 300px; object-fit: cover; {% if not forloop.first %}display: none;{% endif %}">
-                            {% endfor %}
+                            <img src="{{ item.apartment_photos.0.photo.url }}"
+                                 alt="{% trans 'Фото апартамента' %}"
+                                 style="max-width: 100%; height: 300px; object-fit: cover;">
                         {% endif %}
                         <button class="next">&raquo;</button>
                     </div>
@@ -56,24 +54,18 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
-        // Инициализация только если есть фото
-        if (images.length > 0) {
-            showImage(0);
+        prevBtn.addEventListener('click', () => {
+            currentIndex = (currentIndex - 1 + images.length) % images.length;
+            showImage(currentIndex);
+        });
 
-            prevBtn.addEventListener('click', () => {
-                currentIndex = (currentIndex - 1 + images.length) % images.length;
-                showImage(currentIndex);
-            });
+        nextBtn.addEventListener('click', () => {
+            currentIndex = (currentIndex + 1) % images.length;
+            showImage(currentIndex);
+        });
 
-            nextBtn.addEventListener('click', () => {
-                currentIndex = (currentIndex + 1) % images.length;
-                showImage(currentIndex);
-            });
-        } else {
-            // Скрываем кнопки если нет фото
-            prevBtn.style.display = 'none';
-            nextBtn.style.display = 'none';
-        }
+        // Инициализация
+        showImage(0);
     });
 });
 </script>
