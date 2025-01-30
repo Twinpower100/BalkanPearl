@@ -42,6 +42,12 @@ INSTALLED_APPS = [
     'BalkanPearlApp',
     'phonenumber_field',
     'phonenumbers',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.facebook',
+    'allauth.socialaccount.providers.microsoft',
 ]
 INSTALLED_APPS += ['modeltranslation']
 
@@ -54,6 +60,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
 ]
 
 LANGUAGES = [
@@ -155,3 +162,28 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'  # Используем Path вместо
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'  # Используем Path вместо os.path.join
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+)
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'APP': {
+            'client_id': 'ваш_google_client_id',
+            'secret': 'ваш_google_secret',
+        }
+    },
+    'facebook': {
+        'APP': {
+            'client_id': 'ваш_facebook_app_id',
+            'secret': 'ваш_facebook_secret',
+        }
+    },
+    'microsoft': {
+        'APP': {
+            'client_id': 'ваш_microsoft_client_id',
+            'secret': 'ваш_microsoft_secret',
+        }
+    }
+}

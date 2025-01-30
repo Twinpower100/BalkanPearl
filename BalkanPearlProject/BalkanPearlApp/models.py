@@ -150,6 +150,14 @@ class Apartment(models.Model):
                 total_price += overlapping_days.days * self.base_price_per_night * season.price_multiplier
         return total_price
 
+    def is_available(self, check_in, check_out):
+        overlapping_bookings = self.booking.filter(
+            models.Q(check_in__lt=check_out) &
+            models.Q(check_out__gt=check_in) &
+            ~models.Q(status__in=['cancelled_by_user', 'cancelled_by_admin'])
+        )
+        return not overlapping_bookings.exists()
+
     def __str__(self):
         return f"{self.number} {self.hotel.name} {self.type} {self.floor} {self.base_price_per_night}"
 

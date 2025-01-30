@@ -77,6 +77,11 @@ class BookingAdmin(admin.ModelAdmin):
     list_display = ('id', 'apartment', 'user', 'check_in', 'check_out', 'status', 'is_paid')
     list_filter = ('status', 'is_paid')
     search_fields = ('apartment__number', 'user__username', 'status')
+    actions = ['cancel_booking']
+
+    def cancel_booking(self, request, queryset):
+        queryset.update(status='cancelled_by_admin')
+    cancel_booking.short_description = "Отменить выбранные брони"
 
 
 @admin.register(BookingLog)
