@@ -1,19 +1,48 @@
 <!-- booking_form.html -->
 {% extends 'base.html' %}
 {% load i18n %}
-{% block title %}{% trans 'Бронирование' %}{{ apartment.name }}{% endblock %}
 
 {% block content %}
-<h2>{% trans 'Бронирование' %}"{{ apartment.name }}"</h2>
-<p>{% trans 'Описание:' %} {{ apartment.description }}</p>
-<p>{% trans 'Цена за ночь:' %} {{ apartment.price_per_night }} €</p>
+<div class="booking-container">
+    {% if user.is_authenticated %}
+        <h2>{% trans 'Бронирование апартамента' %} №{{ apartment.number }}</h2>
+        <form id="bookingForm" method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label>{% trans 'Дата заезда' %}:</label>
+                <input type="date" id="check_in" name="check_in" required>
+            </div>
+            <div class="form-group">
+                <label>{% trans 'Дата выезда' %}:</label>
+                <input type="date" id="check_out" name="check_out" required>
+            </div>
+            <div id="priceDisplay"></div>
+            <button type="submit">{% trans 'Забронировать' %}</button>
+        </form>
+    {% else %}
+        <div class="auth-required">
+            <p>{% trans 'Для бронирования войдите или зарегистрируйтесь' %}</p>
+            <a href="{% url 'account_login' %}">{% trans 'Войти' %}</a>
+            <a href="{% url 'account_signup' %}">{% trans 'Регистрация' %}</a>
+        </div>
+    {% endif %}
+</div>
 
-<form method="post">
-    {% csrf_token %}
-    <label for="checkin_date">{% trans 'Дата заезда' %}:</label>
-    <input type="date" id="checkin_date" name="checkin_date" required>
-    <label for="checkout_date">{% trans 'Дата выезда:' %}</label>
-    <input type="date" id="checkout_date" name="checkout_date" required>
-    <button type="submit">{% trans 'Забронировать' %}</button>
-</form>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('bookingForm');
+    const checkIn = document.getElementById('check_in');
+    const checkOut = document.getElementById('check_out');
+    const priceDisplay = document.getElementById('priceDisplay');
+
+    async function calculatePrice() {
+        const response = await fetch(`/booking/calculate-price/{{ apartment.id }}/?check_in=${checkIn.value}&check_out=${checkOut.value}`);
+        const data = await response.json();
+        priceDisplay.innerHTML = `{% trans 'Стоимость' %}: ${data.price} €`;
+    }
+
+    checkIn.addEventListener('change', calculatePrice);
+    checkOut.addEventListener('change', calculatePrice);
+});
+</script>
 {% endblock %}

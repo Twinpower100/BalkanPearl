@@ -33,7 +33,7 @@ main.content-wrapper {
     z-index: -1; /* Фон находится позади остальных элементов */
     background-size: cover;
     background-position: center;
-    opacity: 0.5; /* Прозрачность фона */
+    opacity: 0.6; /* Прозрачность фона */
 }
 
 /* Общие стили */
