@@ -64,8 +64,8 @@ class HotelPhoto(models.Model):
     uploaded_at = models.DateTimeField(auto_now_add=True, verbose_name=_('Upload date'))
 
     class Meta:
-        verbose_name = _('Photo')
-        verbose_name_plural = _('Photos')
+        verbose_name = _('Hotel photo')
+        verbose_name_plural = _('Hotel photos')
 
     def __str__(self):
         return f'Photo {self.hotel} {self.photo}'
@@ -183,8 +183,8 @@ class ApartmentPhoto(models.Model):
     uploaded_at = models.DateTimeField(auto_now_add=True, verbose_name=_('Upload date'))
 
     class Meta:
-        verbose_name = _('Photo')
-        verbose_name_plural = _('Photos')
+        verbose_name = _('Apartment photo')
+        verbose_name_plural = _('Apartment photos')
 
     def __str__(self):
         return f'Photo {self.apartment} {self.photo}'

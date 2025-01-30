@@ -1,8 +1,9 @@
+from datetime import datetime, timedelta
+
 from django.shortcuts import render, get_object_or_404
 from decimal import Decimal
 from decouple import config  # Добавляем импорт config
-from .models import Hotel, Apartment, Review, BlogPost, SiteImage, HotelPhoto
-
+from .models import Hotel, Apartment, Review, BlogPost, SiteImage, HotelPhoto, ApartmentPhoto
 
 """Делаем по запросу поиска"""
 def home(request):
@@ -20,8 +21,17 @@ def home(request):
 
 def apartments_list(request):
     apartments = Apartment.objects.all()  # Получение всех апартаментов
+    apartments_with_photos = []
+    for apartment in apartments:
+        apartments_with_photos.append(
+            {
+                'apartment': apartment,
+                'apartment_photos': ApartmentPhoto.objects.filter(apartment=apartment)
+            }
+        )
+
     context = {
-        'apartments': apartments,
+        'apartments_with_photos': apartments_with_photos
     }
     return render(request, 'apartments_list.html', context)
 

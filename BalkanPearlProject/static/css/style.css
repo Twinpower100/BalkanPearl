@@ -14,7 +14,7 @@ body, html {
 main {
     display: flex;
     flex-direction: column;
-    height: auto; /* Вместо min-height: 100vh */
+    height: 50v; /* Вместо min-height: 100vh */
 }
 
 main.content-wrapper {
@@ -106,6 +106,26 @@ footer {
     background-color: rgba(255, 255, 255, 0.8); /*Можно убрать строчку, чтобы не было белого фона вообще*/
 }
 
+.apartment-list {
+    list-style: none;
+    padding: 0;
+    width: 100%;
+}
+
+.apartment-list li {
+    display: flex;
+    gap: 20px;
+    background-color: transparent; /* Убираем белый фон */
+    margin-bottom: 40px;
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    border-radius: 10px;
+    position: relative; /* Для корректного позиционирования */
+    z-index: 1; /* Поднимаем контент над фоном */
+    background-color: rgba(255, 255, 255, 0.8); /*Можно убрать строчку, чтобы не было белого фона вообще*/
+}
+
 .map-carousel-section {
     flex: 2;
     display: flex;
@@ -114,8 +134,11 @@ footer {
 }
 
 .carousel-container {
-    flex: 1;
+    flex: 2;
     margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .map-container {
@@ -127,12 +150,16 @@ footer {
 .carousel {
     position: relative;
     text-align: center;
+    width: 100%;
+    max-width: 600px;
 }
 
 .carousel img {
     max-width: 100%;
     max-height: 300px;
     margin: 0 auto;
+    object-fit: cover;
+    border-radius: 8px;
 }
 
 .carousel button {
@@ -142,17 +169,18 @@ footer {
     background-color: rgba(0, 0, 0, 0.5);
     color: white;
     border: none;
-    padding: 10px;
+    padding: 10px 15px;
     cursor: pointer;
     font-size: 1.2rem;
+    z-index: 10;
 }
 
 .carousel button.prev {
-    left: 0;
+    left: 10px;
 }
 
 .carousel button.next {
-    right: 0;
+    right: 10px;
 }
 
 .carousel button:hover {
