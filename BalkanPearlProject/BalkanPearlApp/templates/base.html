@@ -14,14 +14,41 @@
         <div class="background-image" style="background-image: url('{{ site_image.image.url }}');"></div>
     {% endif %}
     <header class="content-wrapper">
-        <h1>{% trans "Balkan Pearl: Отдых у моря и гор Черногории" %}</h1>
+        <h1>{% trans "Balkan Pearl: Отдых у моря и гор Черногории" %} </h1>
         <nav class="full-width-nav">
             <a href="{% url 'home' %}">{% trans "Главная" %}</a>
             <a href="{% url 'apartments_list' %}">{% trans "Апартаменты" %}</a>
             <a href="{% url 'booking_form' 1 %}">{% trans "Бронирование" %}</a>
             <a href="{% url 'reviews' %}">{% trans "Отзывы" %}</a>
             <a href="{% url 'blog_home' %}">{% trans "Блог" %}</a>
+
         </nav>
+        <h3 style="text-align: right">{% trans 'Свяжитесь с нами' %}</h3>
+            <div class="messenger-icons" style="align: right">
+                <a href="https://wa.me/{{ hotel.contact_phone|cut:'+' }}" target="_blank" title="WhatsApp">
+                    <img src="{% static 'images/whatsapp-icon.svg' %}" alt="WhatsApp" class="icon">
+                </a>
+                <a href="viber://chat?number={{ hotel.contact_phone|cut:'+' }}" target="_blank" title="Viber">
+                    <img src="{% static 'images/viber-icon.svg' %}" alt="Viber" class="icon">
+                </a>
+                <a href="https://t.me/{{ hotel.contact_phone }}" target="_blank" title="Telegram">
+                    <img src="{% static 'images/telegram-icon.svg' %}" alt="Telegram" class="icon">
+                </a>
+
+            </div>
+            <div class="social-media-icons" style="display: flex; gap: 10px; margin-top: 10px;">
+                {% if hotel.facebook_link %}
+                <a href="{{ hotel.facebook_link }}" target="_blank" title="Facebook">
+                    <img src="{% static 'images/facebook-icon.svg' %}" alt="Facebook" class="icon">
+                </a>
+                {% endif %}
+                {% if hotel.instagram_link %}
+                <a href="{{ hotel.instagram_link }}" target="_blank" title="Instagram">
+                    <img src="{% static 'images/instagram-icon.svg' %}" alt="Instagram" class="icon">
+                </a>
+                {% endif %}
+            </div>
+
       <div style="text-align: right; padding: 5px;">
             <form method="post" action="{% url 'set_language' %}">
                 {% csrf_token %}

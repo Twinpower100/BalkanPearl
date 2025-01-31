@@ -9,6 +9,8 @@ from decimal import Decimal
 from decouple import config  # Добавляем импорт config
 from .models import Hotel, Apartment, Review, BlogPost, SiteImage, HotelPhoto, ApartmentPhoto, Booking
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_POST
 
 """Делаем по запросу поиска"""
@@ -26,13 +28,15 @@ def home(request):
     })
 
 def apartments_list(request):
+    hotel = Hotel.objects.first()
     apartments = Apartment.objects.all()  # Получение всех апартаментов
     apartments_with_photos = []
     for apartment in apartments:
         apartments_with_photos.append(
             {
                 'apartment': apartment,
-                'apartment_photos': ApartmentPhoto.objects.filter(apartment=apartment)
+                'apartment_photos': ApartmentPhoto.objects.filter(apartment=apartment),
+                'hotel': hotel,
             }
         )
 
@@ -79,23 +83,32 @@ def blog_home(request):
 
 
 @login_required
-def create_booking(request, apartment_id):
-    apartment = get_object_or_404(Apartment, id=apartment_id)
+def create_booking(request):
     if request.method == 'POST':
+        apartment_id = request.POST.get('apartment_id')
         check_in = request.POST.get('check_in')
         check_out = request.POST.get('check_out')
 
-        if apartment.is_available(check_in, check_out):
-            booking = Booking.objects.create(
-                apartment=apartment,
+        apartment = get_object_or_404(Apartment, id=apartment_id)
+
+        try:
+            if not apartment.is_available(check_in, check_out):
+                messages.error(request, _("Апартамент занят на выбранные даты"))
+                return redirect('booking_form', apartment_id=apartment_id)
+
+            Booking.objects.create(
                 user=request.user,
+                apartment=apartment,
                 check_in=check_in,
                 check_out=check_out
             )
-            return redirect('payment_page', booking_id=booking.id)
-        else:
-            return JsonResponse({'error': 'Апартамент занят'}, status=400)
+            messages.success(request, _("Бронирование успешно создано!"))
+            return redirect('profile')
 
+        except Exception as e:
+            messages.error(request, _("Ошибка: ") + str(e))
+
+    return redirect('home')
 class BookingView(LoginRequiredMixin, FormView):
     login_url = '/accounts/login/'
     template_name = 'booking_form.html'

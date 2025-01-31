@@ -5,6 +5,7 @@ from django.db.models import CASCADE
 from phonenumber_field.modelfields import PhoneNumberField
 from django.contrib.auth.models import User
 from django.utils.translation import gettext_lazy as _
+from django.conf import settings
 
 
 # Create your models here.
@@ -142,12 +143,18 @@ class Apartment(models.Model):
         if nights <= 0:
             raise ValueError("Дата выезда должна быть позже даты заезда.")
 
-        seasons = Season.objects.filter(start_date__lte=check_out, end_date__gte=check_in)
         total_price = 0
+        seasons = Season.objects.filter(
+            start_date__lte=check_out,
+            end_date__gte=check_in
+        )
+
         for season in seasons:
             overlapping_days = min(season.end_date, check_out) - max(season.start_date, check_in)
             if overlapping_days.days > 0:
                 total_price += overlapping_days.days * self.base_price_per_night * season.price_multiplier
+            if total_price == 0:
+                total_price = (check_out - check_in).days * self.base_price_per_night
         return total_price
 
     def is_available(self, check_in, check_out):

@@ -2,6 +2,7 @@ from django.contrib import admin
 from BalkanPearlApp.models import Hotel, Address, HotelPhoto, WindowView, ApartmentType, Apartment, Season, \
     ApartmentPhoto, Booking, BookingLog, Review, BlogPost, SiteImage
 from django import forms
+from django.utils.translation import gettext_lazy as _
 from decimal import Decimal
 
 
@@ -81,7 +82,7 @@ class BookingAdmin(admin.ModelAdmin):
 
     def cancel_booking(self, request, queryset):
         queryset.update(status='cancelled_by_admin')
-    cancel_booking.short_description = "Отменить выбранные брони"
+    cancel_booking.short_description = _("Отменить выбранные бронирования")
 
 
 @admin.register(BookingLog)
