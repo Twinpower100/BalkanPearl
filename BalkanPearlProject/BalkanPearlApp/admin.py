@@ -1,6 +1,8 @@
 from django.contrib import admin
+
+#from BalkanPearlApp.forms import BookingAdminForm
 from BalkanPearlApp.models import Hotel, Address, HotelPhoto, WindowView, ApartmentType, Apartment, Season, \
-    ApartmentPhoto, Booking, BookingLog, Review, BlogPost, SiteImage
+    ApartmentPhoto, Booking, BookingLog, Review, BlogPost, SiteImage, Payment
 from django import forms
 from django.utils.translation import gettext_lazy as _
 from decimal import Decimal
@@ -12,22 +14,12 @@ from decimal import Decimal
 class AddressAdmin(admin.ModelAdmin):
     list_display = ('street', 'city', 'state', 'postal_code', 'country')
 
+
 class HotelAdminForm(forms.ModelForm):
     class Meta:
         model = Hotel
         fields = '__all__'
 
-    # def clean_latitude(self):
-    #     latitude = self.cleaned_data.get('latitude')
-    #     if isinstance(latitude, str):
-    #         latitude = latitude.replace(',', '.')
-    #     return Decimal(latitude)
-    #
-    # def clean_longitude(self):
-    #     longitude = self.cleaned_data.get('longitude')
-    #     if isinstance(longitude, str):
-    #         longitude = longitude.replace(',', '.')
-    #     return Decimal(longitude)
 
 @admin.register(Hotel)
 class HotelAdmin(admin.ModelAdmin):
@@ -73,16 +65,41 @@ class ApartmentPhotoAdmin(admin.ModelAdmin):
     list_display = ('apartment', 'photo', 'description', 'uploaded_at')
 
 
+@admin.register(Payment)
+class PaymentAdmin(admin.ModelAdmin):
+    list_display = ['id', 'booking', 'payment_value', 'payment_method', 'payment_date', 'note']
+    list_filter = ['payment_method', 'payment_date']
+
+
 @admin.register(Booking)
 class BookingAdmin(admin.ModelAdmin):
-    list_display = ('id', 'apartment', 'user', 'check_in', 'check_out', 'status', 'is_paid')
-    list_filter = ('status', 'is_paid')
+    #form = BookingAdminForm
+    list_display = ('id', 'apartment__number', 'user', 'check_in', 'check_out', 'status', 'total_value', 'debt_display',
+                    'created_at')
+    list_filter = ('status', 'apartment', 'user')
     search_fields = ('apartment__number', 'user__username', 'status')
+    readonly_fields = ('created_at', 'debt_display', 'total_value')
     actions = ['cancel_booking']
 
     def cancel_booking(self, request, queryset):
-        queryset.update(status='cancelled_by_admin')
+        """Эта функция — кастомное действие (admin action) в Django Admin.
+        Она позволяет администратору отменять выбранные бронирования через панель
+        управления."""
+
+        """self — текущий экземпляр класса BookingAdmin (наследник admin.ModelAdmin).
+            request — объект запроса HTTP (от Django Admin).
+            queryset — набор объектов Booking, выбранных администратором."""
+        cancelled = queryset.exclude(status='cancelled')
+
+        for booking in cancelled:
+            booking.cancel_booking(cancelled_by='admin')
+        self.message_user(request, _("Выбранные бронирования отменены."))
+
     cancel_booking.short_description = _("Отменить выбранные бронирования")
+
+    @admin.display(description=_('Задолженность'))
+    def debt_display(self, obj):
+        return obj.debt
 
 
 @admin.register(BookingLog)

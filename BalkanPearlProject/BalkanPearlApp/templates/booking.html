@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block content %}
+<div class="booking-details">
+    <h2>{% trans 'Детали бронирования' %}</h2>
+    <p>{% trans 'Апартамент' %}: {{ booking.apartment.number }}</p>
+    <p>{% trans 'Дата заезда' %}: {{ booking.check_in }}</p>
+    <p>{% trans 'Дата выезда' %}: {{ booking.check_out }}</p>
+    <p>{% trans 'Статус' %}: {{ booking.get_status_display }}</p>
+    
+    <!-- Кнопка отмены -->
+    {% if booking.status == 'confirmed' %}
+        <form method="post" action="{% url 'cancel_booking' booking.id %}">
+            {% csrf_token %}
+            <button type="submit" class="cancel-button">{% trans 'Отменить бронирование' %}</button>
+        </form>
+    {% endif %}
+</div>
+{% endblock %}

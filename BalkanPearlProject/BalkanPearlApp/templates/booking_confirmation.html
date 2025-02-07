@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block content %}
+<div class="booking-confirmation">
+    <h2>{% trans "Бронирование подтверждено!" %}</h2>
+    <p>{% trans "Номер вашей брони:" %} {{ booking.id }}</p>
+</div>
+{% endblock %}

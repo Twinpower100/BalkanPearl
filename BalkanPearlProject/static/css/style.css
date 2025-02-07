@@ -227,3 +227,14 @@ footer {
     transform: scale(1.2);
 }
 
+.social-icon {
+    width: 24px;   /* Уменьшили с 32px до 24px */
+    height: 24px;  /* Уменьшили с 32px до 24px */
+    margin: 0 3px; /* Опционально: уменьшили отступы */
+    transition: opacity 0.3s;
+}
+
+.social-icon:hover {
+    opacity: 0.7;
+}
+

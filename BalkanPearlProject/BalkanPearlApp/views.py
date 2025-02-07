@@ -1,10 +1,11 @@
 from datetime import datetime, timedelta
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.exceptions import ValidationError
 from django.views.generic import FormView
 from allauth.core.internal.httpkit import redirect
 from django.http import JsonResponse
 from django.utils import timezone
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from decimal import Decimal
 from decouple import config  # Добавляем импорт config
 from .models import Hotel, Apartment, Review, BlogPost, SiteImage, HotelPhoto, ApartmentPhoto, Booking
@@ -14,6 +15,8 @@ from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_POST
 
 """Делаем по запросу поиска"""
+
+
 def home(request):
     hotel = Hotel.objects.first()  # Выберите отель
     search_query = f"{hotel.name}, {hotel.address}" if hotel else "Unknown location"
@@ -26,6 +29,7 @@ def home(request):
         'site_image': site_image,
         'hotel_photos': hotel_photos,
     })
+
 
 def apartments_list(request):
     hotel = Hotel.objects.first()
@@ -59,12 +63,27 @@ def calculate_price(request, apartment_id):
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=400)
 
+
 def booking_form(request, apartment_id):
     apartment = get_object_or_404(Apartment, id=apartment_id)
+    error = None
+
+    if request.method == "POST":
+        try:
+            price = apartment.calculate_price(
+                request.POST.get("check_in"),
+                request.POST.get("check_out")
+            )
+        except ValidationError as e:
+            error = e.message
+
     context = {
-        'apartment': apartment,
+        "apartment": apartment,
+        "error": error,
+        # ... остальные данные ...
     }
-    return render(request, 'booking_form.html', context)
+    return render(request, "booking_form.html", context)
+
 
 def reviews(request):
     reviews_list = Review.objects.all()  # Получите список отзывов из базы данных
@@ -72,6 +91,7 @@ def reviews(request):
         'reviews': reviews_list,
     }
     return render(request, 'reviews.html', context)
+
 
 def blog_home(request):
     # Если есть модель блога, замените пустой список на запрос к базе
@@ -83,35 +103,77 @@ def blog_home(request):
 
 
 @login_required
+def profile(request):
+    return render(request, 'profile.html')
+
+
+@login_required
 def create_booking(request):
     if request.method == 'POST':
         apartment_id = request.POST.get('apartment_id')
         check_in = request.POST.get('check_in')
         check_out = request.POST.get('check_out')
 
-        apartment = get_object_or_404(Apartment, id=apartment_id)
-
         try:
-            if not apartment.is_available(check_in, check_out):
+            # Проверка обязательных полей
+            if not all([apartment_id, check_in, check_out]):
+                raise ValueError(_("Не все обязательные поля заполнены"))
+
+            apartment = get_object_or_404(Apartment, id=apartment_id)
+
+            # Парсинг дат
+            check_in_date = timezone.datetime.strptime(check_in, '%Y-%m-%d').date()
+            check_out_date = timezone.datetime.strptime(check_out, '%Y-%m-%d').date()
+
+            # Валидация дат
+            if check_in_date >= check_out_date:
+                raise ValueError(_("Дата выезда должна быть позже даты заезда"))
+
+            if check_in_date < timezone.now().date():
+                raise ValueError(_("Дата заезда не может быть в прошлом"))
+
+            # Проверка доступности
+            if not apartment.is_available(check_in_date, check_out_date):
                 messages.error(request, _("Апартамент занят на выбранные даты"))
                 return redirect('booking_form', apartment_id=apartment_id)
 
-            Booking.objects.create(
+            # Создание бронирования
+            new_booking = Booking.objects.create(
                 user=request.user,
                 apartment=apartment,
-                check_in=check_in,
-                check_out=check_out
+                check_in=check_in_date,
+                check_out=check_out_date
             )
-            messages.success(request, _("Бронирование успешно создано!"))
-            return redirect('profile')
 
-        except Exception as e:
-            messages.error(request, _("Ошибка: ") + str(e))
+            messages.success(request, _("Бронирование успешно создано!"))
+            return redirect('booking_details', booking_id=new_booking.id)  # Перенаправление на детали
+
+        except ValueError as e:  # Ловим ошибки валидации
+            messages.error(request, str(e))
+        except Exception as e:  # Все остальные ошибки
+            messages.error(request, _("Системная ошибка: ") + str(e))
+            # Логирование ошибки (рекомендуется добавить)
+            # logger.error(f"Booking error: {str(e)}")
 
     return redirect('home')
-class BookingView(LoginRequiredMixin, FormView):
-    login_url = '/accounts/login/'
-    template_name = 'booking_form.html'
+
+
+@login_required
+def booking_details(request, booking_id):
+    booking = get_object_or_404(Booking, id=booking_id, user=request.user)
+    return render(request, 'booking.html', {'booking': booking})
+
+
+@login_required
+@require_POST
+def cancel_booking(request, booking_id):
+    booking = get_object_or_404(Booking, id=booking_id, user=request.user)
+    try:
+        booking.cancel_booking(cancelled_by='user')
+        messages.success(request, _("Бронирование успешно отменено."))
+    except Exception as e:
+        messages.error(request, _("Ошибка: ") + str(e))
+    return redirect('profile')
 
 
 def payment_page(request, booking_id):

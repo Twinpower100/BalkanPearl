@@ -26,9 +26,10 @@ GOOGLE_MAPS_KEY = config('GOOGLE_MAPS_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+SITE_ID = 1
 LOGIN_URL = 'login'  # Путь на страницу входа
 ALLOWED_HOSTS = []
-
+LOGIN_REDIRECT_URL = '/'
 
 # Application definition
 
@@ -46,8 +47,11 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
-    'allauth.socialaccount.providers.facebook',
+    # 'allauth.socialaccount.providers.facebook',
     'allauth.socialaccount.providers.microsoft',
+    'allauth.socialaccount.providers.instagram',
+    'allauth.socialaccount.providers.apple',
+
 ]
 INSTALLED_APPS += ['modeltranslation']
 
@@ -138,9 +142,15 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
-LANGUAGE_CODE = 'en'
+#LANGUAGE_CODE = 'en'
+LANGUAGE_CODE = 'ru-ru'
+USE_I18N = True
+USE_L10N = True
+USE_THOUSAND_SEPARATOR = True
+DECIMAL_SEPARATOR = ','
 
-TIME_ZONE = 'UTC'
+
+TIME_ZONE = 'Europe/Podgorica'
 
 USE_TZ = True
 
@@ -170,20 +180,34 @@ AUTHENTICATION_BACKENDS = (
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
         'APP': {
-            'client_id': 'ваш_google_client_id',
-            'secret': 'ваш_google_secret',
+            'client_id': config('GOOGLE_CLIENT_ID'),
+            'secret': config('GOOGLE_SECRET'),
         }
     },
-    'facebook': {
-        'APP': {
-            'client_id': 'ваш_facebook_app_id',
-            'secret': 'ваш_facebook_secret',
-        }
-    },
-    'microsoft': {
-        'APP': {
-            'client_id': 'ваш_microsoft_client_id',
-            'secret': 'ваш_microsoft_secret',
-        }
-    }
+    # 'facebook': {
+    #     'APP': {
+    #         'client_id': config('FACEBOOK_APP_ID'),
+    #         'secret': config('FACEBOOK_SECRET'),
+    #     }
+    # },
+    # 'microsoft': {
+    #     'APP': {
+    #         'client_id': config('MICROSOFT_CLIENT_ID'),
+    #         'secret': config('MICROSOFT_SECRET'),
+    #     }
+    # },
+    # 'instagram': {
+    #     'APP': {
+    #         'client_id': config('INSTAGRAM_CLIENT_ID'),
+    #         'secret': config('INSTAGRAM_SECRET'),
+    #     }
+    # },
+    # 'apple': {
+    #     'APP': {
+    #         'client_id': config('APPLE_CLIENT_ID'),
+    #         'secret': config('APPLE_SECRET'),
+    #         'key': config('APPLE_KEY'),
+    #         'certificate_key': config('APPLE_CERTIFICATE_KEY'),
+    #     }
+    # }
 }

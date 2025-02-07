@@ -2,6 +2,7 @@
 {% load static %}
 <html lang="en">
 {% load i18n %}
+{% load socialaccount %}
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -23,6 +24,25 @@
             <a href="{% url 'blog_home' %}">{% trans "Блог" %}</a>
 
         </nav>
+        <!-- Аутентификация и регистрация -->
+        <div class="auth-section" style="text-align: right; padding: 10px;">
+            {% if user.is_authenticated %}
+                <p>{% trans "Вы вошли как" %} {{ user.username }}</p>
+                <a href="{% url 'account_logout' %}">{% trans "Выйти" %}</a>
+            {% else %}
+                <a href="{% url 'account_login' %}">{% trans "Войти" %}</a>
+                <span>|</span>
+                <a href="{% url 'account_signup' %}">{% trans "Регистрация" %}</a>
+                <div class="social-auth" style="margin-top: 10px;">
+                    <p>{% trans "Или войти через:" %}</p>
+                    <!-- Кнопки соцсетей -->
+                    <a href="{% provider_login_url 'google' %}">
+                        <img src="{% static 'images/google-icon.svg' %}" alt="Google" class="social-icon" style="width: 24px; height: 24px;">
+                    </a>
+
+                </div>
+            {% endif %}
+        </div>
         <h3 style="text-align: right">{% trans 'Свяжитесь с нами' %}</h3>
             <div class="messenger-icons" style="align: right">
                 <a href="https://wa.me/{{ hotel.contact_phone|cut:'+' }}" target="_blank" title="WhatsApp">
