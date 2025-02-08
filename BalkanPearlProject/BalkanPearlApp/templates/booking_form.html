@@ -6,8 +6,16 @@
 <div class="booking-container">
     {% if user.is_authenticated %}
         <h2>{% trans 'Бронирование апартамента' %} №{{ apartment.number }}</h2>
-        <form id="bookingForm" method="post">
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <div class="message {{ message.tags }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        <form id="bookingForm" method="post" action="{% url 'create_booking' %}">
             {% csrf_token %}
+            <input type="hidden" name="apartment_id" value="{{ apartment.id }}">
             <div class="form-group">
                 <label>{% trans 'Дата заезда' %}:</label>
                 <input type="date" id="check_in" name="check_in" required>

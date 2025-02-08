@@ -1,11 +1,9 @@
 from django.contrib import admin
 
-#from BalkanPearlApp.forms import BookingAdminForm
 from BalkanPearlApp.models import Hotel, Address, HotelPhoto, WindowView, ApartmentType, Apartment, Season, \
     ApartmentPhoto, Booking, BookingLog, Review, BlogPost, SiteImage, Payment
 from django import forms
 from django.utils.translation import gettext_lazy as _
-from decimal import Decimal
 
 
 # Register your models here.
@@ -62,7 +60,7 @@ class SeasonAdmin(admin.ModelAdmin):
 
 @admin.register(ApartmentPhoto)
 class ApartmentPhotoAdmin(admin.ModelAdmin):
-    list_display = ('apartment', 'photo', 'description', 'uploaded_at')
+    list_display = ('apartment__number', 'photo', 'description', 'uploaded_at')
 
 
 @admin.register(Payment)

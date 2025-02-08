@@ -2,24 +2,27 @@
 {% load i18n %}
 
 {% block content %}
-<div class="user-profile">
-    <h2>{% trans 'Мои бронирования' %}</h2>
-    
-    {% for booking in bookings %}
-    <div class="booking-card">
-        <h3>№{{ booking.apartment.number }}</h3>
-        <p>{% trans 'Даты' %}: {{ booking.check_in }} – {{ booking.check_out }}</p>
-        <p>{% trans 'Статус' %}: {{ booking.get_status_display }}</p>
-        
-        {% if booking.can_cancel %}
-        <form method="post" action="{% url 'cancel_booking' booking.id %}">
-            {% csrf_token %}
-            <button type="submit">{% trans 'Отменить' %}</button>
-        </form>
-        {% endif %}
-    </div>
-    {% empty %}
-    <p>{% trans 'У вас нет активных бронирований' %}</p>
-    {% endfor %}
+<div class="profile-container">
+    <h2>{% trans 'Ваши бронирования' %}</h2>
+    {% if user_bookings %}
+        <ul class="booking-list">
+            {% for booking in user_bookings %}
+            <li>
+                <p>{% trans 'Апартамент' %}: {{ booking.apartment.number }}</p>
+                <p>{% trans 'Дата заезда' %}: {{ booking.check_in }}</p>
+                <p>{% trans 'Дата выезда' %}: {{ booking.check_out }}</p>
+                <p>{% trans 'Статус' %}: {{ booking.get_status_display }}</p>
+                {% if booking.status == 'confirmed' %}
+                    <form method="post" action="{% url 'cancel_booking' booking.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="cancel-button">{% trans 'Отменить бронирование' %}</button>
+                    </form>
+                {% endif %}
+            </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>{% trans 'У вас нет бронирований.' %}</p>
+    {% endif %}
 </div>
 {% endblock %}

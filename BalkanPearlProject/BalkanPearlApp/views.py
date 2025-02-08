@@ -1,12 +1,8 @@
-from datetime import datetime, timedelta
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ValidationError
-from django.views.generic import FormView
 from allauth.core.internal.httpkit import redirect
 from django.http import JsonResponse
 from django.utils import timezone
 from django.shortcuts import render, get_object_or_404, redirect
-from decimal import Decimal
 from decouple import config  # Добавляем импорт config
 from .models import Hotel, Apartment, Review, BlogPost, SiteImage, HotelPhoto, ApartmentPhoto, Booking
 from django.contrib.auth.decorators import login_required
@@ -146,22 +142,36 @@ def create_booking(request):
             )
 
             messages.success(request, _("Бронирование успешно создано!"))
-            return redirect('booking_details', booking_id=new_booking.id)  # Перенаправление на детали
+            return redirect('booking_confirmation', booking_id=new_booking.id)
 
-        except ValueError as e:  # Ловим ошибки валидации
+        except ValueError as e:
+            print("ValueError:", str(e))  # Отладочное сообщение
             messages.error(request, str(e))
-        except Exception as e:  # Все остальные ошибки
+            return redirect('booking_form', apartment_id=apartment_id)
+        except Exception as e:
+            print("Exception:", str(e))  # Отладочное сообщение
             messages.error(request, _("Системная ошибка: ") + str(e))
-            # Логирование ошибки (рекомендуется добавить)
-            # logger.error(f"Booking error: {str(e)}")
+            return redirect('booking_form', apartment_id=apartment_id)
 
     return redirect('home')
+
+
+@login_required
+def booking_confirmation(request, booking_id):
+    booking = get_object_or_404(Booking, id=booking_id, user=request.user)
+    return render(request, 'booking_confirmation.html', {'booking': booking})
 
 
 @login_required
 def booking_details(request, booking_id):
     booking = get_object_or_404(Booking, id=booking_id, user=request.user)
     return render(request, 'booking.html', {'booking': booking})
+
+
+@login_required
+def profile(request):
+    user_bookings = Booking.objects.filter(user=request.user).order_by('check_in')
+    return render(request, 'profile.html', {'user_bookings': user_bookings})
 
 
 @login_required

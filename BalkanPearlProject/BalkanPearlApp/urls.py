@@ -11,8 +11,9 @@ urlpatterns = [
     path('booking/<int:apartment_id>/', views.booking_form, name='booking_form'),
     path('booking/calculate-price/<int:apartment_id>/', views.calculate_price, name='calculate_price'),
     path('booking/create/', views.create_booking, name='create_booking'),
-
+    path('booking/confirmation/<int:booking_id>/', views.booking_confirmation, name='booking_confirmation'),  # Перенаправляем на страницу подтверждения
     path('booking/<int:booking_id>/', views.booking_details, name='booking_details'),
+path('booking/cancel/<int:booking_id>/', views.cancel_booking, name='cancel_booking'),
     path('payment/<int:booking_id>/', views.payment_page, name='payment_page'),
     # Аутентификация
     # path('accounts/', include('allauth.urls')),

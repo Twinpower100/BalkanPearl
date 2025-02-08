@@ -22,7 +22,9 @@
             <a href="{% url 'booking_form' 1 %}">{% trans "Бронирование" %}</a>
             <a href="{% url 'reviews' %}">{% trans "Отзывы" %}</a>
             <a href="{% url 'blog_home' %}">{% trans "Блог" %}</a>
-
+            {% if user.is_authenticated %}
+                <a href="{% url 'profile' %}">{% trans "Мои бронирования" %}</a> <!-- Добавлена ссылка на страницу профиля -->
+            {% endif %}
         </nav>
         <!-- Аутентификация и регистрация -->
         <div class="auth-section" style="text-align: right; padding: 10px;">

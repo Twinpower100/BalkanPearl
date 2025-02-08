@@ -2,12 +2,11 @@ from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator
 from django.db import models, transaction
 from decimal import Decimal
-from django.db.models import CASCADE, Sum
+from django.db.models import Sum
 from django.utils import timezone
 from phonenumber_field.modelfields import PhoneNumberField
 from django.contrib.auth.models import User
 from django.utils.translation import gettext_lazy as _
-from django.conf import settings
 
 
 class Address(models.Model):
@@ -291,12 +290,6 @@ class Booking(models.Model):
             self.total_value = self.apartment.calculate_price(self.check_in, self.check_out)
         self.save(update_fields=['total_value'])
 
-    # def save(self, *args, **kwargs):
-    #     if not self.pk or 'check_in' in kwargs.get('update_fields', []) or 'check_out' in kwargs.get('update_fields',
-    #                                                                                                  []):
-    #         self.total_value = self.apartment.calculate_price(self.check_in, self.check_out)
-    #     super().save(*args, **kwargs)
-
     def save(self, *args, **kwargs):
         # Если manual_value задано (не None), то используем его, иначе вычисляем по расчетной логике
         if self.manual_value is not None:
@@ -476,7 +469,7 @@ class ApartmentPhoto(models.Model):
         verbose_name_plural = _('Apartment photos')
 
     def __str__(self):
-        return f'Photo {self.apartment} {self.photo}'
+        return f'Photo {self.apartment.number} {self.photo}'
 
 
 class HotelPhoto(models.Model):
