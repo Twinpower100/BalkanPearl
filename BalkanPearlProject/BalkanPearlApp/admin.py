@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.core.exceptions import ValidationError
 
 from BalkanPearlApp.models import Hotel, Address, HotelPhoto, WindowView, ApartmentType, Apartment, Season, \
     ApartmentPhoto, Booking, BookingLog, Review, BlogPost, SiteImage, Payment, Refund
@@ -68,12 +69,26 @@ class PaymentAdmin(admin.ModelAdmin):
     list_display = ['id', 'booking', 'payment_value', 'payment_method', 'payment_date', 'note']
     list_filter = ['payment_method', 'payment_date']
 
+    def save_model(self, request, obj, form, change):
+        try:
+            obj.save()
+        except ValidationError as e:
+            form.add_error(None, e.message)
+            self.message_user(request, _("Error: %s") % e.message, level='error')
+
 
 @admin.register(Refund)
 class RefundAdmin(admin.ModelAdmin):
     list_display = ('id', 'booking', 'refund_value', 'refund_date', 'note')
     list_filter = ('refund_date', 'booking')
     search_fields = ('booking__id', 'refund_value')
+
+    def save_model(self, request, obj, form, change):
+        try:
+            obj.save()
+        except ValidationError as e:
+            form.add_error(None, e.message)
+            self.message_user(request, _("Error: %s") % e.message, level='error', )
 
 
 @admin.register(Booking)
