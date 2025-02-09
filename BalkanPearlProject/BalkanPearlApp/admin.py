@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from BalkanPearlApp.models import Hotel, Address, HotelPhoto, WindowView, ApartmentType, Apartment, Season, \
-    ApartmentPhoto, Booking, BookingLog, Review, BlogPost, SiteImage, Payment
+    ApartmentPhoto, Booking, BookingLog, Review, BlogPost, SiteImage, Payment, Refund
 from django import forms
 from django.utils.translation import gettext_lazy as _
 
@@ -69,14 +69,21 @@ class PaymentAdmin(admin.ModelAdmin):
     list_filter = ['payment_method', 'payment_date']
 
 
+@admin.register(Refund)
+class RefundAdmin(admin.ModelAdmin):
+    list_display = ('id', 'booking', 'refund_value', 'refund_date', 'note')
+    list_filter = ('refund_date', 'booking')
+    search_fields = ('booking__id', 'refund_value')
+
+
 @admin.register(Booking)
 class BookingAdmin(admin.ModelAdmin):
-    #form = BookingAdminForm
+    # form = BookingAdminForm
     list_display = ('id', 'apartment__number', 'user', 'check_in', 'check_out', 'status', 'total_value',
                     'created_at', 'debt')
     list_filter = ('status', 'apartment', 'user')
     search_fields = ('apartment__number', 'user__username', 'status')
-    readonly_fields = ('created_at',  'total_value', 'debt')
+    readonly_fields = ('created_at', 'total_value', 'debt')
     actions = ['cancel_booking']
 
     def cancel_booking(self, request, queryset):

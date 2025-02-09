@@ -1,5 +1,5 @@
 from django.core.exceptions import ValidationError
-from django.core.validators import MinValueValidator
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models, transaction
 from decimal import Decimal
 from django.db.models import Sum, Q
@@ -270,9 +270,13 @@ class Booking(models.Model):
         """Возвращает сумму всех платежей"""
         return self.payments.aggregate(Sum('payment_value'))['payment_value__sum'] or Decimal(0.00)
 
+    def get_total_refunds(self):
+        """Возвращает сумму всех возвратов платежей"""
+        return self.refunds.aggregate(Sum('refund_value'))['refund_value__sum'] or Decimal(0.00)
+
     def update_debt_value(self):
         """Обновляем поле задолженности после оплаты / отмены бронирования"""
-        self.debt = self.total_value - self.get_total_payments()
+        self.debt = self.total_value - self.get_total_payments() + self.get_total_refunds()
         super().save(update_fields=['debt'])
 
     def cancel_booking(self, cancelled_by, reason=None):
@@ -328,7 +332,7 @@ class Payment(models.Model):
     payment_value = models.DecimalField(verbose_name=_('Payment value'), max_digits=10, decimal_places=2,
                                         validators=[MinValueValidator(Decimal('0.01'))])
     payment_date = models.DateTimeField(auto_now_add=True)
-    note = models.TextField(blank=True)
+    note = models.TextField(verbose_name=_('Note'), blank=True, )
 
     class Meta:
         verbose_name = _('Payment')
@@ -343,6 +347,14 @@ class Payment(models.Model):
             super().save(*args, **kwargs)
             booking.update_debt_value()
 
+    def delete(self, *args, **kwargs):
+        with transaction.atomic():
+            # Блокируем запись бронирования
+            booking = Booking.objects.select_for_update().get(pk=self.booking.pk)
+            super().delete(*args, **kwargs)
+            # Обновляем задолженность после удаления оплаты
+            booking.update_debt_value()
+
     def __str__(self):
         # return \
         #     f"{self.id} - {self.payment_date.strftime('%Y-%m-%d')} - {self.payment_value} - {self.payment_method}"
@@ -351,6 +363,35 @@ class Payment(models.Model):
             value=self.payment_value,
             date=self.payment_date,
             method=self.payment_method,
+        )
+
+
+class Refund(models.Model):
+    booking = models.ForeignKey(Booking, on_delete=models.CASCADE, related_name='refunds', verbose_name=_('Booking'))
+    refund_value = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal(0.00), )
+    refund_date = models.DateField(verbose_name=_('Refund date'), auto_now_add=True)
+    note = models.TextField(verbose_name=_('Note'), blank=True, )
+
+    class Meta:
+        verbose_name = _('Refund')
+        verbose_name_plural = _('Refunds')
+
+    def save(self, *args, **kwargs):
+        with transaction.atomic():
+            booking = Booking.objects.select_for_update().get(pk=self.booking.pk)
+            if booking.debt >= 0:
+                raise ValidationError(_("The hotel doesn't have any debt"))
+            elif self.refund_value > - booking.debt:
+                raise ValidationError(_("Refund exceeds debt!"))
+            else:
+                super().save(*args, **kwargs)
+                booking.update_debt_value()
+
+    def __str__(self):
+        return _("Refund {id} for {value} made {date} ").format(
+            id=self.id,
+            value=self.refund_value,
+            date=self.refund_date
         )
 
 
