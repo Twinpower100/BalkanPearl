@@ -2,7 +2,7 @@ from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator
 from django.db import models, transaction
 from decimal import Decimal
-from django.db.models import Sum
+from django.db.models import Sum, Q
 from django.utils import timezone
 from phonenumber_field.modelfields import PhoneNumberField
 from django.contrib.auth.models import User
@@ -208,52 +208,23 @@ class Apartment(models.Model):
 
 
 class Booking(models.Model):
-    STATUS_CHOICES = [
-        ('confirmed', _('Confirmed')),
-        ('cancelled_by_user', _('Cancelled by User')),
-        ('cancelled_by_admin', _('Cancelled by Admin')),
-    ]
+    STATUS_CHOICES = [('confirmed', _('Confirmed')), ('cancelled_by_user', _('Cancelled by User')),
+                      ('cancelled_by_admin', _('Cancelled by Admin')), ]
 
-    apartment = models.ForeignKey(
-        Apartment,
-        on_delete=models.CASCADE,
-        related_name="bookings",
-        verbose_name=_("Apartment number")
-    )
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="booking", verbose_name=_("User"))
+    apartment = models.ForeignKey(Apartment, on_delete=models.CASCADE, related_name="bookings",
+                                  verbose_name=_("Apartment number"))
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="bookings", verbose_name=_("User"))
     check_in = models.DateField(verbose_name=_('Check in date'))
     check_out = models.DateField(verbose_name=_('Check out date'))
     total_value = models.DecimalField(verbose_name=_('Total booking value'), max_digits=10, decimal_places=2,
                                       default=0.00, validators=[MinValueValidator(Decimal('0.00'))])
     manual_value = models.DecimalField(verbose_name=_('Manual value'), max_digits=10, decimal_places=2, blank=True,
-                                       null=True, )
+                                       null=True, help_text=_("Admin is able to change total booking value"),
+                                       validators=[MinValueValidator(Decimal('0.00'))])
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_('Created at'))
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='confirmed', verbose_name=_("Status"))
-    cancellation_reason = models.TextField(blank=True, null=True, verbose_name=_("Cancellation reason"))
-
-    @property
-    def debt(self):
-        # Получаем сумму платежей, заменяя None на 0
-        total_payments = (
-                self.payments.aggregate(total=Sum('payment_value'))['total']
-                or Decimal('0.00')
-        )
-        # Проверяем, что total_value установлен
-        if self.total_value is None:
-            return Decimal('0.00')
-        return self.total_value - total_payments
-
-    def __str__(self):
-        try:
-            debt_value = self.debt
-        except:
-            debt_value = 'N/A'
-        return _("Booking {id} by user {user} for {apartment} has a debt {debt} ").format(
-            id=self.id,
-            user=self.user.username,
-            apartment=self.apartment.number,
-            debt=debt_value,
-        )
+    debt = models.DecimalField(verbose_name=_('Debt'), help_text=_("Negative debt means hotel's debt"), max_digits=10,
+                               decimal_places=2, default=Decimal(0.00))
 
     class Meta:
         verbose_name = _('Booking')
@@ -261,12 +232,9 @@ class Booking(models.Model):
         # unique_together = ('apartment', 'check_in', 'check_out')
         constraints = [
             models.UniqueConstraint(
-                fields=[
-                    'apartment',
-                    'check_in',
-                    'check_out',
-                ],
-                name='unique_booking'
+                fields=['apartment', 'check_in', 'check_out', ],
+                name='unique_confirmed_booking',
+                condition=Q(status='confirmed')
             )
         ]
         indexes = [
@@ -281,36 +249,31 @@ class Booking(models.Model):
         if self.check_in < timezone.now().date():
             raise ValidationError(_("Дата заезда не может быть в прошлом"))
 
-    def update_total_value(self):
-        """ Обновляет total_value: ручное значение или авторасчёт """
-        if self.manual_value is not None:
-            self.total_value = self.manual_value
-        else:
-            # Используем актуальные значения объекта, а не аргументы
-            self.total_value = self.apartment.calculate_price(self.check_in, self.check_out)
-        self.save(update_fields=['total_value'])
-
     def save(self, *args, **kwargs):
-        # Если manual_value задано (не None), то используем его, иначе вычисляем по расчетной логике
-        if self.manual_value is not None:
-            self.total_value = self.manual_value
-        else:
-            self.total_value = self.apartment.calculate_price(self.check_in, self.check_out)
+        self.update_total_value()
         super().save(*args, **kwargs)
+        if 'update_fields' not in kwargs or 'debt' not in kwargs['update_fields']:
+            self.update_debt_value()
+
+    def update_total_value(self):
+        """ Обновляет total_value: ручное значение или авторасчёт только для подтвержденных бронирований"""
+        if self.status == 'confirmed':
+            if self.manual_value is not None:
+                self.total_value = self.manual_value
+            else:
+                # Используем актуальные значения объекта, а не аргументы
+                self.total_value = self.apartment.calculate_price(self.check_in, self.check_out)
+        else:
+            self.total_value = Decimal(0.00)
+
+    def get_total_payments(self):
+        """Возвращает сумму всех платежей"""
+        return self.payments.aggregate(Sum('payment_value'))['payment_value__sum'] or Decimal(0.00)
 
     def update_debt_value(self):
         """Обновляем поле задолженности после оплаты / отмены бронирования"""
-        payment_amount = (Payment.objects.filter(booking=self).aggregate(Sum('payment_value'))['payment_value__sum']
-                          or Decimal(0.00))
-        self.debt = self.total_value - payment_amount
-        self.save(update_fields=['debt'])
-
-    # def update_payment_status(self):
-    #     """Обновление статуса is_paid при изменении платежей"""
-    #     new_status = self.debt == 0
-    #     if self.is_paid != new_status:
-    #         self.is_paid = new_status
-    #         self.save(update_fields=['is_paid'])
+        self.debt = self.total_value - self.get_total_payments()
+        super().save(update_fields=['debt'])
 
     def cancel_booking(self, cancelled_by, reason=None):
         """
@@ -325,15 +288,9 @@ class Booking(models.Model):
             raise ValueError(_("Cannot cancel a booking that is not confirmed."))
 
         # Проверяем сумму оплаченных платежей
-        total_payments = (Payment.objects.filter(booking=self).aggregate(Sum('payment_value'))['payment_value__sum']
-                          or Decimal(0.00))
-
-        # Обрабатываем переплату
-        overpayment = total_payments - self.total_value
-        if overpayment > 0:
-            self.debt = -overpayment
-        else:
-            self.debt = Decimal('0.00')
+        self.debt = - self.get_total_payments() if self.get_total_payments() > 0 else Decimal(0.00)
+        # Обнуляем поле total_value
+        self.total_value = Decimal(0.00)
 
         # Устанавливаем новый статус
         if cancelled_by == 'user':
@@ -343,8 +300,19 @@ class Booking(models.Model):
         else:
             raise ValueError(_("Invalid cancellation initiator. Must be 'user' or 'admin'."))
 
-        self.cancellation_reason = reason
-        self.save()
+        super().save(update_fields=['status', 'total_value', 'debt'])
+
+    def __str__(self):
+        try:
+            debt_value = self.debt
+        except:
+            debt_value = 'N/A'
+        return _("Booking {id} by user {user} for {apartment} has a debt {debt} ").format(
+            id=self.id,
+            user=self.user.username,
+            apartment=self.apartment.number,
+            debt=debt_value,
+        )
 
 
 class Payment(models.Model):
@@ -366,14 +334,6 @@ class Payment(models.Model):
         verbose_name = _('Payment')
         verbose_name_plural = _('Payments')
 
-    def clean(self):
-        # Проверка, что платеж не превышает задолженность
-        if self.payment_value > self.booking.debt:
-            raise ValidationError(
-                _("Сумма платежа не может превышать задолженность (%(debt)s)")
-                % {"debt": self.booking.debt}
-            )
-
     def save(self, *args, **kwargs):
         with transaction.atomic():
             # Блокируем запись бронирования
@@ -381,8 +341,7 @@ class Payment(models.Model):
             if self.payment_value > booking.debt:
                 raise ValidationError(_("Payment exceeds debt."))
             super().save(*args, **kwargs)
-            booking.refresh_from_db()
-            booking.save()  # Триггерит обновление debt
+            booking.update_debt_value()
 
     def __str__(self):
         # return \

@@ -45,9 +45,9 @@ class ApartmentPhotoTranslationOptions(TranslationOptions):
     fields = ('description',)  # Убрали "apartment", так как это ForeignKey.
 
 
-@register(Booking)
-class BookingTranslationOptions(TranslationOptions):
-    fields = ('cancellation_reason',)  # Убрали "status", если это choices.
+# @register(Booking)
+# class BookingTranslationOptions(TranslationOptions):
+#     fields = ('cancellation_reason',)  # Убрали "status", если это choices.
 
 
 @register(BookingLog)

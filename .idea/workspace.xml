@@ -8,10 +8,8 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/admin.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/templates/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/templates/base.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/templates/booking_form.html" beforeDir="false" afterPath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/templates/booking_form.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/templates/profile.html" beforeDir="false" afterPath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/templates/profile.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/translation.py" beforeDir="false" afterPath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/translation.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -44,7 +42,7 @@
   }
 }</component>
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="ProjectErrors" />
+    <option name="selectedTabId" value="CurrentFile" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 2
@@ -55,20 +53,20 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "DefaultHtmlFileTemplate": "HTML File",
-    "Python.manage.executor": "Run",
-    "Python.raw_translate.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "master",
-    "ignore.virus.scanning.warn.message": "true",
-    "last_opened_file_path": "C:/Mail.ru/CodeIt/Django/BalkanPearl/BalkanPearlProject",
-    "run.code.analysis.last.selected.profile": "aDefault",
-    "settings.editor.selected.configurable": "PyConsoleConfigurable.Python Console"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
+    &quot;Python.manage.executor&quot;: &quot;Run&quot;,
+    &quot;Python.raw_translate.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Mail.ru/CodeIt/Django/BalkanPearl/BalkanPearlProject/BalkanPearlApp/locale/archive&quot;,
+    &quot;run.code.analysis.last.selected.profile&quot;: &quot;aDefault&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;PyConsoleConfigurable.Python Console&quot;
   }
-}]]></component>
+}</component>
   <component name="PyConsoleOptionsProvider">
     <option name="myPythonConsoleState">
       <console-settings module-name="BalkanPearl" is-module-sdk="true" working-directory="$PROJECT_DIR$/BalkanPearlProject">
@@ -88,12 +86,13 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\Mail.ru\CodeIt\Django\BalkanPearl\BalkanPearlProject\BalkanPearlApp\templates\archive" />
       <recent name="C:\Mail.ru\CodeIt\Django\BalkanPearl\BalkanPearlProject\BalkanPearlApp\locale\archive" />
+      <recent name="C:\Mail.ru\CodeIt\Django\BalkanPearl\BalkanPearlProject\BalkanPearlApp\templates\archive" />
       <recent name="C:\Mail.ru\CodeIt\Django\BalkanPearl\BalkanPearlProject\static" />
       <recent name="C:\Mail.ru\CodeIt\Django\BalkanPearl\BalkanPearlProject\BalkanPearlApp\templates" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Mail.ru\CodeIt\Django\BalkanPearl\BalkanPearlProject\BalkanPearlApp" />
       <recent name="C:\Mail.ru\CodeIt\Django\BalkanPearl\BalkanPearlProject\static\images" />
       <recent name="C:\Mail.ru\CodeIt\Django\BalkanPearl\BalkanPearlProject\BalkanPearlApp\templates\archive" />
       <recent name="C:\Mail.ru\CodeIt\Django\BalkanPearl\BalkanPearlProject\static\css\archive" />
@@ -339,7 +338,15 @@
       <option name="project" value="LOCAL" />
       <updated>1738912582932</updated>
     </task>
-    <option name="localTasksCounter" value="29" />
+    <task id="LOCAL-00029" summary="1. работает карусель фото&#10;2. показано фото фона на весь экран&#10;3. работает карта&#10;4. работает переключатель языков, включая шаблоны&#10;5. не работает: не могу всю страницу Home отразить на одном экране&#10;6. Добавлены иконки и лого&#10;7. Добавлены архивы&#10;8. Добавлены ссылки на соцсети&#10;9. Страница апартаментов работает, кроме бронирования&#10;10. Добавлны шаблоны регистрации, входа&#10;11. Можем бронировать и проводить оплаты через админку. &#10;12. В качестве стоимости бронирования можем вносить стоимость вручную (через админку)&#10;13. Можем авторизовываться на сайте + Гугл, регистрироваться. Бронирование работает только для авторизованных пользователей">
+      <option name="closed" value="true" />
+      <created>1739032318413</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1739032318413</updated>
+    </task>
+    <option name="localTasksCounter" value="30" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -364,6 +371,11 @@
           <url>file://$PROJECT_DIR$/BalkanPearlProject/BalkanPearlProject/settings.py</url>
           <line>152</line>
           <option name="timeStamp" value="1" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/translation.py</url>
+          <line>47</line>
+          <option name="timeStamp" value="6" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

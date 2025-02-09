@@ -12,6 +12,7 @@
                 <p>{% trans 'Дата заезда' %}: {{ booking.check_in }}</p>
                 <p>{% trans 'Дата выезда' %}: {{ booking.check_out }}</p>
                 <p>{% trans 'Статус' %}: {{ booking.get_status_display }}</p>
+                <p>{% trans 'К оплате' %}: {{ booking.debt }} {% trans 'Евро' %}</p>
                 {% if booking.status == 'confirmed' %}
                     <form method="post" action="{% url 'cancel_booking' booking.id %}">
                         {% csrf_token %}

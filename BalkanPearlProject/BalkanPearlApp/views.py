@@ -170,7 +170,7 @@ def booking_details(request, booking_id):
 
 @login_required
 def profile(request):
-    user_bookings = Booking.objects.filter(user=request.user).order_by('check_in')
+    user_bookings = Booking.objects.filter(user=request.user, status='confirmed').order_by('check_in')
     return render(request, 'profile.html', {'user_bookings': user_bookings})
 
 

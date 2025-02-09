@@ -72,11 +72,11 @@ class PaymentAdmin(admin.ModelAdmin):
 @admin.register(Booking)
 class BookingAdmin(admin.ModelAdmin):
     #form = BookingAdminForm
-    list_display = ('id', 'apartment__number', 'user', 'check_in', 'check_out', 'status', 'total_value', 'debt_display',
-                    'created_at')
+    list_display = ('id', 'apartment__number', 'user', 'check_in', 'check_out', 'status', 'total_value',
+                    'created_at', 'debt')
     list_filter = ('status', 'apartment', 'user')
     search_fields = ('apartment__number', 'user__username', 'status')
-    readonly_fields = ('created_at', 'debt_display', 'total_value')
+    readonly_fields = ('created_at',  'total_value', 'debt')
     actions = ['cancel_booking']
 
     def cancel_booking(self, request, queryset):
