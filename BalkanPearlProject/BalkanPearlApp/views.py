@@ -1,6 +1,7 @@
 from django.core.exceptions import ValidationError
 from allauth.core.internal.httpkit import redirect
 from django.http import JsonResponse
+from django.templatetags.i18n import language
 from django.utils import timezone
 from django.shortcuts import render, get_object_or_404, redirect
 from decouple import config  # Добавляем импорт config
@@ -9,6 +10,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_POST
+from django import forms
+import emoji
 
 """Делаем по запросу поиска"""
 
@@ -81,12 +84,7 @@ def booking_form(request, apartment_id):
     return render(request, "booking_form.html", context)
 
 
-def reviews(request):
-    reviews_list = Review.objects.all()  # Получите список отзывов из базы данных
-    context = {
-        'reviews': reviews_list,
-    }
-    return render(request, 'reviews.html', context)
+
 
 
 def blog_home(request):
@@ -193,3 +191,42 @@ def payment_page(request, booking_id):
         'stripe_public_key': 'ваш_публичный_ключ_stripe'  # Из settings.py
     }
     return render(request, 'payment.html', context)
+
+
+def reviews(request):
+    reviews_list = Review.objects.all()  # Получите список отзывов из базы данных
+    context = {
+        'reviews': reviews_list,
+    }
+    return render(request, 'reviews.html', context)
+
+class ReviewForm(forms.ModelForm):
+    anonymous = forms.BooleanField(required=False, label=_("Опубликовать анонимно"))
+
+    class Meta:
+        model = Review
+        fields = ['apartment', 'rating', 'commentary', 'anonymous']
+        widgets = {'commentary': forms.Textarea(attrs={'rows': 4, 'cols': 40})}
+
+    def clean_commentary(self):
+        commentary = self.cleaned_data['commentary']
+        return emoji.emojize(commentary, language='alias')
+
+
+@login_required
+def create_review(request):
+    if request.method == 'POST':
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            review = form.save(commit=False)
+            review.user = request.user  # Сохраняем автора комментария
+            review.anonymous = form.cleaned_data['anonymous']  # Сохраняем выбор анонимности
+            review.save()
+            messages.success(request, _("Ваш отзыв успешно создан!"))
+            return redirect('reviews')
+    else:
+        form = ReviewForm()
+
+    return render(request, 'create_review.html', {'form': form})
+
+

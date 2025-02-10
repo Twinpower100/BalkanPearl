@@ -6,12 +6,13 @@
 <head>
     <meta charset="UTF-8">
     </head>
-<h2>{% trans 'Блог' %}</h2>
+<h2>{% trans "Блог '...а Женя говорила!'" %}</h2>
 
 {% if blog_posts %}
     <ul>
         {% for post in blog_posts %}
-            <li>{{ post.title }}</li>
+            <li style="margin-bottom: 20 px;">{{ post.title }}</li>
+            <li style="font-size: 1.2em; line-height: 1.6">{{ post.content }}</li>
         {% endfor %}
     </ul>
 {% else %}

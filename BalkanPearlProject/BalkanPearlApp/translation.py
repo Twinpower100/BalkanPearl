@@ -1,8 +1,9 @@
 from modeltranslation.translator import register, TranslationOptions
 
-from .admin import SiteImage
+from .admin import *
 from .models import Hotel, Apartment, HotelPhoto, WindowView, ApartmentType, Season, ApartmentPhoto, Booking, \
-    BookingLog, Review, BlogPost, Address
+    Review, BlogPost, Address
+from .models import *
 
 
 @register(Address)
@@ -44,15 +45,6 @@ class SeasonTranslationOptions(TranslationOptions):
 class ApartmentPhotoTranslationOptions(TranslationOptions):
     fields = ('description',)  # Убрали "apartment", так как это ForeignKey.
 
-
-# @register(Booking)
-# class BookingTranslationOptions(TranslationOptions):
-#     fields = ('cancellation_reason',)  # Убрали "status", если это choices.
-
-
-@register(BookingLog)
-class BookingLogTranslationOptions(TranslationOptions):
-    fields = ('action',)
 
 
 @register(Review)

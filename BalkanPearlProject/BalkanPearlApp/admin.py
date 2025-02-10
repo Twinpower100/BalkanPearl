@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.core.exceptions import ValidationError
 
 from BalkanPearlApp.models import Hotel, Address, HotelPhoto, WindowView, ApartmentType, Apartment, Season, \
-    ApartmentPhoto, Booking, BookingLog, Review, BlogPost, SiteImage, Payment, Refund
+    ApartmentPhoto, Booking, Review, BlogPost, SiteImage, Payment, Refund
 from django import forms
 from django.utils.translation import gettext_lazy as _
 
@@ -122,19 +122,19 @@ class BookingAdmin(admin.ModelAdmin):
         return obj.debt
 
 
-@admin.register(BookingLog)
-class BookingLogAdmin(admin.ModelAdmin):
-    list_display = ('booking', 'action', 'performed_by', 'timestamp')
+# @admin.register(BookingLog)
+# class BookingLogAdmin(admin.ModelAdmin):
+#     list_display = ('booking', 'action', 'performed_by', 'timestamp')
 
 
 @admin.register(Review)
 class ReviewAdmin(admin.ModelAdmin):
-    list_display = ('user', 'apartment', 'rating', 'commentary', 'created_at', 'is_approved')
+    list_display = ('user', 'apartment', 'rating', 'commentary', 'created_at', 'anonymous')
 
 
 @admin.register(BlogPost)
 class BlogPostAdmin(admin.ModelAdmin):
-    list_display = ('title', 'content', 'author', 'created_at', 'updated_at')
+    list_display = ('title', 'content', 'author', 'created_at', )
 
 
 @admin.register(SiteImage)

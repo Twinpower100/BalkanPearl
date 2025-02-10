@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{% trans 'Создать отзыв - Balkan Pearl' %}{% endblock %}
+
+{% block content %}
+<h2>{% trans 'Создать отзыв' %}</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">{% trans 'Сохранить' %}</button>
+</form>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/emojionearea/3.4.1/emojionearea.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/emojionearea/3.4.1/emojionearea.min.css">
+
+<script>
+    $(document).ready(function() {
+        $("#id_commentary").emojioneArea({
+            pickerPosition: "bottom",
+            tonesStyle: "bullet"
+        });
+    });
+</script>
+{% endblock %}

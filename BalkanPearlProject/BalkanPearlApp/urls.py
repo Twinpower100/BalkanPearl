@@ -18,6 +18,7 @@ path('booking/cancel/<int:booking_id>/', views.cancel_booking, name='cancel_book
     # Аутентификация
     # path('accounts/', include('allauth.urls')),
     path('reviews/', views.reviews, name='reviews'),
+    path('reviews/create/', views.create_review, name='create_review'),
     path('blog/', views.blog_home, name='blog_home'),
     path('profile/', views.profile, name='profile'),
     path('accounts/profile/', RedirectView.as_view(url='/', permanent=False)),
