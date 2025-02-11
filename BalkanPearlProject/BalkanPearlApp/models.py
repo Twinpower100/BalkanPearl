@@ -74,9 +74,11 @@ class Hotel(models.Model):
 
 class Season(models.Model):
     """Сезон с уникальными датами и коэффициентом цен"""
-    name = models.CharField(max_length=50, verbose_name=_("Season's name"))
-    start_date = models.DateField(verbose_name=_("Start date"))
-    end_date = models.DateField(verbose_name=_("End date"))
+    name = models.CharField(max_length=50, verbose_name=_("Season's name"),
+                            help_text=_("Задним числом стоимость не пересчитывается. Начало и конец действия при расчете"
+                                        " цены считается по дате заезда"))
+    start_date = models.DateField(verbose_name=_("Start date"), help_text=_("По дате заезда"))
+    end_date = models.DateField(verbose_name=_("End date"), help_text=_("По дате заезда"))
     price_multiplier = models.DecimalField(
         max_digits=5, decimal_places=2, default=1.0, verbose_name=_("Price coefficient"))
 
@@ -159,20 +161,17 @@ class Apartment(models.Model):
 
     def calculate_price(self, check_in, check_out):
         """Рассчитать цену на основе сезона с валидацией дат."""
-        # Проверка типов данных (если check_in/check_out переданы как строки)
         if isinstance(check_in, str):
             check_in = timezone.datetime.strptime(check_in, "%Y-%m-%d").date()
         if isinstance(check_out, str):
             check_out = timezone.datetime.strptime(check_out, "%Y-%m-%d").date()
 
-        # Валидация дат
         today = timezone.now().date()
         if check_in < today:
             raise ValidationError(_("Дата заезда не может быть в прошлом"))
         if check_in >= check_out:
             raise ValidationError(_("Дата выезда должна быть позже даты заезда"))
 
-        # Основная логика расчета цены
         nights = (check_out - check_in).days
         if nights <= 0:
             raise ValidationError(_("Некорректный период бронирования"))
@@ -183,17 +182,32 @@ class Apartment(models.Model):
             end_date__gte=check_in
         ).order_by("start_date")
 
-        if not seasons.exists():
-            # Используем базовую цену, если сезоны не заданы
-            return self.base_price_per_night * nights
-        else:
-            for season in seasons:
-                start = max(season.start_date, check_in)
-                end = min(season.end_date, check_out)
-                days = (end - start).days
-                total_price += days * self.base_price_per_night * season.price_multiplier
+        current_date = check_in
+        while current_date < check_out:
+            applicable_season = seasons.filter(
+                start_date__lte=current_date,
+                end_date__gte=current_date
+            ).first()
+            if applicable_season:
+                end_date = min(applicable_season.end_date + timezone.timedelta(days=1), check_out)
+                days = (end_date - current_date).days
+                total_price += days * self.base_price_per_night * applicable_season.price_multiplier
+                current_date = end_date
+            else:
+                next_season = seasons.filter(start_date__gt=current_date).order_by('start_date').first()
+                if next_season:
+                    days = (next_season.start_date - current_date).days
+                    if current_date + timezone.timedelta(days=days) > check_out:
+                        days = (check_out - current_date).days
+                    total_price += days * self.base_price_per_night
+                    current_date += timezone.timedelta(days=days)
+                else:
+                    days = (check_out - current_date).days
+                    total_price += days * self.base_price_per_night
+                    current_date = check_out
 
-            return total_price
+        return total_price
+
 
     def is_available(self, check_in, check_out):
         overlapping_bookings = self.bookings.filter(

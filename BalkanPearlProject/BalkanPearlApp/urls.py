@@ -2,6 +2,7 @@ from django.urls import path, include
 from django.views.generic import RedirectView
 
 from . import views  # импортируйте ваши представления
+from .views import calculate_price
 
 urlpatterns = [
     # Пример маршрута
@@ -13,7 +14,9 @@ urlpatterns = [
     path('booking/create/', views.create_booking, name='create_booking'),
     path('booking/confirmation/<int:booking_id>/', views.booking_confirmation, name='booking_confirmation'),  # Перенаправляем на страницу подтверждения
     path('booking/<int:booking_id>/', views.booking_details, name='booking_details'),
-path('booking/cancel/<int:booking_id>/', views.cancel_booking, name='cancel_booking'),
+    path('booking/calculate-price/<int:apartment_id>/', calculate_price, name='calculate-price'),
+    path('booking/cancel/<int:booking_id>/', views.cancel_booking, name='cancel_booking'),
+
     path('payment/<int:booking_id>/', views.payment_page, name='payment_page'),
     # Аутентификация
     # path('accounts/', include('allauth.urls')),

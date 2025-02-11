@@ -32,7 +32,7 @@ def home(request):
 
 def apartments_list(request):
     hotel = Hotel.objects.first()
-    apartments = Apartment.objects.all()  # Получение всех апартаментов
+    apartments = Apartment.objects.filter(is_closed=False)  # Получение всех открытых апартаментов
     apartments_with_photos = []
     for apartment in apartments:
         apartments_with_photos.append(

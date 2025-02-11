@@ -1,11 +1,11 @@
 /* Стили для логотипа */
 .logo-container {
     flex-shrink: 0; /* Запрещаем уменьшение */
-    padding: 5px 15px 5px 5px; /* Отступы вокруг лого */
+    padding: 0.5vh 15vh 0vh 0.5vh; /* Отступы вокруг лого */
 }
 
 .header-logo {
-    height: 60px; /* Фиксированная высота логотипа */
+    height: 6vh; /* Фиксированная высота логотипа */
     width: auto; /* Ширина подстраивается пропорционально */
     object-fit: contain; /* Сохраняем пропорции */
     filter: brightness(0,1) invert(1); /* Делаем лого белым */
@@ -295,7 +295,7 @@ header h3 {
 
 /* Стиль для переключателя языков */
 .language-switcher {
-    margin-right: -18vh;
+    margin-right: -16vh;
 }
 
 /* Медиазапросы для адаптивности */
