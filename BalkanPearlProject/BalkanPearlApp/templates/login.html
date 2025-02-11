@@ -1,14 +1,18 @@
-{% extends "account/base.html" %}
+{% extends 'base.html' %}
 {% load i18n %}
+
+{% block title %}{% trans "Войти / Регистрация" %}{% endblock %}
+
 {% block content %}
-<h1>{% trans "Вход" %}</h1>
-<div class="social-auth">
-    <a href="{% provider_login_url 'google' %}">Google</a>
-    <!--<a href="{% provider_login_url 'facebook' %}">Facebook</a>-->
-</div>
-<form class="login" method="POST">
+<h2>{% trans "Войти / Регистрация" %}</h2>
+<form method="post" action="{% url 'account_login' %}">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit">{% trans "Войти" %}</button>
+    <button type="submit" class="btn btn-primary">{% trans "Войти" %}</button>
 </form>
+<p>{% trans "Нет аккаунта?" %} <a href="{% url 'account_signup' %}">{% trans "Регистрация" %}</a></p>
+<p>{% trans "Или войти через:" %}</p>
+<a href="{% provider_login_url 'google' %}">
+    <img src="{% static 'images/google-icon.svg' %}" alt="Google" class="social-icon" style="width: 24px; height: 24px;">
+</a>
 {% endblock %}

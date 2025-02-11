@@ -6,7 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/jpg" href="{% static 'images/BalkanPearlLogo.jpeg' %}">
+    <link rel="icon" type="image/jpg" href="{% static 'images/favicon.ico' %}">
     <title>{% block title %}{% trans "Balkan Pearl" %}{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
@@ -15,72 +15,68 @@
         <div class="background-image" style="background-image: url('{{ site_image.image.url }}');"></div>
     {% endif %}
     <header class="content-wrapper">
-        <h1>{% trans "Balkan Pearl: Отдых у моря и гор Черногории" %} </h1>
-        <nav class="full-width-nav">
-            <a href="{% url 'home' %}">{% trans "Главная" %}</a>
-            <a href="{% url 'apartments_list' %}">{% trans "Апартаменты" %}</a>
-            <a href="{% url 'booking_form' 1 %}">{% trans "Бронирование" %}</a>
-            <a href="{% url 'reviews' %}">{% trans "Отзывы" %}</a>
-            <a href="{% url 'blog_home' %}">{% trans "Блог" %}</a>
-            {% if user.is_authenticated %}
-                <a href="{% url 'profile' %}">{% trans "Мои бронирования" %}</a> <!-- Добавлена ссылка на страницу профиля -->
-            {% endif %}
-        </nav>
-        <!-- Аутентификация и регистрация -->
-        <div class="auth-section" style="text-align: right; padding: 10px;">
-            {% if user.is_authenticated %}
-                <p>{% trans "Вы вошли как" %} {{ user.username }}</p>
-                <a href="{% url 'account_logout' %}">{% trans "Выйти" %}</a>
-            {% else %}
-                <a href="{% url 'account_login' %}">{% trans "Войти" %}</a>
-                <span>|</span>
-                <a href="{% url 'account_signup' %}">{% trans "Регистрация" %}</a>
-                <div class="social-auth" style="margin-top: 10px;">
-                    <p>{% trans "Или войти через:" %}</p>
-                    <!-- Кнопки соцсетей -->
-                    <a href="{% provider_login_url 'google' %}">
-                        <img src="{% static 'images/google-icon.svg' %}" alt="Google" class="social-icon" style="width: 24px; height: 24px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                    <!-- Добавляем логотип -->
+        <div class="logo-container">
+            <img src="{% static 'images/BalkanPearlLogo.jpeg' %}" alt="Balkan Pearl Logo" class="header-logo">
+        </div>
+        <!-- Переносим заголовок в отдельный контейнер -->
+        <div class="header-title">
+            <h1 style="margin: 0; white-space: nowrap; padding-top: 10px;">{% trans "Balkan Pearl: Отдых у моря и гор Черногории" %}</h1>
+        </div>
+            <div style="text-align: right;">
+                <h3 style="margin: 0; white-space: nowrap;">{% trans 'Свяжитесь с нами' %}</h3>
+                <div class="messenger-icons" style="margin-top: 5px; display: flex; gap: 10px;">
+                    <a href="https://wa.me/{{ hotel.contact_phone|cut:'+' }}" target="_blank" title="WhatsApp">
+                        <img src="{% static 'images/whatsapp-icon.svg' %}" alt="WhatsApp" class="icon">
+                    </a>
+                    <a href="viber://chat?number={{ hotel.contact_phone|cut:'+' }}" target="_blank" title="Viber">
+                        <img src="{% static 'images/viber-icon.svg' %}" alt="Viber" class="icon">
+                    </a>
+                    <a href="https://t.me/{{ hotel.contact_phone }}" target="_blank" title="Telegram">
+                        <img src="{% static 'images/telegram-icon.svg' %}" alt="Telegram" class="icon">
+                    </a>
+                    <a href="mailto:{{ hotel.contact_email }}" target="_blank" title="Email">
+                        <img src="{% static 'images/email-icon.svg' %}" alt="Email" class="icon">
+                    </a>
+
+                    <a href="{{ hotel.facebook_link }}" target="_blank" title="Facebook">
+                        <img src="{% static 'images/facebook-icon.svg' %}" alt="Facebook" class="icon">
+                    </a>
+
+                    <a href="{{ hotel.instagram_link }}" target="_blank" title="Instagram">
+                        <img src="{% static 'images/instagram-icon.svg' %}" alt="Instagram" class="icon">
                     </a>
 
                 </div>
-            {% endif %}
-        </div>
-        <h3 style="text-align: right">{% trans 'Свяжитесь с нами' %}</h3>
-            <div class="messenger-icons" style="align: right">
-                <a href="https://wa.me/{{ hotel.contact_phone|cut:'+' }}" target="_blank" title="WhatsApp">
-                    <img src="{% static 'images/whatsapp-icon.svg' %}" alt="WhatsApp" class="icon">
-                </a>
-                <a href="viber://chat?number={{ hotel.contact_phone|cut:'+' }}" target="_blank" title="Viber">
-                    <img src="{% static 'images/viber-icon.svg' %}" alt="Viber" class="icon">
-                </a>
-                <a href="https://t.me/{{ hotel.contact_phone }}" target="_blank" title="Telegram">
-                    <img src="{% static 'images/telegram-icon.svg' %}" alt="Telegram" class="icon">
-                </a>
-
             </div>
-            <div class="social-media-icons" style="display: flex; gap: 10px; margin-top: 10px;">
-                {% if hotel.facebook_link %}
-                <a href="{{ hotel.facebook_link }}" target="_blank" title="Facebook">
-                    <img src="{% static 'images/facebook-icon.svg' %}" alt="Facebook" class="icon">
-                </a>
-                {% endif %}
-                {% if hotel.instagram_link %}
-                <a href="{{ hotel.instagram_link }}" target="_blank" title="Instagram">
-                    <img src="{% static 'images/instagram-icon.svg' %}" alt="Instagram" class="icon">
-                </a>
+        </div>
+        <nav class="full-width-nav" style="display: flex; justify-content: center; align-items: center; margin-top: 5px;">
+            <div style="display: flex; justify-content: center; align-items: center;">
+                <a href="{% url 'home' %}">{% trans "Главная" %}</a>
+                <a href="{% url 'apartments_list' %}">{% trans "Апартаменты" %}</a>
+<!--                <a href="{% url 'booking_form' 1 %}">{% trans "Бронирование" %}</a>-->
+                <a href="{% url 'reviews' %}">{% trans "Отзывы" %}</a>
+                <a href="{% url 'blog_home' %}">{% trans "Блог" %}</a>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'profile' %}">{% trans "Мои бронирования" %}</a>
+                    <a href="{% url 'account_logout' %}">{% trans "Выйти" %}</a>
+                    <span class="welcome-message">{% trans "Здравствуйте, " %} {{ user.username }}!</span>
+                {% else %}
+                    <a href="{% url 'account_login' %}">{% trans "Войти / Регистрация" %}</a>
                 {% endif %}
             </div>
-
-      <div style="text-align: right; padding: 5px;">
-            <form method="post" action="{% url 'set_language' %}">
-                {% csrf_token %}
-                <select name="language" class="language-switcher" onchange="this.form.submit()">
-                    <option value="en" {% if LANGUAGE_CODE == 'en' %}selected{% endif %}>{% trans "English" %}</option>
-                    <option value="ru" {% if LANGUAGE_CODE == 'ru' %}selected{% endif %}>{% trans "Русский" %}</option>
-                    <option value="me" {% if LANGUAGE_CODE == 'me' %}selected{% endif %}>{% trans "Crnogorski" %}</option>
-                </select>
-            </form>
-        </div>
+            <div style="text-align: right;">
+                <form method="post" action="{% url 'set_language' %}">
+                    {% csrf_token %}
+                    <select name="language" class="language-switcher" onchange="this.form.submit()">
+                        <option value="en" {% if LANGUAGE_CODE == 'en' %}selected{% endif %}>{% trans "English" %}</option>
+                        <option value="ru" {% if LANGUAGE_CODE == 'ru' %}selected{% endif %}>{% trans "Русский" %}</option>
+                        <option value="me" {% if LANGUAGE_CODE == 'me' %}selected{% endif %}>{% trans "Crnogorski" %}</option>
+                    </select>
+                </form>
+            </div>
+        </nav>
     </header>
     <main class="content-wrapper" style="min-height: 100vh; display: flex; flex-direction: column;">
         {% block content %}
