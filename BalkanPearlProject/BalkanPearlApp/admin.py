@@ -1,11 +1,19 @@
+# -*- coding: utf-8 -*-
+import datetime
 from django.contrib import admin
 from django.core.exceptions import ValidationError
+from django.urls import path, reverse
+from django.utils.encoding import force_str
+from openpyxl.styles import Font
 
 from BalkanPearlApp.models import Hotel, Address, HotelPhoto, WindowView, ApartmentType, Apartment, Season, \
     ApartmentPhoto, Booking, Review, BlogPost, SiteImage, Payment, Refund
 from django import forms
 from django.utils.translation import gettext_lazy as _
-
+from django.shortcuts import render, HttpResponse
+from django.db.models import Sum, Q, F
+from django.http import HttpResponseForbidden
+from openpyxl import Workbook
 
 # Register your models here.
 
@@ -101,6 +109,26 @@ class BookingAdmin(admin.ModelAdmin):
     readonly_fields = ('created_at', 'total_value', 'debt')
     actions = ['cancel_booking']
 
+    def get_urls(self):
+        urls = [
+            path(
+                'reports/',
+                self.admin_site.admin_view(self.reports_view),
+                name='BalkanPearlApp_booking_reports'  # Уточнённое имя URL
+            ),
+            path(
+                'export-reports/',
+                self.admin_site.admin_view(self.export_reports),
+                name='BalkanPearlApp_export_reports'
+            ),
+        ]
+        return urls + super().get_urls()  # Кастомные URL должны быть ПЕРЕД стандартными
+
+    def changelist_view(self, request, extra_context=None):
+        extra_context = extra_context or {}
+        extra_context['report_url'] = reverse('admin:BalkanPearlApp_booking_reports')
+        return super().changelist_view(request, extra_context=extra_context)
+
     def cancel_booking(self, request, queryset):
         """Эта функция — кастомное действие (admin action) в Django Admin.
         Она позволяет администратору отменять выбранные бронирования через панель
@@ -114,17 +142,162 @@ class BookingAdmin(admin.ModelAdmin):
         for booking in cancelled:
             booking.cancel_booking(cancelled_by='admin')
         self.message_user(request, _("Выбранные бронирования отменены."))
-
     cancel_booking.short_description = _("Отменить выбранные бронирования")
+
+    def reports_view(self, request):
+        if not request.user.is_staff:
+            return HttpResponseForbidden(_('Доступ запрещен'))
+        context = self._process_report(request)
+        return render(request, 'admin/BalkanPearlApp/booking/reports.html', context)
+
+    def export_reports(self, request):
+        if not request.user.is_staff:
+            return HttpResponseForbidden(_('Доступ запрещен'))
+        context = self._process_report(request)
+        return self._generate_excel(context)
+
+    def _process_report(self, request):
+        form = ReportFilterForm(request.GET or None)
+        results = []
+        total_income = 0
+        total_debt = 0
+        planned_income = 0
+
+        if form.is_valid():
+            filters = Q()
+            hotel = form.cleaned_data['hotel']
+            start_date = form.cleaned_data['start_date']
+            end_date = form.cleaned_data['end_date']
+            apartment = form.cleaned_data['apartment']
+            status = form.cleaned_data['status']
+            season = form.cleaned_data['season']
+
+            bookings = Booking.objects.filter(
+                Q(check_in__lte=end_date) &
+                Q(check_out__gte=start_date)
+            )
+            if hotel:
+                bookings = bookings.filter(apartment__hotel=hotel)
+            if apartment:
+                bookings = bookings.filter(apartment=apartment)
+            if status:
+                bookings = bookings.filter(status=status)
+            if season:
+                bookings = bookings.filter(
+                    Q(check_in__lte=season.end_date) &
+                    Q(check_out__gte=season.start_date)
+                )
+
+            # Расчёт фактического дохода
+            payments = Payment.objects.filter(booking__in=bookings)
+            refunds = Refund.objects.filter(booking__in=bookings)
+
+            total_payments = payments.aggregate(total=Sum('payment_value'))['total'] or 0
+            total_refunds = refunds.aggregate(total=Sum('refund_value'))['total'] or 0
+            total_income = total_payments - total_refunds
+
+            # Планируемый доход (по бронированиям)
+            planned_income = bookings.filter(status='confirmed').aggregate(
+                total=Sum('total_value')
+            )['total'] or 0
+
+            # Дебиторская задолженность
+            total_debt = bookings.exclude(
+                status__in=['cancelled_by_user', 'cancelled_by_admin']
+            ).aggregate(total=Sum('debt'))['total'] or 0
+
+            # Детализация по апартаментам
+            for apt in Apartment.objects.all():
+                apt_bookings = bookings.filter(apartment=apt)
+
+                # Фактический доход
+                apt_payments = Payment.objects.filter(
+                    booking__in=apt_bookings
+                ).aggregate(total=Sum('payment_value'))['total'] or 0
+                apt_refunds = Refund.objects.filter(
+                    booking__in=apt_bookings
+                ).aggregate(total=Sum('refund_value'))['total'] or 0
+
+                # Планируемый доход
+                apt_planned = apt_bookings.filter(status='confirmed').aggregate(
+                    total=Sum('total_value')
+                )['total'] or 0
+
+                apt_debt = apt_bookings.exclude(
+                    status__in=['cancelled_by_user', 'cancelled_by_admin']
+                ).aggregate(total=Sum('debt'))['total'] or 0
+
+                if apt_payments or apt_debt:
+                    results.append({
+                        'apartment': str(apt.number),  # Явное преобразование в строку
+                        'actual_income': float(apt_payments - apt_refunds),
+                        'planned_income': float(apt_planned),
+                        'debt': float(apt_debt)
+                    })
+
+        return {
+            'form': form,
+            'results': results,
+            'total_income': total_income,
+            'planned_income': planned_income,
+            'total_debt': total_debt,
+            'params': request.GET.urlencode()
+        }
+
+    def _generate_excel(self, context):
+        wb = Workbook()
+        ws = wb.active
+        ws.title = force_str("Financial Report")  # Явное преобразование
+
+        # Заголовки
+        headers = [
+            u"Апартамент",
+            u"Фактический доход",
+            u"Планируемый доход",
+            u"Дебиторская задолженность"
+        ]
+        ws.append(headers)
+
+        # Форматирование заголовков
+        bold_font = Font(bold=True)
+        for cell in ws[1]:
+            cell.font = bold_font
+
+        # Данные
+        for item in context['results']:
+            row = [
+                force_str(item['apartment']),
+                float(item['actual_income']),
+                float(item['planned_income']),
+                float(item['debt'])
+            ]
+            ws.append(row)
+
+        # Автонастройка ширины столбцов
+        for col in ws.columns:
+            max_length = 0
+            column = col[0].column_letter
+            for cell in col:
+                try:
+                    if len(str(cell.value)) > max_length:
+                        max_length = len(str(cell.value))
+                except:
+                    pass
+            adjusted_width = (max_length + 2) * 1.2
+            ws.column_dimensions[column].width = adjusted_width
+
+        response = HttpResponse(
+            content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            charset='utf-8'
+        )
+        response['Content-Disposition'] = 'attachment; filename="report.xlsx"'
+        wb.save(response)
+        return response
+
 
     @admin.display(description=_('Задолженность'))
     def debt_display(self, obj):
         return obj.debt
-
-
-# @admin.register(BookingLog)
-# class BookingLogAdmin(admin.ModelAdmin):
-#     list_display = ('booking', 'action', 'performed_by', 'timestamp')
 
 
 @admin.register(Review)
@@ -140,3 +313,36 @@ class BlogPostAdmin(admin.ModelAdmin):
 @admin.register(SiteImage)
 class SiteImageAdmin(admin.ModelAdmin):
     list_display = ('image', 'description')
+
+
+class ReportFilterForm(forms.Form):
+    start_date = forms.DateField(
+        label=_('Начало периода'),
+        widget=forms.DateInput(attrs={'type': 'date'}),
+        initial=datetime.date.today().replace(day=1)
+        )
+    end_date = forms.DateField(
+        label=_('Конец периода'),
+        widget=forms.DateInput(attrs={'type': 'date'}),
+        initial=datetime.date.today()
+    )
+    hotel = forms.ModelChoiceField(
+        queryset=Hotel.objects.all(),
+        required=False,
+        label=_('Отель'),
+    )
+    apartment = forms.ModelChoiceField(
+        queryset=Apartment.objects.all(),
+        required=False,
+        label=_('Апартамент')
+    )
+    status = forms.ChoiceField(
+        choices=Booking.STATUS_CHOICES,
+        required=False,
+        label=_('Статус бронирования')
+    )
+    season = forms.ModelChoiceField(
+        queryset=Season.objects.all(),
+        required=False,
+        label=_('Сезон')
+    )

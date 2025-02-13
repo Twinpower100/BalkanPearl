@@ -1,0 +1,44 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+
+{% block content %}
+<div class="reports">
+    <h1>Финансовые отчеты</h1>
+
+    <form method="get" class="report-filters">
+        {{ form.as_p }}
+        <button type="submit" class="button">Применить фильтры</button>
+        <a href="{% url 'admin:BalkanPearlApp_export_reports' %}?{{ request.GET.urlencode }}"
+            class="button">
+            📊 Экспорт в Excel
+        </a>
+    </form>
+
+    {% if results %}
+    <div class="results">
+        <h3>Итого:</h3>
+        <p>Доход: {{ total_income|floatformat:2 }} €</p>
+        <p>Задолженность: {{ total_debt|floatformat:2 }} €</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Апартамент</th>
+                    <th>Доход</th>
+                    <th>Задолженность</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in results %}
+                <tr>
+                    <td>{{ item.apartment }}</td>
+                    <td>{{ item.income|floatformat:2 }} €</td>
+                    <td>{{ item.debt|floatformat:2 }} €</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

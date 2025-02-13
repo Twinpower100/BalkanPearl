@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/5.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
+# -*- coding: utf-8 -*-
 
 from pathlib import Path
 from decouple import config
@@ -43,14 +44,15 @@ INSTALLED_APPS = [
     'BalkanPearlApp',
     'phonenumber_field',
     'phonenumbers',
+    #'django.contrib.sites',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
     # 'allauth.socialaccount.providers.facebook',
-    'allauth.socialaccount.providers.microsoft',
-    'allauth.socialaccount.providers.instagram',
-    'allauth.socialaccount.providers.apple',
+    # 'allauth.socialaccount.providers.microsoft',
+    # 'allauth.socialaccount.providers.instagram',
+    # 'allauth.socialaccount.providers.apple',
 
 ]
 INSTALLED_APPS += ['modeltranslation']
@@ -70,14 +72,14 @@ MIDDLEWARE = [
 LANGUAGES = [
     ('en', _('English')),
     ('ru', _('Russian')),
-    ('me', _('Montenegrian')),
+    ('me', _('Montenegrin')),
 ]
 
 LOCALE_PATHS = [
     BASE_DIR / 'locale',
 ]
 
-USE_I18N = True
+
 
 ROOT_URLCONF = 'BalkanPearlProject.urls'
 
@@ -184,16 +186,11 @@ SOCIALACCOUNT_PROVIDERS = {
             'secret': config('GOOGLE_SECRET'),
         }
     },
+    # На фейсбук надо регистрировать фирму
     # 'facebook': {
     #     'APP': {
     #         'client_id': config('FACEBOOK_APP_ID'),
     #         'secret': config('FACEBOOK_SECRET'),
-    #     }
-    # },
-    # 'microsoft': {
-    #     'APP': {
-    #         'client_id': config('MICROSOFT_CLIENT_ID'),
-    #         'secret': config('MICROSOFT_SECRET'),
     #     }
     # },
     # 'instagram': {
@@ -202,6 +199,14 @@ SOCIALACCOUNT_PROVIDERS = {
     #         'secret': config('INSTAGRAM_SECRET'),
     #     }
     # },
+    # 'microsoft': {
+    #     'APP': {
+    #         'client_id': config('MICROSOFT_CLIENT_ID'),
+    #         'secret': config('MICROSOFT_SECRET'),
+    #     }
+    # },
+
+    # Apple - платно
     # 'apple': {
     #     'APP': {
     #         'client_id': config('APPLE_CLIENT_ID'),
@@ -211,3 +216,6 @@ SOCIALACCOUNT_PROVIDERS = {
     #     }
     # }
 }
+# Мы пользуемся кастомной формой аутентификации
+ACCOUNT_FORMS = {"login": "BalkanPearlApp.forms.CustomLoginForm"}
+ACCOUNT_ADAPTER = "BalkanPearlApp.adapter.CustomAccountAdapter"

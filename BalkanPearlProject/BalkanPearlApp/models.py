@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models, transaction
@@ -75,8 +76,9 @@ class Hotel(models.Model):
 class Season(models.Model):
     """Сезон с уникальными датами и коэффициентом цен"""
     name = models.CharField(max_length=50, verbose_name=_("Season's name"),
-                            help_text=_("Задним числом стоимость не пересчитывается. Начало и конец действия при расчете"
-                                        " цены считается по дате заезда"))
+                            help_text=_(
+                                "Задним числом стоимость не пересчитывается. Начало и конец действия при расчете"
+                                " цены считается по дате заезда"))
     start_date = models.DateField(verbose_name=_("Start date"), help_text=_("По дате заезда"))
     end_date = models.DateField(verbose_name=_("End date"), help_text=_("По дате заезда"))
     price_multiplier = models.DecimalField(
@@ -207,7 +209,6 @@ class Apartment(models.Model):
                     current_date = check_out
 
         return total_price
-
 
     def is_available(self, check_in, check_out):
         overlapping_bookings = self.bookings.filter(
@@ -454,7 +455,6 @@ class BlogPost(models.Model):
     content = models.TextField(verbose_name=_('Content'))
     author = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name=_("Author"), )
     created_at = models.DateTimeField(auto_now_add=True)
-
 
     class Meta:
         verbose_name = _('Blog post')
