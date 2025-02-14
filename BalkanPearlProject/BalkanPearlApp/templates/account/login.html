@@ -1,0 +1,35 @@
+<!--login.html-->
+{% extends "auth_base.html" %}
+{% load static %}
+{% load i18n %}
+{% load socialaccount %}
+
+{% block auth_content %}
+    <h2>{% trans "Войти" %}</h2>
+
+    <!-- Кнопка Google -->
+    <form method="post" action="{% provider_login_url 'google' %}">
+        {% csrf_token %}
+        <button type="submit" class="btn-google">
+            <img src="{% static 'images/google-icon.svg' %}" alt="Google">
+            {% trans "Продолжить с Google" %}
+        </button>
+    </form>
+
+    <!-- Разделитель -->
+    <div class="separator">
+        <span>{% trans "или" %}</span>
+    </div>
+
+    <!-- Кнопка "Войти" -->
+    <button onclick="location.href='{% url 'login_form' %}'"
+            class="btn-login">
+        {% trans "Войти" %}
+    </button>
+
+    <!-- Кнопка "Регистрация" -->
+    <button onclick="location.href='{% url 'account_signup' %}'"
+            class="btn-signup">
+        {% trans "Регистрация" %}
+    </button>
+{% endblock %}

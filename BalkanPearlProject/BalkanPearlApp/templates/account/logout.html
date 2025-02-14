@@ -1,0 +1,14 @@
+<!--logout.html-->
+{% extends "auth_base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block auth_content %}
+    <h2>{% trans "Выход из системы" %}</h2>
+    <form method="post" action="{% url 'account_logout' %}">
+        {% csrf_token %}
+        <button type="submit" class="btn-logout">{% trans "Выйти" %}</button>
+        <button type="button" onclick="location.href='{% url 'home' %}'"
+                class="btn-cancel">{% trans "Отмена" %}</button>
+    </form>
+{% endblock %}

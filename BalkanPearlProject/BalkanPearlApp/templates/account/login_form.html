@@ -1,0 +1,48 @@
+<!--login_form.html-->
+{% extends "auth_base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block auth_content %}
+    <h2>{% trans "Вход" %}</h2>
+
+    <!-- Форма входа -->
+    <form method="post" action="{% url 'account_login' %}">
+        {% csrf_token %}
+        
+        <!-- Поле для логина -->
+        <div class="form-group">
+            <label for="id_login">{% trans "Логин" %}</label>
+            <input type="text"
+                   name="login"
+                   id="id_login"
+                   class="form-control"
+                   placeholder="{% trans 'Введите логин' %}"
+                   required>
+        </div>
+
+        <!-- Поле для пароля -->
+        <div class="form-group">
+            <label for="id_password">{% trans "Пароль" %}</label>
+            <input type="password"
+                   name="password"
+                   id="id_password"
+                   class="form-control"
+                   placeholder="{% trans 'Введите пароль' %}"
+                   required>
+        </div>
+
+        <!-- Кнопка входа -->
+        <button type="submit" class="btn-login">{% trans "Войти" %}</button>
+    </form>
+
+    <!-- Ссылка на регистрацию -->
+    <div class="auth-links">
+        <p>{% trans "Ещё нет аккаунта?" %}
+            <a href="{% url 'account_signup' %}">{% trans "Зарегистрироваться" %}</a>
+        </p>
+        <p>
+            <a href="{% url 'account_reset_password' %}">{% trans "Забыли пароль?" %}</a>
+        </p>
+    </div>
+{% endblock %}

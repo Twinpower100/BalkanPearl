@@ -28,9 +28,10 @@ GOOGLE_MAPS_KEY = config('GOOGLE_MAPS_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 SITE_ID = 1
-LOGIN_URL = 'login'  # Путь на страницу входа
-ALLOWED_HOSTS = []
+LOGIN_URL = 'account_login'  # Путь на страницу входа
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'  # Перенаправление после выхода
 
 # Application definition
 
@@ -72,7 +73,7 @@ MIDDLEWARE = [
 LANGUAGES = [
     ('en', _('English')),
     ('ru', _('Russian')),
-    ('me', _('Montenegrin')),
+    ('me', _('Montenegrian')),
 ]
 
 LOCALE_PATHS = [
@@ -184,7 +185,10 @@ SOCIALACCOUNT_PROVIDERS = {
         'APP': {
             'client_id': config('GOOGLE_CLIENT_ID'),
             'secret': config('GOOGLE_SECRET'),
-        }
+            'key': ''
+        },
+        'SCOPE': ['profile', 'email'],
+        'AUTH_PARAMS': {'access_type': 'online'}
     },
     # На фейсбук надо регистрировать фирму
     # 'facebook': {

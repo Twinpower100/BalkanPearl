@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
+from django.contrib.auth.views import LogoutView
 from django.urls import path, include
 from django.views.generic import RedirectView
 from . import views  # импортируйте ваши представления
-from .views import calculate_price, CustomLoginView
+from .views import calculate_price, CustomLoginView, CustomLogoutView, login_form, google_login
+from allauth.socialaccount.providers.google.views import oauth2_login
 
 urlpatterns = [
     # Пример маршрута
@@ -21,7 +23,12 @@ urlpatterns = [
     path('reviews/create/', views.create_review, name='create_review'),
     path('blog/', views.blog_home, name='blog_home'),
     path('profile/', views.profile, name='profile'),
-    path('accounts/profile/', RedirectView.as_view(url='/', permanent=False)),
-    path('login/', CustomLoginView.as_view(), name='account_login'),
-    path('accounts/login/', CustomLoginView.as_view(),name="account_login")
+    path('accounts/', include('allauth.urls')),  # Подключение allauth
+    path('login-form/', login_form, name='login_form'),
+    #path('accounts/google/login/', oauth2_login, name='google_login'),  # Кастомный маршрут
+    path('accounts/google/login/', google_login, name='google_login'),  # Кастомный маршрут
+
+    # path('accounts/profile/', RedirectView.as_view(url='/', permanent=False)),
+    # path('accounts/login/', CustomLoginView.as_view(),name="account_login"),
+    # path('accounts/logout/', LogoutView.as_view(), name='account_logout'),
 ]

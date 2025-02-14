@@ -1,0 +1,192 @@
+/*auth_styles.css*/
+
+/* Определение цветовых переменных для удобства */
+:root {
+    --primary-color: #007bff; /* Основной синий цвет */
+    --success-color: #28a745; /* Зеленый цвет для успешных действий */
+    --google-border: #ddd; /* Цвет границы для кнопки Google */
+}
+
+/* Центрирование и фон для контейнера авторизации */
+.auth-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; /* Занимает всю высоту экрана */
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.05); /* Легкий серый фон */
+}
+
+/* Стили для блока с формой */
+.auth-box {
+    background: white;
+    padding: 2.5rem;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 400px; /* Максимальная ширина формы */
+    text-align: center;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Тень для выделения формы */
+}
+
+/* Заголовок формы */
+.auth-box h2 {
+    margin: 0 0 2rem 0;
+    font-size: 1.5rem;
+    color: #333;
+}
+
+/* Стили для формы */
+.auth-box form {
+    width: 100%;
+    margin: 2rem 0;
+}
+
+/* Группа полей ввода */
+.form-group {
+    margin-bottom: 1.2rem;
+    text-align: left;
+}
+
+/* Метки для полей ввода */
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+/* Поля ввода */
+.form-control {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+/* Стили для фокуса на полях ввода */
+.form-control:focus {
+    border-color: #4285f4;
+    box-shadow: 0 0 0 2px rgba(66, 133, 244, 0.2);
+}
+
+/* Стили для ссылок */
+.auth-links {
+    margin: 1.5rem 0;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+/* Стили для текста ссылок */
+.auth-links a {
+    color: #4285f4;
+    text-decoration: none;
+}
+
+/* Стили для параграфов в блоке ссылок */
+.auth-links p {
+    margin: 15px 0;
+    color: #666;
+}
+
+/* Общие стили для кнопок */
+.btn {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background 0.3s ease;
+}
+
+/* Стили для кнопки входа */
+.btn-login {
+    background: var(--primary-color);
+    color: white;
+}
+
+.btn-login:hover {
+    background: #3570c7; /* Темнее при наведении */
+}
+
+/* Стили для кнопки регистрации */
+.btn-signup {
+    background: var(--success-color);
+    color: white;
+}
+
+/* Стили для кнопки Google */
+.btn-google {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    width: 100%;
+    padding: 12px;
+    background: white;
+    color: #333;
+    border: 1px solid var(--google-border);
+    border-radius: 6px;
+    font-weight: 500;
+    transition: background 0.2s;
+}
+
+.btn-google:hover {
+    background: #f8f9fa; /* Легкий фон при наведении */
+}
+
+/* Иконка в кнопке Google */
+.btn-google img {
+    width: 20px;
+    height: 20px;
+}
+
+/* Стили для кнопки выхода */
+.btn-logout {
+    background: #dc3545; /* Красный цвет для кнопки выхода */
+    color: white;
+}
+
+/* Стили для кнопки отмены */
+.btn-cancel {
+    background: #6c757d; /* Серый цвет для кнопки отмены */
+    color: white;
+}
+
+/* Плейсхолдеры для полей ввода */
+::placeholder {
+    color: #999;
+    opacity: 1;
+}
+
+/* Разделитель между элементами */
+.separator {
+    margin: 1.5rem 0;
+    display: flex;
+    align-items: center;
+    color: #666;
+}
+
+.separator::before,
+.separator::after {
+    content: "";
+    flex: 1;
+    border-bottom: 1px solid #ddd;
+}
+
+.separator span {
+    padding: 0 1rem;
+}
+
+/* Стили для списка ошибок */
+.errorlist {
+    color: #dc3545;
+    font-size: 0.9rem;
+    margin: 5px 0;
+    padding-left: 0;
+    list-style: none;
+}

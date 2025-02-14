@@ -1,0 +1,15 @@
+<!--signup.html-->
+{% extends "auth_base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block auth_content %}
+    <h2>{% trans "Регистрация" %}</h2>
+
+    <!-- Форма регистрации -->
+    <form method="post" action="{% url 'account_signup' %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn-signup">{% trans "Зарегистрироваться" %}</button>
+    </form>
+{% endblock %}

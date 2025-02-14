@@ -1,0 +1,18 @@
+<!--google_login.html-->
+{% extends "auth_base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block auth_content %}
+    <h2>{% trans "Вход через Google" %}</h2>
+    <p>{% trans "Вы будете перенаправлены на страницу входа через Google." %}</p>
+
+    <!-- Кнопка для продолжения с Google -->
+    <form method="post" action="{% provider_login_url 'google' %}">
+        {% csrf_token %}
+        <button type="submit" class="btn-google">
+            <img src="{% static 'images/google-icon.svg' %}" alt="Google">
+            {% trans "Продолжить с Google" %}
+        </button>
+    </form>
+{% endblock %}

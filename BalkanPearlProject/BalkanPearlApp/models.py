@@ -410,19 +410,6 @@ class Refund(models.Model):
         )
 
 
-# class BookingLog(models.Model):
-#     booking = models.ForeignKey(Booking, on_delete=models.CASCADE, verbose_name=_("Booking"),
-#                                 related_name='booking_logs')
-#     action = models.CharField(max_length=50, verbose_name=_("Action"))
-#     performed_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, verbose_name=_("Performed by"),
-#                                      related_name='booking_logs')
-#     timestamp = models.DateTimeField(auto_now_add=True, verbose_name=_("Timestamp"))
-#     payment = models.OneToOneField(Payment, on_delete=models.SET_NULL, null=True, blank=True, verbose_name=_("Payment"),
-#                                 related_name='booking_logs')
-#     refund = models.OneToOneField(Refund, on_delete=models.SET_NULL, null=True, blank=True, verbose_name=_("Refund"),
-#                                   related_name='booking_logs')
-
-
 class Review(models.Model):
     """Отзывы пользователей"""
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name=_('Username'))

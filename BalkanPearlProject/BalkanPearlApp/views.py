@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from allauth.account.views import LoginView
+from django.contrib.auth.views import LogoutView
 from django.core.exceptions import ValidationError
 from allauth.core.internal.httpkit import redirect
 from django.http import JsonResponse, HttpResponse
@@ -7,7 +8,7 @@ from django.templatetags.i18n import language
 from django.utils import timezone
 from django.shortcuts import render, get_object_or_404, redirect
 from decouple import config  # Добавляем импорт config
-
+from allauth.socialaccount.providers.google.views import oauth2_login
 from .forms import CustomLoginForm
 from .models import Hotel, Apartment, Review, BlogPost, SiteImage, HotelPhoto, ApartmentPhoto, Booking
 from django.contrib.auth.decorators import login_required
@@ -86,9 +87,6 @@ def booking_form(request, apartment_id):
         # ... остальные данные ...
     }
     return render(request, "booking_form.html", context)
-
-
-
 
 
 def blog_home(request):
@@ -204,6 +202,7 @@ def reviews(request):
     }
     return render(request, 'reviews.html', context)
 
+
 class ReviewForm(forms.ModelForm):
     anonymous = forms.BooleanField(required=False, label=_("Опубликовать анонимно"))
 
@@ -233,21 +232,25 @@ def create_review(request):
 
     return render(request, 'create_review.html', {'form': form})
 
-# def login_view(request):
-#     if request.method == 'POST':
-#         form = CustomLoginForm(request.POST)
-#         if form.is_valid():
-#             # Обработка формы
-#             form.login(request)
-#             return redirect('profile')  # Укажите нужный редирект
-#     else:
-#         form = CustomLoginForm()
-#     return render(request, 'login.html', {'form': form})
+
+from .models import SiteImage
+
 
 class CustomLoginView(LoginView):
     form_class = CustomLoginForm
 
-    def get(self, request, *args, **kwargs):
-        return HttpResponse("CustomLoginView works")
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['site_image'] = SiteImage.objects.first()  # Первое изображение из модели
+        return context
 
 
+class CustomLogoutView(LogoutView):
+    template_name = 'account/logout.html'
+    extra_context = {'site_image': SiteImage.objects.first()}
+
+def login_form(request):
+    return render(request, 'account/login_form.html')
+
+def google_login(request):
+    return render(request, 'account/google_login.html')

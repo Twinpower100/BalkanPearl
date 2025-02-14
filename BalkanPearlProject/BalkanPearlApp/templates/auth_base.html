@@ -1,0 +1,20 @@
+<!-- templates/auth_base.html -->
+<!DOCTYPE html>
+{% load static %}
+{% load i18n %}
+<html lang="{{ LANGUAGE_CODE }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% trans "Авторизация" %}{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/auth_styles.css' %}">
+</head>
+<body>
+    <!-- Основной контейнер для авторизации -->
+    <div class="auth-container">
+        <div class="auth-box">
+            {% block auth_content %}{% endblock %}
+        </div>
+    </div>
+</body>
+</html>

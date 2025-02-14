@@ -32,6 +32,7 @@ urlpatterns = [
 urlpatterns += i18n_patterns(
     path('admin/', admin.site.urls),
     path('', include('BalkanPearlApp.urls')),  # Ваше приложение
+
 )
 urlpatterns += [
     path('accounts/', include('allauth.urls')),
