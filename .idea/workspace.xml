@@ -4,26 +4,138 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0ff082ee-8a75-425f-b889-1e11787c2ed4" name="Changes" comment="1. работает карусель фото&#10;2. показано фото фона на весь экран&#10;3. работает карта&#10;4. работает переключатель языков, включая шаблоны&#10;5. не работает: не могу всю страницу Home отразить на одном экране&#10;6. Добавлены иконки и лого&#10;7. Добавлены архивы&#10;8. Добавлены ссылки на соцсети&#10;9. Страница апартаментов работает, кроме бронирования&#10;10. Добавлны шаблоны регистрации, входа&#10;11. Можем бронировать и проводить оплаты через админку. &#10;12. В качестве стоимости бронирования можем вносить стоимость вручную (через админку)&#10;13. Можем авторизовываться на сайте + Гугл, регистрироваться. Бронирование работает только для авторизованных пользователей&#10;14 Корректно работает бронирование, отмена бронирования, расчет задолженности как клиента, так и отеля перед клиентом в случае оплаты и последующей отмены&#10;15 Корректно отрабатывается удаление платежа, добавлена модель возврата средств, работает адекватно&#10;16 Кнопки и заголовок работают норм&#10;17 работает корректно расчет цен&#10;18 добавлены отчеты с выгрузкой в excel&#10;Осталось:&#10;в) изменить форму авторизации + локализация&#10;г) добавить авторизацию через еще что-то. Apple ID стоит 100USD/month, Facebook требует регистрации фирмы у них (мэйл и т.д.) &#10;д) Оплату прописать. Надо сначала понять, с помощью какого сервиса. Это все платно. На Жене&#10;е) мастер бронирования&#10;ж) отчет по свободным / занятым датам / апартаментам на период &#10;з) лупа на фотки&#10;и) лента смайликов под отзывом">
-      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/templates/account/google_login.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/templates/account/login.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/templates/account/login_form.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/templates/account/logout.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/templates/account/signup.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/templates/auth_base.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/static/css/auth_styles.css" afterDir="false" />
+    <list default="true" id="0ff082ee-8a75-425f-b889-1e11787c2ed4" name="Changes" comment="ToDo&#10;- показ стоимости не зарегистрированным пользователям. Бронирование - только авторизованным. При переходе со страницы апартаменты на авторизацию выбор дат должен сохраняться &#10;- обязательное поле в модель бронирования количество людей. Проверять по максимальной вместимости номера&#10;- мастер бронирования. Количество людей, даты. Вывод апартаментов с количеством людей, сортировка по цене (?), если количество людей больше вместимости, нужен функционал одновременного бронирования нескольких номеров&#10;- отчет по свободным / занятым датам / апартаментам на период &#10;- лупа на фотки&#10;- лента смайликов под отзывом&#10;&#10;отложено&#10;- добавить авторизацию через еще что-то. Apple ID стоит 100USD/month, Facebook требует регистрации фирмы у них (мэйл и т.д.) &#10;- Оплату прописать. Надо сначала понять, с помощью какого сервиса. Это все платно. На Жене">
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/css/autocomplete.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/css/base.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/css/changelists.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/css/dark_mode.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/css/dashboard.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/css/forms.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/css/login.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/css/nav_sidebar.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/css/responsive.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/css/responsive_rtl.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/css/rtl.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/css/unusable_password_field.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/css/vendor/select2/LICENSE-SELECT2.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/css/vendor/select2/select2.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/css/vendor/select2/select2.min.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/css/widgets.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/img/LICENSE" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/img/README.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/img/calendar-icons.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/img/gis/move_vertex_off.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/img/gis/move_vertex_on.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/img/icon-addlink.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/img/icon-alert.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/img/icon-calendar.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/img/icon-changelink.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/img/icon-clock.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/img/icon-deletelink.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/img/icon-hidelink.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/img/icon-no.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/img/icon-unknown-alt.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/img/icon-unknown.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/img/icon-viewlink.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/img/icon-yes.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/img/inline-delete.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/img/search.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/img/selector-icons.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/img/sorting-icons.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/img/tooltag-add.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/img/tooltag-arrowright.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/js/SelectBox.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/js/SelectFilter2.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/js/actions.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/js/admin/DateTimeShortcuts.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/js/admin/RelatedObjectLookups.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/js/autocomplete.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/js/calendar.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/js/cancel.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/js/change_form.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/js/core.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/js/filters.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/js/inlines.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/js/jquery.init.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/js/nav_sidebar.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/js/popup_response.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/js/prepopulate.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/js/prepopulate_init.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/js/theme.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/js/unusable_password_field.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/js/urlify.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/js/vendor/jquery/LICENSE.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/js/vendor/jquery/jquery.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/js/vendor/jquery/jquery.min.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/js/vendor/select2/LICENSE.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/js/vendor/select2/i18n/af.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/js/vendor/select2/i18n/ar.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/js/vendor/select2/i18n/az.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/js/vendor/select2/i18n/bg.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/js/vendor/select2/i18n/bn.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/js/vendor/select2/i18n/bs.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/js/vendor/select2/i18n/ca.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/js/vendor/select2/i18n/cs.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/js/vendor/select2/i18n/da.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/js/vendor/select2/i18n/de.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/js/vendor/select2/i18n/dsb.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/js/vendor/select2/i18n/el.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/js/vendor/select2/i18n/en.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/js/vendor/select2/i18n/es.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/js/vendor/select2/i18n/et.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/js/vendor/select2/i18n/eu.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/js/vendor/select2/i18n/fa.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/js/vendor/select2/i18n/fi.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/js/vendor/select2/i18n/fr.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/js/vendor/select2/i18n/gl.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/js/vendor/select2/i18n/he.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/js/vendor/select2/i18n/hi.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/js/vendor/select2/i18n/hr.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/js/vendor/select2/i18n/hsb.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/js/vendor/select2/i18n/hu.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/js/vendor/select2/i18n/hy.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/js/vendor/select2/i18n/id.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/js/vendor/select2/i18n/is.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/js/vendor/select2/i18n/it.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/js/vendor/select2/i18n/ja.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/js/vendor/select2/i18n/ka.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/js/vendor/select2/i18n/km.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/js/vendor/select2/i18n/ko.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/js/vendor/select2/i18n/lt.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/js/vendor/select2/i18n/lv.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/js/vendor/select2/i18n/mk.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/js/vendor/select2/i18n/ms.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/js/vendor/select2/i18n/nb.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/js/vendor/select2/i18n/ne.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/js/vendor/select2/i18n/nl.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/js/vendor/select2/i18n/pl.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/js/vendor/select2/i18n/ps.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/js/vendor/select2/i18n/pt-BR.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/js/vendor/select2/i18n/pt.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/js/vendor/select2/i18n/ro.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/js/vendor/select2/i18n/ru.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/js/vendor/select2/i18n/sk.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/js/vendor/select2/i18n/sl.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/js/vendor/select2/i18n/sq.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/js/vendor/select2/i18n/sr-Cyrl.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/js/vendor/select2/i18n/sr.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/js/vendor/select2/i18n/sv.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/js/vendor/select2/i18n/th.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/js/vendor/select2/i18n/tk.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/js/vendor/select2/i18n/tr.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/js/vendor/select2/i18n/uk.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/js/vendor/select2/i18n/vi.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/js/vendor/select2/i18n/zh-CN.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/js/vendor/select2/i18n/zh-TW.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/js/vendor/select2/select2.full.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/js/vendor/select2/select2.full.min.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/js/vendor/xregexp/LICENSE.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/js/vendor/xregexp/xregexp.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/admin/js/vendor/xregexp/xregexp.min.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/css/style.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/context_processors.py" beforeDir="false" afterPath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/context_processors.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/forms.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/admin.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/templates/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/templates/base.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/templates/login.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlProject/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlProject/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlProject/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlProject/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BalkanPearlProject/static/css/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/BalkanPearlProject/static/css/style.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BalkanPearlProject/static/images/google-icon.svg" beforeDir="false" afterPath="$PROJECT_DIR$/BalkanPearlProject/static/images/google-icon.svg" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -116,7 +228,7 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-python-sdk-a5bc9544c897-aa17d162503b-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-243.23654.177" />
+        <option value="bundled-python-sdk-fc1d50d2d915-aa17d162503b-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-243.24978.54" />
       </set>
     </attachedChunks>
   </component>
@@ -441,7 +553,15 @@
       <option name="project" value="LOCAL" />
       <updated>1739463591668</updated>
     </task>
-    <option name="localTasksCounter" value="40" />
+    <task id="LOCAL-00040" summary="ToDo&#10;- показ стоимости не зарегистрированным пользователям. Бронирование - только авторизованным. При переходе со страницы апартаменты на авторизацию выбор дат должен сохраняться &#10;- обязательное поле в модель бронирования количество людей. Проверять по максимальной вместимости номера&#10;- мастер бронирования. Количество людей, даты. Вывод апартаментов с количеством людей, сортировка по цене (?), если количество людей больше вместимости, нужен функционал одновременного бронирования нескольких номеров&#10;- отчет по свободным / занятым датам / апартаментам на период &#10;- лупа на фотки&#10;- лента смайликов под отзывом&#10;&#10;отложено&#10;- добавить авторизацию через еще что-то. Apple ID стоит 100USD/month, Facebook требует регистрации фирмы у них (мэйл и т.д.) &#10;- Оплату прописать. Надо сначала понять, с помощью какого сервиса. Это все платно. На Жене">
+      <option name="closed" value="true" />
+      <created>1739542627222</created>
+      <option name="number" value="00040" />
+      <option name="presentableId" value="LOCAL-00040" />
+      <option name="project" value="LOCAL" />
+      <updated>1739542627222</updated>
+    </task>
+    <option name="localTasksCounter" value="41" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -465,7 +585,8 @@
     <MESSAGE value="1. работает карусель фото&#10;2. показано фото фона на весь экран&#10;3. работает карта&#10;4. работает переключатель языков, включая шаблоны&#10;5. не работает: не могу всю страницу Home отразить на одном экране&#10;6. Добавлены иконки и лого&#10;7. Добавлены архивы&#10;8. Добавлены ссылки на соцсети&#10;9. Страница апартаментов работает, кроме бронирования&#10;10. Добавлны шаблоны регистрации, входа&#10;11. Можем бронировать и проводить оплаты через админку. &#10;12. В качестве стоимости бронирования можем вносить стоимость вручную (через админку)&#10;13. Можем авторизовываться на сайте + Гугл, регистрироваться. Бронирование работает только для авторизованных пользователей&#10;14 Корректно работает бронирование, отмена бронирования, расчет задолженности как клиента, так и отеля перед клиентом в случае оплаты и последующей отмены&#10;15 Корректно отрабатывается удаление платежа, добавлена модель возврата средств, работает адекватно&#10;16 Кнопки и заголовок работают норм&#10;17 работает корректно расчет цен&#10;18 добавлены отчеты с выгрузкой в excel&#10;Осталось:&#10;в) изменить форму авторизации + локализация&#10;г) добавить авторизацию через еще что-то. Apple ID стоит 100USD/month, Facebook требует регистрации фирмы у них (мэйл и т.д.) &#10;д) Оплату прописать. Надо сначала понять, с помощью какого сервиса. Это все платно. На Жене" />
     <MESSAGE value="1. работает карусель фото&#10;2. показано фото фона на весь экран&#10;3. работает карта&#10;4. работает переключатель языков, включая шаблоны&#10;5. не работает: не могу всю страницу Home отразить на одном экране&#10;6. Добавлены иконки и лого&#10;7. Добавлены архивы&#10;8. Добавлены ссылки на соцсети&#10;9. Страница апартаментов работает, кроме бронирования&#10;10. Добавлны шаблоны регистрации, входа&#10;11. Можем бронировать и проводить оплаты через админку. &#10;12. В качестве стоимости бронирования можем вносить стоимость вручную (через админку)&#10;13. Можем авторизовываться на сайте + Гугл, регистрироваться. Бронирование работает только для авторизованных пользователей&#10;14 Корректно работает бронирование, отмена бронирования, расчет задолженности как клиента, так и отеля перед клиентом в случае оплаты и последующей отмены&#10;15 Корректно отрабатывается удаление платежа, добавлена модель возврата средств, работает адекватно&#10;16 Кнопки и заголовок работают норм&#10;17 работает корректно расчет цен&#10;18 добавлены отчеты с выгрузкой в excel&#10;Осталось:&#10;в) изменить форму авторизации + локализация&#10;г) добавить авторизацию через еще что-то. Apple ID стоит 100USD/month, Facebook требует регистрации фирмы у них (мэйл и т.д.) &#10;д) Оплату прописать. Надо сначала понять, с помощью какого сервиса. Это все платно. На Жене&#10;е) мастер бронирования" />
     <MESSAGE value="1. работает карусель фото&#10;2. показано фото фона на весь экран&#10;3. работает карта&#10;4. работает переключатель языков, включая шаблоны&#10;5. не работает: не могу всю страницу Home отразить на одном экране&#10;6. Добавлены иконки и лого&#10;7. Добавлены архивы&#10;8. Добавлены ссылки на соцсети&#10;9. Страница апартаментов работает, кроме бронирования&#10;10. Добавлны шаблоны регистрации, входа&#10;11. Можем бронировать и проводить оплаты через админку. &#10;12. В качестве стоимости бронирования можем вносить стоимость вручную (через админку)&#10;13. Можем авторизовываться на сайте + Гугл, регистрироваться. Бронирование работает только для авторизованных пользователей&#10;14 Корректно работает бронирование, отмена бронирования, расчет задолженности как клиента, так и отеля перед клиентом в случае оплаты и последующей отмены&#10;15 Корректно отрабатывается удаление платежа, добавлена модель возврата средств, работает адекватно&#10;16 Кнопки и заголовок работают норм&#10;17 работает корректно расчет цен&#10;18 добавлены отчеты с выгрузкой в excel&#10;Осталось:&#10;в) изменить форму авторизации + локализация&#10;г) добавить авторизацию через еще что-то. Apple ID стоит 100USD/month, Facebook требует регистрации фирмы у них (мэйл и т.д.) &#10;д) Оплату прописать. Надо сначала понять, с помощью какого сервиса. Это все платно. На Жене&#10;е) мастер бронирования&#10;ж) отчет по свободным / занятым датам / апартаментам на период &#10;з) лупа на фотки&#10;и) лента смайликов под отзывом" />
-    <option name="LAST_COMMIT_MESSAGE" value="1. работает карусель фото&#10;2. показано фото фона на весь экран&#10;3. работает карта&#10;4. работает переключатель языков, включая шаблоны&#10;5. не работает: не могу всю страницу Home отразить на одном экране&#10;6. Добавлены иконки и лого&#10;7. Добавлены архивы&#10;8. Добавлены ссылки на соцсети&#10;9. Страница апартаментов работает, кроме бронирования&#10;10. Добавлны шаблоны регистрации, входа&#10;11. Можем бронировать и проводить оплаты через админку. &#10;12. В качестве стоимости бронирования можем вносить стоимость вручную (через админку)&#10;13. Можем авторизовываться на сайте + Гугл, регистрироваться. Бронирование работает только для авторизованных пользователей&#10;14 Корректно работает бронирование, отмена бронирования, расчет задолженности как клиента, так и отеля перед клиентом в случае оплаты и последующей отмены&#10;15 Корректно отрабатывается удаление платежа, добавлена модель возврата средств, работает адекватно&#10;16 Кнопки и заголовок работают норм&#10;17 работает корректно расчет цен&#10;18 добавлены отчеты с выгрузкой в excel&#10;Осталось:&#10;в) изменить форму авторизации + локализация&#10;г) добавить авторизацию через еще что-то. Apple ID стоит 100USD/month, Facebook требует регистрации фирмы у них (мэйл и т.д.) &#10;д) Оплату прописать. Надо сначала понять, с помощью какого сервиса. Это все платно. На Жене&#10;е) мастер бронирования&#10;ж) отчет по свободным / занятым датам / апартаментам на период &#10;з) лупа на фотки&#10;и) лента смайликов под отзывом" />
+    <MESSAGE value="ToDo&#10;- показ стоимости не зарегистрированным пользователям. Бронирование - только авторизованным. При переходе со страницы апартаменты на авторизацию выбор дат должен сохраняться &#10;- обязательное поле в модель бронирования количество людей. Проверять по максимальной вместимости номера&#10;- мастер бронирования. Количество людей, даты. Вывод апартаментов с количеством людей, сортировка по цене (?), если количество людей больше вместимости, нужен функционал одновременного бронирования нескольких номеров&#10;- отчет по свободным / занятым датам / апартаментам на период &#10;- лупа на фотки&#10;- лента смайликов под отзывом&#10;&#10;отложено&#10;- добавить авторизацию через еще что-то. Apple ID стоит 100USD/month, Facebook требует регистрации фирмы у них (мэйл и т.д.) &#10;- Оплату прописать. Надо сначала понять, с помощью какого сервиса. Это все платно. На Жене" />
+    <option name="LAST_COMMIT_MESSAGE" value="ToDo&#10;- показ стоимости не зарегистрированным пользователям. Бронирование - только авторизованным. При переходе со страницы апартаменты на авторизацию выбор дат должен сохраняться &#10;- обязательное поле в модель бронирования количество людей. Проверять по максимальной вместимости номера&#10;- мастер бронирования. Количество людей, даты. Вывод апартаментов с количеством людей, сортировка по цене (?), если количество людей больше вместимости, нужен функционал одновременного бронирования нескольких номеров&#10;- отчет по свободным / занятым датам / апартаментам на период &#10;- лупа на фотки&#10;- лента смайликов под отзывом&#10;&#10;отложено&#10;- добавить авторизацию через еще что-то. Apple ID стоит 100USD/month, Facebook требует регистрации фирмы у них (мэйл и т.д.) &#10;- Оплату прописать. Надо сначала понять, с помощью какого сервиса. Это все платно. На Жене" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

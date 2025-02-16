@@ -240,6 +240,7 @@ class Booking(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='confirmed', verbose_name=_("Status"))
     debt = models.DecimalField(verbose_name=_('Debt'), help_text=_("Negative debt means hotel's debt"), max_digits=10,
                                decimal_places=2, default=Decimal(0.00))
+    people_quantity = models.IntegerField(verbose_name=_('People quantity'), default=1, blank=True)
 
     class Meta:
         verbose_name = _('Booking')
