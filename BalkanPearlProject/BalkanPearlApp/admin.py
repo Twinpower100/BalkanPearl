@@ -1,3 +1,4 @@
+# C:\Mail.ru\CodeIt\Django\BalkanPearl\BalkanPearlProject\BalkanPearlApp\admin.py
 # -*- coding: utf-8 -*-
 import datetime
 from django.contrib import admin
@@ -14,6 +15,7 @@ from django.shortcuts import render, HttpResponse
 from django.db.models import Sum, Q, F
 from django.http import HttpResponseForbidden
 from openpyxl import Workbook
+
 
 # Register your models here.
 
@@ -142,6 +144,7 @@ class BookingAdmin(admin.ModelAdmin):
         for booking in cancelled:
             booking.cancel_booking(cancelled_by='admin')
         self.message_user(request, _("Выбранные бронирования отменены."))
+
     cancel_booking.short_description = _("Отменить выбранные бронирования")
 
     def reports_view(self, request):
@@ -294,10 +297,25 @@ class BookingAdmin(admin.ModelAdmin):
         wb.save(response)
         return response
 
-
     @admin.display(description=_('Задолженность'))
     def debt_display(self, obj):
         return obj.debt
+
+    def availability_report(self, request):
+        start_date = request.GET.get('start_date')
+        end_date = request.GET.get('end_date')
+
+        apartments = Apartment.objects.all()
+        report_data = []
+        for apartment in apartments:
+            is_available = apartment.is_available(start_date, end_date)
+            report_data.append({
+                'apartment': apartment.number,
+                'status': 'Свободен' if is_available else 'Забронирован',
+            })
+
+        return render(request, 'admin/BalkanPearlApp/booking/availability_report.html',
+                      {'report_data': report_data})
 
 
 @admin.register(Review)
@@ -307,7 +325,7 @@ class ReviewAdmin(admin.ModelAdmin):
 
 @admin.register(BlogPost)
 class BlogPostAdmin(admin.ModelAdmin):
-    list_display = ('title', 'content', 'author', 'created_at', )
+    list_display = ('title', 'content', 'author', 'created_at',)
 
 
 @admin.register(SiteImage)
@@ -320,7 +338,7 @@ class ReportFilterForm(forms.Form):
         label=_('Начало периода'),
         widget=forms.DateInput(attrs={'type': 'date'}),
         initial=datetime.date.today().replace(day=1)
-        )
+    )
     end_date = forms.DateField(
         label=_('Конец периода'),
         widget=forms.DateInput(attrs={'type': 'date'}),

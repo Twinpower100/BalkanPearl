@@ -1,4 +1,4 @@
-"""forms.py"""
+# C:\Mail.ru\CodeIt\Django\BalkanPearl\BalkanPearlProject\BalkanPearlApp\forms.py
 # -*- coding: utf-8 -*-
 from allauth.account.forms import LoginForm
 from django.utils.translation import gettext_lazy as _

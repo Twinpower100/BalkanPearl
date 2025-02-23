@@ -1,6 +1,7 @@
+# C:\Mail.ru\CodeIt\Django\BalkanPearl\BalkanPearlProject\BalkanPearlApp\models.py
 # -*- coding: utf-8 -*-
 from django.core.exceptions import ValidationError
-from django.core.validators import MinValueValidator, MaxValueValidator
+from django.core.validators import MinValueValidator
 from django.db import models, transaction
 from decimal import Decimal
 from django.db.models import Sum, Q
@@ -50,16 +51,6 @@ class Hotel(models.Model):
     instagram_link = models.URLField(verbose_name=_('Instagram link'), blank=True, null=True)
     facebook_link = models.URLField(verbose_name=_('Facebook link'), blank=True, null=True)
 
-    # latitude = models.DecimalField(max_digits=17, decimal_places=15, verbose_name=_('Latitude'), default=0)
-    # longitude = models.DecimalField(max_digits=17, decimal_places=15, verbose_name=_('Longitude'), default=0)
-
-    # def save(self, *args, **kwargs):
-    #     if isinstance(self.latitude, str):
-    #         self.latitude = Decimal(self.latitude.replace(',', '.'))
-    #     if isinstance(self.longitude, str):
-    #         self.longitude = Decimal(self.longitude.replace(',', '.'))
-    #
-    #     super().save(*args, **kwargs)
 
     class Meta:
         verbose_name = _('Hotel')
@@ -162,7 +153,6 @@ class Apartment(models.Model):
     is_closed = models.BooleanField(default=False, verbose_name=_('Apartment is closed'))
 
     def calculate_price(self, check_in, check_out):
-        """Рассчитать цену на основе сезона с валидацией дат."""
         if isinstance(check_in, str):
             check_in = timezone.datetime.strptime(check_in, "%Y-%m-%d").date()
         if isinstance(check_out, str):
@@ -179,34 +169,32 @@ class Apartment(models.Model):
             raise ValidationError(_("Некорректный период бронирования"))
 
         total_price = Decimal("0.00")
-        seasons = Season.objects.filter(
-            start_date__lte=check_out,
-            end_date__gte=check_in
-        ).order_by("start_date")
-
         current_date = check_in
+
         while current_date < check_out:
-            applicable_season = seasons.filter(
+            # Находим сезон, который действует на текущую дату
+            season = Season.objects.filter(
                 start_date__lte=current_date,
                 end_date__gte=current_date
             ).first()
-            if applicable_season:
-                end_date = min(applicable_season.end_date + timezone.timedelta(days=1), check_out)
-                days = (end_date - current_date).days
-                total_price += days * self.base_price_per_night * applicable_season.price_multiplier
-                current_date = end_date
+
+            # Если сезон найден, используем его коэффициент
+            if season:
+                price_for_day = self.base_price_per_night * season.price_multiplier
+                end_of_season = min(season.end_date + timezone.timedelta(days=1), check_out)
+                days_in_season = (end_of_season - current_date).days
+                total_price += days_in_season * price_for_day
+                current_date = end_of_season
             else:
-                next_season = seasons.filter(start_date__gt=current_date).order_by('start_date').first()
+                # Если сезон не найден, используем базовую цену
+                next_season = Season.objects.filter(start_date__gt=current_date).order_by('start_date').first()
                 if next_season:
-                    days = (next_season.start_date - current_date).days
-                    if current_date + timezone.timedelta(days=days) > check_out:
-                        days = (check_out - current_date).days
-                    total_price += days * self.base_price_per_night
-                    current_date += timezone.timedelta(days=days)
+                    end_of_period = min(next_season.start_date, check_out)
                 else:
-                    days = (check_out - current_date).days
-                    total_price += days * self.base_price_per_night
-                    current_date = check_out
+                    end_of_period = check_out
+                days_in_period = (end_of_period - current_date).days
+                total_price += days_in_period * self.base_price_per_night
+                current_date = end_of_period
 
         return total_price
 
@@ -225,7 +213,6 @@ class Apartment(models.Model):
 class Booking(models.Model):
     STATUS_CHOICES = [('confirmed', _('Confirmed')), ('cancelled_by_user', _('Cancelled by User')),
                       ('cancelled_by_admin', _('Cancelled by Admin')), ]
-
     apartment = models.ForeignKey(Apartment, on_delete=models.CASCADE, related_name="bookings",
                                   verbose_name=_("Apartment number"))
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="bookings", verbose_name=_("User"))
@@ -240,7 +227,7 @@ class Booking(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='confirmed', verbose_name=_("Status"))
     debt = models.DecimalField(verbose_name=_('Debt'), help_text=_("Negative debt means hotel's debt"), max_digits=10,
                                decimal_places=2, default=Decimal(0.00))
-    people_quantity = models.IntegerField(verbose_name=_('People quantity'), default=1, blank=True)
+    people_quantity = models.IntegerField(verbose_name=_('Guests quantity'), default=1, blank=True)
 
     class Meta:
         verbose_name = _('Booking')

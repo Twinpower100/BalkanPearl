@@ -1,3 +1,4 @@
+# C:\Mail.ru\CodeIt\Django\BalkanPearl\BalkanPearlProject\BalkanPearlProject\urls.py
 """
 URL configuration for BalkanPearlProject project.
 

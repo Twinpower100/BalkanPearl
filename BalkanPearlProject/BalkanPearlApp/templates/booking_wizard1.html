@@ -1,4 +1,4 @@
-<!-- C:\Mail.ru\CodeIt\Django\BalkanPearl\BalkanPearlProject\BalkanPearlApp\templates\apartments_list.html -->
+<!-- C:\Mail.ru\CodeIt\Django\BalkanPearl\BalkanPearlProject\BalkanPearlApp\templates\booking_wizard1.html -->
 {% extends 'base.html' %}
 {% load i18n %}
 {% load static %}
@@ -7,12 +7,13 @@
 {% block content %}
 <!-- Заголовок и форма выбора дат -->
 <div class="date-selection" style="position: fixed; top: 150px; width: 100%; background: rgba(255, 255, 255, 0.9); padding: 10px; z-index: 999;">
-    <h2 style="margin: 0; text-align: center;">{% trans 'Список апартаментов' %}</h2>
+    <h2 style="margin: 0; text-align: center;">{% trans 'Внесите желаемые даты и количество гостей' %}</h2>
     <form id="date-form" style="display: flex; gap: 10px; justify-content: center; margin-top: 10px;">
         <input type="date" id="check_in" name="check_in" required style="padding: 8px;">
         <input type="date" id="check_out" name="check_out" required style="padding: 8px;">
+        <input type="number" id="people_quantity" name="people_quantity" min="1" required style="padding: 8px; width: 30px;" value="1">
         <button type="submit" style="padding: 8px 20px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">
-            {% trans "Рассчитать стоимость" %}
+            {% trans "Найти доступные номера и показать стоимость" %}
         </button>
     </form>
 </div>
@@ -114,6 +115,16 @@ document.addEventListener('DOMContentLoaded', () => {
             nextBtn.style.display = 'none';
         }
     });
+});
+// Обработчик для формы мастера бронирования
+document.getElementById('wizard-form').addEventListener('submit', function(event) {
+    event.preventDefault();
+    const checkIn = document.getElementById('check_in').value;
+    const checkOut = document.getElementById('check_out').value;
+    const peopleQuantity = document.getElementById('people_quantity').value;
+
+    // Перенаправляем на ту же страницу с параметрами
+    window.location.href = `{% url 'booking_wizard1' %}?check_in=${checkIn}&check_out=${checkOut}&people_quantity=${peopleQuantity}`;
 });
 </script>
 {% endblock %}

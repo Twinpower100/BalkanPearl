@@ -1,4 +1,5 @@
-"""context_processors.py"""
+# C:\Mail.ru\CodeIt\Django\BalkanPearl\BalkanPearlProject\BalkanPearlApp\context_processors.py
+
 from .models import SiteImage
 
 def site_image(request):

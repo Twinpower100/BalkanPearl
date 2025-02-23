@@ -1,3 +1,4 @@
+# C:\Mail.ru\CodeIt\Django\BalkanPearl\BalkanPearlProject\BalkanPearlProject\settings.py
 """
 Django settings for BalkanPearlProject project.
 

@@ -1,3 +1,5 @@
+# C:\Mail.ru\CodeIt\Django\BalkanPearl\BalkanPearlProject\BalkanPearlApp\apps.py
+
 from django.apps import AppConfig
 
 

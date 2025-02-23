@@ -1,3 +1,4 @@
+# C:\Mail.ru\CodeIt\Django\BalkanPearl\BalkanPearlProject\BalkanPearlApp\views.py
 # -*- coding: utf-8 -*-
 from allauth.account.views import LoginView
 from django.contrib.auth.views import LogoutView
@@ -49,7 +50,8 @@ def apartments_list(request):
         )
 
     context = {
-        'apartments_with_photos': apartments_with_photos
+        'apartments_with_photos': apartments_with_photos,
+        'hotel': hotel
     }
     return render(request, 'apartments_list.html', context)
 
@@ -69,7 +71,10 @@ def calculate_price(request, apartment_id):
 
 
 def booking_form(request, apartment_id):
+    hotel = Hotel.objects.first()
     apartment = get_object_or_404(Apartment, id=apartment_id)
+    check_in = request.GET.get('check_in')
+    check_out = request.GET.get('check_out')
     error = None
 
     if request.method == "POST":
@@ -83,24 +88,32 @@ def booking_form(request, apartment_id):
 
     context = {
         "apartment": apartment,
+        "check_in": check_in,
+        "check_out": check_out,
         "error": error,
-        # ... остальные данные ...
+        'hotel': hotel
     }
     return render(request, "booking_form.html", context)
 
 
 def blog_home(request):
     # Если есть модель блога, замените пустой список на запрос к базе
+    hotel = Hotel.objects.first()
     blog_posts = BlogPost.objects.all()
     context = {
         'blog_posts': blog_posts,
+        'hotel': hotel
     }
     return render(request, 'blog_home.html', context)
 
 
 @login_required
 def profile(request):
-    return render(request, 'profile.html')
+    hotel = Hotel.objects.first()
+    context = {
+        'hotel': hotel
+    }
+    return render(request, 'profile.html', context)
 
 
 @login_required
@@ -109,6 +122,7 @@ def create_booking(request):
         apartment_id = request.POST.get('apartment_id')
         check_in = request.POST.get('check_in')
         check_out = request.POST.get('check_out')
+        people_quantity = int(request.POST.get('people_quantity', 1))  # Получаем количество гостей
 
         try:
             # Проверка обязательных полей
@@ -116,6 +130,10 @@ def create_booking(request):
                 raise ValueError(_("Не все обязательные поля заполнены"))
 
             apartment = get_object_or_404(Apartment, id=apartment_id)
+
+            # Проверка количества гостей
+            if people_quantity > apartment.capacity:
+                raise ValueError(_("Количество гостей превышает вместимость апартамента"))
 
             # Парсинг дат
             check_in_date = timezone.datetime.strptime(check_in, '%Y-%m-%d').date()
@@ -138,7 +156,8 @@ def create_booking(request):
                 user=request.user,
                 apartment=apartment,
                 check_in=check_in_date,
-                check_out=check_out_date
+                check_out=check_out_date,
+                people_quantity=people_quantity, # Сохраняем количество гостей
             )
 
             messages.success(request, _("Бронирование успешно создано!"))
@@ -159,19 +178,34 @@ def create_booking(request):
 @login_required
 def booking_confirmation(request, booking_id):
     booking = get_object_or_404(Booking, id=booking_id, user=request.user)
-    return render(request, 'booking_confirmation.html', {'booking': booking})
+    hotel = Hotel.objects.first()
+    context = {
+        'booking': booking,
+        'hotel': hotel
+    }
+    return render(request, 'booking_confirmation.html', context)
 
 
 @login_required
 def booking_details(request, booking_id):
+    hotel = Hotel.objects.first()
     booking = get_object_or_404(Booking, id=booking_id, user=request.user)
-    return render(request, 'booking.html', {'booking': booking})
+    context = {
+        'booking': booking,
+        'hotel': hotel,
+    }
+    return render(request, 'booking.html', context)
 
 
 @login_required
 def profile(request):
+    hotel = Hotel.objects.first()
     user_bookings = Booking.objects.filter(user=request.user, status='confirmed').order_by('check_in')
-    return render(request, 'profile.html', {'user_bookings': user_bookings})
+    context = {
+        'user_bookings': user_bookings,
+        'hotel': hotel,
+    }
+    return render(request, 'profile.html', context)
 
 
 @login_required
@@ -188,23 +222,28 @@ def cancel_booking(request, booking_id):
 
 def payment_page(request, booking_id):
     booking = get_object_or_404(Booking, id=booking_id)
+    hotel = Hotel.objects.first()
     context = {
         'booking': booking,
+        'hotel': hotel,
         'stripe_public_key': 'ваш_публичный_ключ_stripe'  # Из settings.py
     }
     return render(request, 'payment.html', context)
 
 
 def reviews(request):
+    hotel = Hotel.objects.first()
     reviews_list = Review.objects.all()  # Получите список отзывов из базы данных
     context = {
         'reviews': reviews_list,
+        'hotel': hotel,
     }
     return render(request, 'reviews.html', context)
 
 
 class ReviewForm(forms.ModelForm):
     anonymous = forms.BooleanField(required=False, label=_("Опубликовать анонимно"))
+    hotel = Hotel.objects.first()
 
     class Meta:
         model = Review
@@ -218,6 +257,7 @@ class ReviewForm(forms.ModelForm):
 
 @login_required
 def create_review(request):
+    hotel = Hotel.objects.first()
     if request.method == 'POST':
         form = ReviewForm(request.POST)
         if form.is_valid():
@@ -230,7 +270,7 @@ def create_review(request):
     else:
         form = ReviewForm()
 
-    return render(request, 'create_review.html', {'form': form})
+    return render(request, 'create_review.html', {'form': form, 'hotel': hotel,})
 
 
 from .models import SiteImage
@@ -254,3 +294,87 @@ def login_form(request):
 
 def google_login(request):
     return render(request, 'account/google_login.html')
+
+@login_required
+def booking_wizard(request):
+    hotel = Hotel.objects.first()
+    check_in = request.GET.get('check_in')
+    check_out = request.GET.get('check_out')
+    people_quantity = int(request.GET.get('people_quantity', 1))
+
+    # Если даты не переданы, отображаем форму для их ввода
+    if not check_in or not check_out:
+        return render(request, 'booking_wizard.html', {'show_form': True, 'hotel': hotel})
+
+    # Проверяем, что даты корректны
+    try:
+        check_in_date = timezone.datetime.strptime(check_in, '%Y-%m-%d').date()
+        check_out_date = timezone.datetime.strptime(check_out, '%Y-%m-%d').date()
+    except ValueError:
+        return JsonResponse({'error': 'Некорректный формат даты'}, status=400)
+
+    apartments = Apartment.objects.filter(is_closed=False)
+    available_apartments = []
+    for apartment in apartments:
+        if apartment.is_available(check_in_date, check_out_date):
+            price = apartment.calculate_price(check_in_date, check_out_date)
+            photos = ApartmentPhoto.objects.filter(apartment=apartment)
+            available_apartments.append({
+                'id': apartment.id,
+                'number': apartment.number,
+                'description': apartment.description,
+                'price': price,
+                'photos': [{'photo': photo.photo.url} for photo in photos],
+                'hotel': hotel
+            })
+
+    return render(request, 'booking_wizard.html', {
+        'apartments': available_apartments,
+        'check_in': check_in,
+        'check_out': check_out,
+        'people_quantity': people_quantity,
+        'show_form': False,
+        'hotel': hotel,
+    })
+
+@login_required
+def booking_wizard1(request):
+    hotel = Hotel.objects.first()
+    check_in = request.GET.get('check_in')
+    check_out = request.GET.get('check_out')
+    people_quantity = int(request.GET.get('people_quantity', 1))
+
+    # Если даты не переданы, отображаем форму для их ввода
+    if not check_in or not check_out:
+        return render(request, 'booking_wizard1.html', {'show_form': True, 'hotel': hotel})
+
+    # Проверяем, что даты корректны
+    try:
+        check_in_date = timezone.datetime.strptime(check_in, '%Y-%m-%d').date()
+        check_out_date = timezone.datetime.strptime(check_out, '%Y-%m-%d').date()
+    except ValueError:
+        return JsonResponse({'error': 'Некорректный формат даты'}, status=400)
+
+    apartments = Apartment.objects.filter(is_closed=False)
+    available_apartments = []
+    for apartment in apartments:
+        if apartment.is_available(check_in_date, check_out_date):
+            price = apartment.calculate_price(check_in_date, check_out_date)
+            photos = ApartmentPhoto.objects.filter(apartment=apartment)
+            available_apartments.append({
+                'id': apartment.id,
+                'number': apartment.number,
+                'description': apartment.description,
+                'price': price,
+                'photos': [{'photo': photo.photo.url} for photo in photos],
+                'hotel': hotel
+            })
+
+    return render(request, 'booking_wizard1.html', {
+        'apartments': available_apartments,
+        'check_in': check_in,
+        'check_out': check_out,
+        'people_quantity': people_quantity,
+        'show_form': False,
+        'hotel': hotel,
+    })

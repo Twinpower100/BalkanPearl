@@ -1,0 +1,38 @@
+<!-- C:\Mail.ru\CodeIt\Django\BalkanPearl\BalkanPearlProject\BalkanPearlApp\templates\admin\BalkanPearlApp\booking\availability_report.html -->
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+
+{% block content %}
+<h1>{% trans "Отчет о доступности номеров" %}</h1>
+
+<form method="get" class="report-filters">
+    <label for="start_date">{% trans "Начало периода:" %}</label>
+    <input type="date" id="start_date" name="start_date" required>
+
+    <label for="end_date">{% trans "Конец периода:" %}</label>
+    <input type="date" id="end_date" name="end_date" required>
+
+    <button type="submit">{% trans "Применить фильтры" %}</button>
+</form>
+
+{% if report_data %}
+<table>
+    <thead>
+        <tr>
+            <th>{% trans "Номер" %}</th>
+            <th>{% trans "Статус" %}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in report_data %}
+            <tr>
+                <td>{{ item.apartment }}</td>
+                <td>{{ item.status }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+    <p>{% trans "Нет данных для отображения." %}</p>
+{% endif %}
+{% endblock %}

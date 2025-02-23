@@ -1,3 +1,4 @@
+# C:\Mail.ru\CodeIt\Django\BalkanPearl\BalkanPearlProject\BalkanPearlProject\wsgi.py
 """
 WSGI config for BalkanPearlProject project.
 

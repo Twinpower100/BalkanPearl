@@ -1,9 +1,10 @@
+# C:\Mail.ru\CodeIt\Django\BalkanPearl\BalkanPearlProject\BalkanPearlApp\urls.py
 # -*- coding: utf-8 -*-
 from django.contrib.auth.views import LogoutView
 from django.urls import path, include
 from django.views.generic import RedirectView
-from . import views  # импортируйте ваши представления
-from .views import calculate_price, CustomLoginView, CustomLogoutView, login_form, google_login
+from BalkanPearlApp import views  # импортируйте ваши представления
+from BalkanPearlApp.views import calculate_price, CustomLoginView, CustomLogoutView, login_form, google_login
 from allauth.socialaccount.providers.google.views import oauth2_login
 
 urlpatterns = [
@@ -27,7 +28,8 @@ urlpatterns = [
     path('login-form/', login_form, name='login_form'),
     #path('accounts/google/login/', oauth2_login, name='google_login'),  # Кастомный маршрут
     path('accounts/google/login/', google_login, name='google_login'),  # Кастомный маршрут
-
+    path('booking/wizard/', views.booking_wizard, name='booking_wizard'),
+    path('booking/wizard1/', views.booking_wizard1, name='booking_wizard1'),
     # path('accounts/profile/', RedirectView.as_view(url='/', permanent=False)),
     # path('accounts/login/', CustomLoginView.as_view(),name="account_login"),
     # path('accounts/logout/', LogoutView.as_view(), name='account_logout'),

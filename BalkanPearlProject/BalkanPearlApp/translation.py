@@ -1,5 +1,5 @@
+# C:\Mail.ru\CodeIt\Django\BalkanPearl\BalkanPearlProject\BalkanPearlApp\translation.py
 from modeltranslation.translator import register, TranslationOptions
-
 from .admin import *
 from .models import Hotel, Apartment, HotelPhoto, WindowView, ApartmentType, Season, ApartmentPhoto, Booking, \
     Review, BlogPost, Address
