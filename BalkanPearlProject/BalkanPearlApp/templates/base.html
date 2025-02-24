@@ -75,8 +75,8 @@
             <div class="nav-links" style="display: flex; justify-content: center; align-items: center;">
                 <a href="{% url 'home' %}">{% trans "Главная" %}</a>
                 <a href="{% url 'apartments_list' %}">{% trans "Апартаменты" %}</a>
+
                 <a href="{% url 'booking_wizard' %}">{% trans "Мастер бронирования" %}</a>
-                <a href="{% url 'booking_wizard1' %}">{% trans "Мастер бронирования1" %}</a>
                 <a href="{% url 'reviews' %}">{% trans "Отзывы" %}</a>
                 <a href="{% url 'blog_home' %}">{% trans "Блог" %}</a>
                 {% if user.is_authenticated %}

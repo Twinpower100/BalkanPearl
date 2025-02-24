@@ -298,6 +298,50 @@ def login_form(request):
 def google_login(request):
     return render(request, 'account/google_login.html')
 
+# @login_required
+# def booking_wizard(request):
+#     hotel = Hotel.objects.first()
+#     check_in = request.GET.get('check_in')
+#     check_out = request.GET.get('check_out')
+#     people_quantity = int(request.GET.get('people_quantity', 1))
+#
+#     # Если даты не переданы, отображаем форму для их ввода
+#     if not check_in or not check_out:
+#         return render(request, 'booking_wizard.html', {'show_form': True, 'hotel': hotel})
+#
+#     # Проверяем, что даты корректны
+#     try:
+#         check_in_date = timezone.datetime.strptime(check_in, '%Y-%m-%d').date()
+#         check_out_date = timezone.datetime.strptime(check_out, '%Y-%m-%d').date()
+#     except ValueError:
+#         return JsonResponse({'error': 'Некорректный формат даты'}, status=400)
+#
+#     apartments = Apartment.objects.filter(is_closed=False)
+#     available_apartments = []
+#     for apartment in apartments:
+#         if apartment.is_available(check_in_date, check_out_date):
+#             price = apartment.calculate_price(check_in_date, check_out_date)
+#             photos = ApartmentPhoto.objects.filter(apartment=apartment)
+#             available_apartments.append({
+#                 'id': apartment.id,
+#                 'number': apartment.number,
+#                 'description': apartment.description,
+#                 'price': price,
+#                 'photos': [{'photo': photo.photo.url} for photo in photos],
+#                 'hotel': hotel
+#             })
+#
+#     return render(request, 'booking_wizard.html', {
+#         'apartments': available_apartments,
+#         'check_in': check_in,
+#         'check_out': check_out,
+#         'people_quantity': people_quantity,
+#         'show_form': False,
+#         'hotel': hotel,
+#     })
+
+
+
 @login_required
 def booking_wizard(request):
     hotel = Hotel.objects.first()
@@ -305,52 +349,8 @@ def booking_wizard(request):
     check_out = request.GET.get('check_out')
     people_quantity = int(request.GET.get('people_quantity', 1))
 
-    # Если даты не переданы, отображаем форму для их ввода
     if not check_in or not check_out:
         return render(request, 'booking_wizard.html', {'show_form': True, 'hotel': hotel})
-
-    # Проверяем, что даты корректны
-    try:
-        check_in_date = timezone.datetime.strptime(check_in, '%Y-%m-%d').date()
-        check_out_date = timezone.datetime.strptime(check_out, '%Y-%m-%d').date()
-    except ValueError:
-        return JsonResponse({'error': 'Некорректный формат даты'}, status=400)
-
-    apartments = Apartment.objects.filter(is_closed=False)
-    available_apartments = []
-    for apartment in apartments:
-        if apartment.is_available(check_in_date, check_out_date):
-            price = apartment.calculate_price(check_in_date, check_out_date)
-            photos = ApartmentPhoto.objects.filter(apartment=apartment)
-            available_apartments.append({
-                'id': apartment.id,
-                'number': apartment.number,
-                'description': apartment.description,
-                'price': price,
-                'photos': [{'photo': photo.photo.url} for photo in photos],
-                'hotel': hotel
-            })
-
-    return render(request, 'booking_wizard.html', {
-        'apartments': available_apartments,
-        'check_in': check_in,
-        'check_out': check_out,
-        'people_quantity': people_quantity,
-        'show_form': False,
-        'hotel': hotel,
-    })
-
-
-
-@login_required
-def booking_wizard1(request):
-    hotel = Hotel.objects.first()
-    check_in = request.GET.get('check_in')
-    check_out = request.GET.get('check_out')
-    people_quantity = int(request.GET.get('people_quantity', 1))
-
-    if not check_in or not check_out:
-        return render(request, 'booking_wizard1.html', {'show_form': True, 'hotel': hotel})
 
     try:
         check_in_date = timezone.datetime.strptime(check_in, '%Y-%m-%d').date()
@@ -367,7 +367,7 @@ def booking_wizard1(request):
     ]
 
     if not available_apartments:
-        return render(request, 'booking_wizard1.html', {
+        return render(request, 'booking_wizard.html', {
             'show_form': False,
             'hotel': hotel,
             'no_apartments_available': True,
@@ -392,7 +392,7 @@ def booking_wizard1(request):
         'show_form': False,
         'hotel': hotel,
     }
-    return render(request, 'booking_wizard1.html', context)
+    return render(request, 'booking_wizard.html', context)
 
 
 # def create_apartment_blocks(available_apartments, people_quantity, check_in_date, check_out_date):
@@ -503,10 +503,10 @@ def create_booking_from_block(request):
 
         except ValidationError as e:
             messages.error(request, str(e))
-            return redirect('booking_wizard1')
+            return redirect('booking_wizard')
 
         except Exception as e:
             messages.error(request, f"Ошибка бронирования: {str(e)}")
-            return redirect('booking_wizard1')
+            return redirect('booking_wizard')
 
     return redirect('home')
