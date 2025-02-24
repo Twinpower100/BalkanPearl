@@ -30,6 +30,7 @@ urlpatterns = [
     path('accounts/google/login/', google_login, name='google_login'),  # Кастомный маршрут
     path('booking/wizard/', views.booking_wizard, name='booking_wizard'),
     path('booking/wizard1/', views.booking_wizard1, name='booking_wizard1'),
+    path('booking/create-from-block/', views.create_booking_from_block, name='create_booking_from_block'),
     # path('accounts/profile/', RedirectView.as_view(url='/', permanent=False)),
     # path('accounts/login/', CustomLoginView.as_view(),name="account_login"),
     # path('accounts/logout/', LogoutView.as_view(), name='account_logout'),

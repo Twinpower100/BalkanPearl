@@ -12,7 +12,7 @@ from BalkanPearlApp.models import Hotel, Address, HotelPhoto, WindowView, Apartm
 from django import forms
 from django.utils.translation import gettext_lazy as _
 from django.shortcuts import render, HttpResponse
-from django.db.models import Sum, Q, F
+from django.db.models import Sum, Q
 from django.http import HttpResponseForbidden
 from openpyxl import Workbook
 
@@ -55,10 +55,10 @@ class ApartmentTypeAdmin(admin.ModelAdmin):
 
 @admin.register(Apartment)
 class ApartmentAdmin(admin.ModelAdmin):
-    list_display = ('hotel', 'number', 'description', 'window_view', 'floor', 'type', 'balcony', 'rooms_quantity',
+    list_display = ('hotel', 'number', 'type', 'is_closed', 'capacity', 'base_price_per_night', 'window_view', 'floor',  'balcony', 'rooms_quantity',
                     'mini_kitchen', 'bathrooms_quantity', 'beds_quantity', 'sofa', 'washing_machine', 'desk',
-                    'iron_and_board', 'child_bed', 'microwave', 'square', 'capacity', 'base_price_per_night',
-                    'is_closed')
+                    'iron_and_board', 'child_bed', 'microwave', 'square',
+                    )
     list_filter = ('hotel', 'number', 'window_view', 'floor', 'type', 'balcony', 'rooms_quantity',
                    'base_price_per_night', 'is_closed')
     ordering = ('hotel', 'number')

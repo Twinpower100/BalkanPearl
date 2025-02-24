@@ -1,130 +1,250 @@
-<!-- C:\Mail.ru\CodeIt\Django\BalkanPearl\BalkanPearlProject\BalkanPearlApp\templates\booking_wizard1.html -->
+<!--C:\Mail.ru\CodeIt\Django\BalkanPearl\BalkanPearlProject\BalkanPearlApp\templates\booking_wizard1.html-->
 {% extends 'base.html' %}
 {% load i18n %}
 {% load static %}
 {% block title %} {% trans 'Главная - Balkan Pearl' %}{% endblock %}
 
 {% block content %}
-<!-- Заголовок и форма выбора дат -->
-<div class="date-selection" style="position: fixed; top: 150px; width: 100%; background: rgba(255, 255, 255, 0.9); padding: 10px; z-index: 999;">
+
+<style>
+    /* Стили ТОЛЬКО для карусели (новые) */
+    .carousel {
+        position: relative;
+        height: 300px;
+        overflow: hidden;
+        border-radius: 8px;
+        margin: 20px 0;
+    }
+
+    .carousel img {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        opacity: 0;
+        transition: opacity 0.5s ease;
+    }
+
+    .carousel img.active {
+        opacity: 1;
+        z-index: 1;
+    }
+
+    .carousel button {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(0, 0, 0, 0.5);
+        color: white;
+        border: none;
+        padding: 12px 18px;
+        cursor: pointer;
+        z-index: 2;
+        font-size: 1.5rem;
+        border-radius: 5px;
+    }
+
+    .carousel button.prev { left: 15px; }
+    .carousel button.next { right: 15px; }
+
+    .carousel button:hover {
+        background: rgba(0, 0, 0, 0.8);
+    }
+
+    /* Оригинальные стили формы (без изменений) */
+    .date-selection {
+        position: fixed;
+        top: 130px;
+        width: 100%;
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 8px;
+        padding: 15px 0;
+        z-index: 100;
+        text-align: center;
+        gap: 10px;
+        margin-bottom: 5px;
+    }
+
+    #date-form {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        align-items: center;
+    }
+
+    #date-form input,
+    #date-form button {
+        padding: 10px 15px;
+        border-radius: 5px;
+        border: 1px solid #ced4da;
+    }
+
+    #date-form button {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        transition: background-color 0.3s ease;
+    }
+
+    #date-form button:hover {
+        background-color: #0056b3;
+    }
+
+    /* Остальные оригинальные стили */
+    .apartment-block {
+        margin-bottom: 30px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        overflow: hidden;
+        background-color: rgba(255, 255, 255, 0.8);
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .block-header {
+        padding: 20px;
+        background-color: #f8f9fa;
+        border-bottom: 1px solid #eee;
+    }
+
+    .apartment-card {
+        display: flex;
+        gap: 30px;
+        padding: 20px;
+        background: rgba(255,255,255,0.8);
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+
+    @media (max-width: 768px) {
+        .apartment-card {
+            flex-direction: column;
+        }
+    }
+</style>
+
+<!-- Оригинальная верстка формы выбора дат -->
+<div class="date-selection" style="position: fixed; top: 130px; background: rgba(255, 255, 255, 0.9); padding: 10px; z-index: 999">
     <h2 style="margin: 0; text-align: center;">{% trans 'Внесите желаемые даты и количество гостей' %}</h2>
-    <form id="date-form" style="display: flex; gap: 10px; justify-content: center; margin-top: 10px;">
-        <input type="date" id="check_in" name="check_in" required style="padding: 8px;">
-        <input type="date" id="check_out" name="check_out" required style="padding: 8px;">
-        <input type="number" id="people_quantity" name="people_quantity" min="1" required style="padding: 8px; width: 30px;" value="1">
-        <button type="submit" style="padding: 8px 20px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">
+    <form id="date-form">
+        <input type="date" id="check_in" name="check_in" required value="{{ check_in }}">
+        <input type="date" id="check_out" name="check_out" required value="{{ check_out }}">
+        <input type="number" id="people_quantity" name="people_quantity" min="1" required value="{{ people_quantity }}">
+        <button type="submit">
             {% trans "Найти доступные номера и показать стоимость" %}
         </button>
     </form>
 </div>
 
-<!-- Основной контент -->
-<div class="content-container" style="margin-top: 20px;"> <!-- Изменили отступ сверху -->
-    {% if apartments_with_photos %}
-        <ul class="apartment-list">
-            {% for item in apartments_with_photos %}
-            <li style="display: flex; gap: 20px; margin-bottom: 20px; background: rgba(255,255,255,0.8); padding: 20px; border-radius: 8px;">
-                <!-- Левый блок: Описание -->
-                <section class="description" style="flex: 1;">
-                    <h3>{% trans 'Номер апартамента' %}: {{ item.apartment.number }}</h3>
-                    <p><strong>{% trans 'Описание' %}:</strong> {{ item.apartment.description }}</p>
-                    <p><strong>{% trans 'Макс. гостей' %}:</strong> {{ item.apartment.capacity }}</p>
-                    <p><strong>{% trans 'Тип' %}:</strong> {{ item.apartment.type.name }}</p>
-                    <p><strong>{% trans 'Вид из окна' %}:</strong> {{ item.apartment.window_view.view }}</p>
-                    <p><strong>{% trans 'Вместимость номера' %}:</strong>{{ item.apartment.capacity }}</p>
-                    <div id="price-display-{{ item.apartment.id }}" style="display: none;">
-                        <p>{% trans "Стоимость бронирования:" %} <span id="price-value-{{ item.apartment.id }}"></span> €</p>
+{% if messages %}
+<div class="error-messages">
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}">
+        {{ message }}
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<div class="apartment-blocks">
+    {% if apartment_blocks %}
+        {% for block in apartment_blocks %}
+        <div class="apartment-block">
+            <div class="block-header">
+                <h3>{% trans 'Вариант' %} {{ forloop.counter }}</h3>
+                <div class="block-info">
+                    <p>{% trans 'Номеров:' %} {{ block.num_apartments }}
+                    {% trans 'Общая вместимость:' %} {{ block.total_capacity }}</p>
+                    <p class="price">{% trans 'Стоимость:' %} {{ block.total_price }} €</p>
+                </div>
+            </div>
+
+            <div class="apartments-grid">
+                {% for apartment in block.apartments %}
+                    <div class="apartment-card">
+                        <div class="description">
+                            <h4>№{{ apartment.number }}</h4>
+                            <p>{% trans 'Описание' %}: {{ apartment.description }}</p>
+                            <p>{% trans 'Макс. гостей' %}: {{ apartment.capacity }}</p>
+                            <p>{% trans 'Тип' %}: {{ apartment.type.name }}</p>
+                            <p>{% trans 'Вид из окна' %}: {{ apartment.window_view.view }}</p>
+                        </div>
+
+                        <div class="carousel-container">
+                            <div class="carousel">
+                                {% if apartment.photos %}
+                                    {% for photo in apartment.photos %}
+                                    <img src="{{ photo.photo.url }}"
+                                         class="{% if forloop.first %}active{% endif %}"
+                                         alt="{% trans 'Фото апартамента' %}">
+                                    {% endfor %}
+                                    <button class="prev">&laquo;</button>
+                                    <button class="next">&raquo;</button>
+                                {% else %}
+                                    <div class="no-photo">{% trans 'Фото отсутствуют' %}</div>
+                                {% endif %}
+                            </div>
+                        </div>
                     </div>
-                    <a href="{% url 'booking_form' item.apartment.id %}" class="booking-link">{% trans 'Забронировать' %}</a>
-                </section>
-                <!-- Правый блок: Карусель -->
-                <section class="carousel-container" style="flex: 1;">
-                    <div class="carousel" data-carousel-id="{{ forloop.counter }}">
-                        <button class="prev">&laquo;</button>
-                        {% if item.apartment_photos %}
-                            {% for photo in item.apartment_photos %}
-                                <img src="{{ photo.photo.url }}"
-                                     alt="{% trans 'Фото апартамента' %}"
-                                     style="max-width: 100%; height: 300px; object-fit: cover; {% if not forloop.first %}display: none;{% endif %}">
-                            {% endfor %}
-                        {% endif %}
-                        <button class="next">&raquo;</button>
-                    </div>
-                </section>
-            </li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>{% trans 'Апартаменты недоступны' %}</p>
+                {% endfor %}
+            </div>
+
+            <form method="POST" action="{% url 'create_booking_from_block' %}">
+                {% csrf_token %}
+                <input type="hidden" name="check_in" value="{{ check_in }}">
+                <input type="hidden" name="check_out" value="{{ check_out }}">
+                <input type="hidden" name="people_quantity" value="{{ people_quantity }}">
+                {% for apartment in block.apartments %}
+                <input type="hidden" name="apartment_ids" value="{{ apartment.id }}">
+                {% endfor %}
+                <button type="submit" class="book-btn">
+                    {% trans 'Забронировать этот вариант' %}
+                </button>
+            </form>
+        </div>
+        {% endfor %}
+
+    {% elif no_apartments_available %}
+        <p class="no-results">{% trans 'Нет доступных вариантов' %}</p>
     {% endif %}
 </div>
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-    // Обработчик формы выбора дат
-    document.getElementById('date-form').addEventListener('submit', function(event) {
-        event.preventDefault();
-        const checkIn = document.getElementById('check_in').value;
-        const checkOut = document.getElementById('check_out').value;
-
-        // Перебираем все апартаменты
-        document.querySelectorAll('.apartment-list li').forEach(li => {
-            const apartmentId = li.querySelector('.booking-link').href.split('/').slice(-2, -1)[0];
-            fetch(`/booking/calculate-price/${apartmentId}/?check_in=${checkIn}&check_out=${checkOut}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.price) {
-                        const priceDisplay = li.querySelector(`#price-display-${apartmentId}`);
-                        const priceValue = li.querySelector(`#price-value-${apartmentId}`);
-                        priceValue.textContent = data.price;
-                        priceDisplay.style.display = 'block';
-                    } else {
-                        alert(data.error);
-                    }
-                });
-        });
-    });
-
-    // Обработчик карусели
+    // Скрипт ТОЛЬКО для карусели
     document.querySelectorAll('.carousel').forEach(carousel => {
-        const images = Array.from(carousel.querySelectorAll('img'));
-        const prevBtn = carousel.querySelector('.prev');
-        const nextBtn = carousel.querySelector('.next');
+        const images = carousel.querySelectorAll('img');
         let currentIndex = 0;
 
-        function showImage(index) {
-            images.forEach((img, i) => {
-                img.style.display = i === index ? 'block' : 'none';
-            });
+        const showImage = (index) => {
+            images.forEach(img => img.classList.remove('active'));
+            if(images[index]) images[index].classList.add('active');
         }
 
-        if (images.length > 0) {
-            showImage(0);
+        carousel.querySelector('.prev').addEventListener('click', () => {
+            currentIndex = (currentIndex - 1 + images.length) % images.length;
+            showImage(currentIndex);
+        });
 
-            prevBtn.addEventListener('click', () => {
-                currentIndex = (currentIndex - 1 + images.length) % images.length;
-                showImage(currentIndex);
-            });
+        carousel.querySelector('.next').addEventListener('click', () => {
+            currentIndex = (currentIndex + 1) % images.length;
+            showImage(currentIndex);
+        });
 
-            nextBtn.addEventListener('click', () => {
-                currentIndex = (currentIndex + 1) % images.length;
-                showImage(currentIndex);
-            });
-        } else {
-            prevBtn.style.display = 'none';
-            nextBtn.style.display = 'none';
-        }
+        if(images.length > 0) showImage(0);
     });
-});
-// Обработчик для формы мастера бронирования
-document.getElementById('wizard-form').addEventListener('submit', function(event) {
-    event.preventDefault();
-    const checkIn = document.getElementById('check_in').value;
-    const checkOut = document.getElementById('check_out').value;
-    const peopleQuantity = document.getElementById('people_quantity').value;
 
-    // Перенаправляем на ту же страницу с параметрами
-    window.location.href = `{% url 'booking_wizard1' %}?check_in=${checkIn}&check_out=${checkOut}&people_quantity=${peopleQuantity}`;
+    // Оригинальный скрипт для формы
+    document.querySelectorAll('form').forEach(form => {
+        form.addEventListener('submit', function(e) {
+            const checkIn = new Date(this.querySelector('[name="check_in"]').value);
+            const checkOut = new Date(this.querySelector('[name="check_out"]').value);
+
+            if (checkIn >= checkOut) {
+                e.preventDefault();
+                alert('{% trans "Дата выезда должна быть позже даты заезда" %}');
+            }
+        });
+    });
 });
 </script>
 {% endblock %}

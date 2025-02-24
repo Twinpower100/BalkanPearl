@@ -4,6 +4,7 @@ from allauth.account.views import LoginView
 from django.contrib.auth.views import LogoutView
 from django.core.exceptions import ValidationError
 from allauth.core.internal.httpkit import redirect
+from django.db import transaction
 from django.http import JsonResponse, HttpResponse
 from django.templatetags.i18n import language
 from django.utils import timezone
@@ -18,6 +19,8 @@ from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_POST
 from django import forms
 import emoji
+from django.shortcuts import render, get_object_or_404, redirect
+from itertools import combinations
 
 """Делаем по запросу поиска"""
 
@@ -337,6 +340,8 @@ def booking_wizard(request):
         'hotel': hotel,
     })
 
+
+
 @login_required
 def booking_wizard1(request):
     hotel = Hotel.objects.first()
@@ -344,37 +349,164 @@ def booking_wizard1(request):
     check_out = request.GET.get('check_out')
     people_quantity = int(request.GET.get('people_quantity', 1))
 
-    # Если даты не переданы, отображаем форму для их ввода
     if not check_in or not check_out:
         return render(request, 'booking_wizard1.html', {'show_form': True, 'hotel': hotel})
 
-    # Проверяем, что даты корректны
     try:
         check_in_date = timezone.datetime.strptime(check_in, '%Y-%m-%d').date()
         check_out_date = timezone.datetime.strptime(check_out, '%Y-%m-%d').date()
     except ValueError:
         return JsonResponse({'error': 'Некорректный формат даты'}, status=400)
 
-    apartments = Apartment.objects.filter(is_closed=False)
-    available_apartments = []
-    for apartment in apartments:
-        if apartment.is_available(check_in_date, check_out_date):
-            price = apartment.calculate_price(check_in_date, check_out_date)
-            photos = ApartmentPhoto.objects.filter(apartment=apartment)
-            available_apartments.append({
-                'id': apartment.id,
-                'number': apartment.number,
-                'description': apartment.description,
-                'price': price,
-                'photos': [{'photo': photo.photo.url} for photo in photos],
-                'hotel': hotel
-            })
+    available_apartments = list(Apartment.objects.filter(is_closed=False))
 
-    return render(request, 'booking_wizard1.html', {
-        'apartments': available_apartments,
+    # Фильтруем доступные апартаменты на выбранные даты
+    available_apartments = [
+        apt for apt in available_apartments
+        if apt.is_available(check_in_date, check_out_date)
+    ]
+
+    if not available_apartments:
+        return render(request, 'booking_wizard1.html', {
+            'show_form': False,
+            'hotel': hotel,
+            'no_apartments_available': True,
+            'check_in': check_in,
+            'check_out': check_out,
+            'people_quantity': people_quantity,
+        })
+
+
+    apartment_blocks = create_apartment_blocks(available_apartments, people_quantity, check_in_date, check_out_date)
+    for block in apartment_blocks:
+        for apartment in block['apartments']:
+            apartment.photos = ApartmentPhoto.objects.filter(apartment=apartment)
+    # Сортируем блоки по общей стоимости
+    apartment_blocks.sort(key=lambda block: block['total_price'])
+
+    context = {
+        'apartment_blocks': apartment_blocks,
         'check_in': check_in,
         'check_out': check_out,
         'people_quantity': people_quantity,
         'show_form': False,
         'hotel': hotel,
-    })
+    }
+    return render(request, 'booking_wizard1.html', context)
+
+
+# def create_apartment_blocks(available_apartments, people_quantity, check_in_date, check_out_date):
+#     """
+# Создает блоки апартаментов, комбинируя различные варианты,
+# и сортирует их по общей стоимости.
+#     """
+#     possible_blocks = []
+#     min_block_capacity = people_quantity
+#
+#     # 1. Генерируем все возможные комбинации апартаментов (подмножества)
+#     for block_size in range(1, len(available_apartments) + 1): # Рассматриваем блоки размером от 1 до всех доступных номеров
+#         for apartment_combination in combinations(available_apartments, block_size):
+#             block_capacity = sum(apt.capacity for apt in apartment_combination)
+#
+#             if block_capacity >= min_block_capacity: # 2. Фильтруем комбинации по вместимости
+#                 block_price = sum(apt.calculate_price(check_in_date, check_out_date) for apt in apartment_combination)
+#                 possible_blocks.append({
+#                     'apartments': list(apartment_combination), # Преобразуем tuple в list для удобства шаблона
+#                     'total_capacity': block_capacity,
+#                     'total_price': block_price,
+#                     'num_apartments': len(apartment_combination) # Добавляем количество апартаментов в блоке
+#                 })
+#
+#     # 3. Сортировка по цене (уже делается в booking_wizard1 представлении после вызова этой функции)
+#     # 4. Возврат отсортированных блоков
+#     return possible_blocks
+
+def create_apartment_blocks(available_apartments, people_quantity, check_in_date, check_out_date):
+    # Сортируем по вместимости (сначала самые большие)
+    sorted_apartments = sorted(
+        available_apartments,
+        key=lambda x: (-x.capacity, x.calculate_price(check_in_date, check_out_date))
+    )
+
+    # Вычисляем минимальное количество номеров
+    max_capacity = max([apt.capacity for apt in sorted_apartments], default=0)
+    min_apartments = (people_quantity // max_capacity) + 1 if max_capacity > 0 else 0
+
+    blocks = []
+
+    # Перебираем возможные комбинации
+    for n in range(min_apartments, len(sorted_apartments) + 1):
+        for combo in combinations(sorted_apartments, n):
+            total_capacity = sum(apt.capacity for apt in combo)
+
+            if total_capacity >= people_quantity:
+                # Проверка доступности всех в комбинации
+                if all(apt.is_available(check_in_date, check_out_date) for apt in combo):
+                    price = sum(apt.calculate_price(check_in_date, check_out_date) for apt in combo)
+                    blocks.append({
+                        'apartments': combo,
+                        'total_price': price,
+                        'total_capacity': total_capacity,
+                        'num_apartments': n
+                    })
+        # Прерываем, если нашли варианты
+        if blocks:
+            break
+
+    # Сортируем по цене и вместимости
+    blocks.sort(key=lambda x: (x['total_price'], -x['total_capacity']))
+
+    return blocks[:5]  # Ограничиваем до 5 вариантов
+
+
+@transaction.atomic
+def create_booking_from_block(request):
+    if request.method == 'POST':
+        try:
+            apartment_ids = request.POST.getlist('apartment_ids')
+            check_in = request.POST.get('check_in')
+            check_out = request.POST.get('check_out')
+            people_quantity = int(request.POST.get('people_quantity', 1))
+
+            # 1. Блокировка записей для проверки доступности
+            apartments = Apartment.objects.select_for_update().filter(
+                id__in=apartment_ids,
+                is_closed=False
+            )
+
+            # 2. Проверка что все ID валидны
+            if len(apartments) != len(apartment_ids):
+                raise ValidationError("Некоторые апартаменты не найдены или закрыты")
+
+            # 3. Проверка доступности каждого апартамента
+            for apartment in apartments:
+                if not apartment.is_available(check_in, check_out):
+                    raise ValidationError(f"Апартамент {apartment.number} занят")
+
+            # 4. Создание бронирований
+            bookings = [
+                Booking(
+                    user=request.user,
+                    apartment=apartment,
+                    check_in=check_in,
+                    check_out=check_out,
+                    people_quantity=people_quantity,
+                    status='confirmed'
+                ) for apartment in apartments
+            ]
+
+            # 5. Сохранение всех бронирований одним запросом
+            Booking.objects.bulk_create(bookings)
+
+            messages.success(request, "Все апартаменты успешно забронированы!")
+            return redirect('booking_confirmation')
+
+        except ValidationError as e:
+            messages.error(request, str(e))
+            return redirect('booking_wizard1')
+
+        except Exception as e:
+            messages.error(request, f"Ошибка бронирования: {str(e)}")
+            return redirect('booking_wizard1')
+
+    return redirect('home')

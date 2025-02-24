@@ -3,14 +3,14 @@
 /* Стили для логотипа */
 .logo-container {
     flex-shrink: 0; /* Запрещаем уменьшение */
-    padding: 0.5vh 15vh 0vh 0.5vh; /* Отступы вокруг лого */
+    padding: 0.5vh 15vh 0.5vh 0.5vh; /* Отступы вокруг лого */
 }
 
 .header-logo {
     height: 6vh; /* Фиксированная высота логотипа */
     width: auto; /* Ширина подстраивается пропорционально */
     object-fit: contain; /* Сохраняем пропорции */
-    filter: brightness(0,1) invert(1); /* Делаем лого белым */
+    filter: brightness(0.1) invert(1); /* Делаем лого белым */
 }
 
 /* Адаптация заголовка */
@@ -36,6 +36,7 @@ main {
     display: flex;
     flex-direction: column;
     height: 50vh; /* Вместо min-height: 100vh */
+    margin-top: 150px; /* Подберите значение в зависимости от высоты заголовка */
 }
 
 main.content-wrapper {
@@ -56,6 +57,22 @@ main.content-wrapper {
     background-position: center;
     opacity: 0.6; /* Прозрачность фона */
 }
+/* Новый стиль фиксированного заголовка */
+.fixed-header {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+    background-color: #003366; /* Цвет фона для заголовка */
+    color: white;
+    padding: 1vh; /* Используем vh для адаптивности */
+    text-align: center;
+}
+
+/* Отступ для основного контента, чтобы он не перекрывался фиксированным заголовком */
+body {
+    padding-top: 60px; /* Отступ сверху для основного содержимого, чтобы не перекрываться с заголовком */
+}
 
 /* Общие стили */
 header {
@@ -64,7 +81,6 @@ header {
     padding: 1vh; /* Используем vh для адаптивности */
     text-align: center;
 }
-
 
 nav.full-width-nav {
     display: flex;
@@ -100,6 +116,22 @@ footer {
     z-index: 1; /* Чтобы контент оказался поверх фона */
 }
 
+/* Стили ТОЛЬКО для главной страницы */
+.main-page-carousel img {
+    opacity: 1 !important; /* Переопределяем opacity */
+    position: static !important; /* Отменяем absolute позиционирование */
+}
+
+/* Общие стили для других каруселей (booking_wizard1 и apartments_list) */
+.carousel:not(.main-page-carousel) img {
+    position: absolute;
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    opacity: 1;
+    transition: opacity 0.5s ease;
+}
+
 .content-container {
     display: flex;
     flex-wrap: nowrap;
@@ -112,12 +144,14 @@ footer {
 .description {
     background-color: transparent; /* Убираем белый фон */
     flex: 1;
+    min-width: 200px;
     padding: 2vh; /* Используем vh для адаптивности */
     overflow-y: auto;
     border-radius: 10px;
     position: relative; /* Для корректного позиционирования */
     z-index: 1; /* Поднимаем контент над фоном */
-    background-color: rgba(255, 255, 255, 0.5) !important; /* Можно убрать строчку, чтобы не было белого фона вообще */
+    /*background-color: rgba(255, 255, 255, 0.5) !important;*/
+    /* Можно убрать строчку, чтобы не было белого фона вообще */
 }
 
 /* Список апартаментов */
@@ -138,7 +172,7 @@ footer {
     border-radius: 10px;
     position: relative; /* Для корректного позиционирования */
     z-index: 1; /* Поднимаем контент над фоном */
-    background-color: rgba(255, 255, 255, 0.6) !important; /* Можно убрать строчку, чтобы не было белого фона вообще */
+    /*background-color: rgba(255, 255, 255, 0.6) !important*/; /* Можно убрать строчку, чтобы не было белого фона вообще */
 
 }
 
@@ -151,11 +185,12 @@ footer {
 }
 
 .carousel-container {
-    flex: 2;
+    flex: 1;
     margin-bottom: 2vh; /* Используем vh для адаптивности */
     display: flex;
     justify-content: center;
     align-items: center;
+    min-width: 400px;
 }
 
 .map-container {
@@ -164,19 +199,31 @@ footer {
 }
 
 /* Карусель */
+/*новое*/
 .carousel {
     position: relative;
-    text-align: center;
-    width: 100%;
-    max-width: 600px;
+    width: 50%;
+    height: 300px; /* Фиксированная высота */
+    overflow: hidden;
+    border-radius: 8px;
 }
 
 .carousel img {
-    max-width: 100%;
-    max-height: 30vh; /* Используем vh для адаптивности */
-    margin: 0 auto;
+    position: absolute;
+    width: 100%;
+    height: 300px;
     object-fit: cover;
-    border-radius: 8px;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+/*новое*/
+.carousel img.active {
+    opacity: 1;
+}
+.carousel-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
 }
 
 .carousel button {
@@ -254,7 +301,7 @@ header h1 {
     flex-grow: 1;
     margin: 0;
     white-space: nowrap;
-    padding-top: 0vh; /* Используем vh для адаптивности */
+    padding-top: 0.1vh; /* Используем vh для адаптивности */
 }
 
 header h3 {
@@ -282,7 +329,7 @@ header h3 {
 /* Стиль для значков мессенджеров и социальных сетей в один ряд */
 .messenger-icons {
     display: flex;
-    gap: 1vh;  /* Устанавливаем промежуток между значками */
+    gap: 1vh; /* Устанавливаем промежуток между значками */
 }
 
 .messenger-icons .icon {
@@ -293,7 +340,7 @@ header h3 {
 /* Уведомление для приветствия пользователя */
 .welcome-message {
     margin-left: 1vh; /* Используем vh для адаптивности */
-    color: #007bff;  /* Выберите цвет, подходящий для вашего дизайна */
+    color: #007bff; /* Выберите цвет, подходящий для вашего дизайна */
 }
 
 /* Стиль для переключателя языков */
@@ -301,292 +348,159 @@ header h3 {
     margin-right: -16vh;
 }
 
-/* Медиазапросы для адаптивности */
-@media (max-width: 768px) {
-    .logo-container {
-        padding: 3px;
-    }
-
-    .header-logo {
-        height: 45px; /* Уменьшаем лого на мобильных */
-    }
-
-    .header-title h1 {
-        font-size: 1.2rem; /* Уменьшаем заголовок */
-        padding-top: 5px;
-    }
-
-    body, html {
-        font-size: 14px; /* Уменьшение базового размера шрифта для мобильных устройств */
-    }
-
-    .description {
-        padding: 1vh; /* Уменьшение отступов для мобильных устройств */
-    }
-
-    .apartment-list li {
-        flex-direction: column; /* Вертикальная ориентация для мобильных устройств */
-        padding: 1vh; /* Уменьшение отступов для мобильных устройств */
-    }
-
-    .map-carousel-section {
-        padding: 1vh; /* Уменьшение отступов для мобильных устройств */
-    }
-
-    .carousel-container {
-        margin-bottom: 1vh; /* Уменьшение отступов для мобильных устройств */
-    }
-
-    .carousel button {
-        padding: 0.5vh 1vh; /* Уменьшение отступов для мобильных устройств */
-    }
-
-    .full-width-nav a {
-        margin: 0 1vh; /* Уменьшение отступов для мобильных устройств */
-    }
-
-    .social-media-icons {
-        gap: 0.5vh; /* Уменьшение отступов для мобильных устройств */
-        margin-top: 0.5vh; /* Уменьшение отступов для мобильных устройств */
-    }
-
-    .social-icon {
-        width: 2vh; /* Уменьшение размеров для мобильных устройств */
-        height: 2vh; /* Уменьшение размеров для мобильных устройств */
-        margin: 0 0.2vh; /* Уменьшение отступов для мобильных устройств */
-    }
-
-    .language-switcher {
-        margin-right: 0; /* Удаление отступов для мобильных устройств */
-    }
-}
-
-/* Медиазапросы для адаптивности */
-@media (max-width: 768px) {
-    body, html {
-        font-size: 14px; /* Уменьшение базового размера шрифта для мобильных устройств */
-    }
-
-    .description {
-        padding: 1vh; /* Уменьшение отступов для мобильных устройств */
-    }
-
-    .apartment-list li {
-        flex-direction: column; /* Вертикальная ориентация для мобильных устройств */
-        padding: 1vh; /* Уменьшение отступов для мобильных устройств */
-    }
-
-    .map-carousel-section {
-        padding: 1vh; /* Уменьшение отступов для мобильных устройств */
-    }
-
-    .carousel-container {
-        margin-bottom: 1vh; /* Уменьшение отступов для мобильных устройств */
-    }
-
-    .carousel img {
-        max-height: 20vh; /* Уменьшение высоты изображений для мобильных устройств */
-    }
-
-    .carousel button {
-        padding: 0.5vh 1vh; /* Уменьшение отступов для мобильных устройств */
-        font-size: 1rem; /* Уменьшение размера шрифта для мобильных устройств */
-    }
-
-    .carousel button.prev, .carousel button.next {
-        left: 0.5vh; /* Уменьшение отступов для мобильных устройств */
-        right: 0.5vh; /* Уменьшение отступов для мобильных устройств */
-    }
-
-    .messenger-icons img.icon, .social-media-icons img.icon, .social-icon {
-        width: 2vh; /* Уменьшение размера иконок для мобильных устройств */
-        height: 2vh; /* Уменьшение размера иконок для мобильных устройств */
-    }
-
-    .social-media-icons {
-        gap: 0.5vh; /* Уменьшение промежутков между иконками для мобильных устройств */
-        margin-top: 0.5vh; /* Уменьшение отступов для мобильных устройств */
-    }
-
-    .full-width-nav {
-        margin-top: 0.5vh; /* Уменьшение пространства между заголовком и меню для мобильных устройств */
-    }
-
-    .welcome-message {
-        margin-left: 0.5vh; /* Уменьшение отступов для мобильных устройств */
-    }
-}
-@media (max-width: 480px) {
-    .header-logo {
-        height: 35px; /* Ещё меньше для маленьких экранов */
-    }
-
-    .header-title h1 {
-        font-size: 1rem;
-        white-space: normal; /* Разрешаем перенос текста */
-    }
-    body, html {
-        font-size: 12px; /* Уменьшение базового размера шрифта для очень маленьких экранов */
-    }
-
-    header h1, header h3 {
-        font-size: 1.5rem; /* Уменьшение размера заголовков для очень маленьких экранов */
-    }
-
-    nav.full-width-nav a {
-        margin: 0 1vh; /* Уменьшение отступов между ссылками для очень маленьких экранов */
-    }
-
-    .description, .apartment-list li, .map-carousel-section {
-        padding: 0.5vh; /* Уменьшение отступов для очень маленьких экранов */
-    }
-
-    .apartment-list li {
-        gap: 1vh; /* Уменьшение промежутков между элементами списка для очень маленьких экранов */
-        margin-bottom: 2vh; /* Уменьшение отступов между элементами списка для очень маленьких экранов */
-    }
-
-    .carousel img {
-        max-height: 15vh; /* Уменьшение высоты изображений для очень маленьких экранов */
-    }
-
-    .carousel button {
-        padding: 0.3vh 0.6vh; /* Уменьшение отступов для очень маленьких экранов */
-        font-size: 0.8rem; /* Уменьшение размера шрифта для очень маленьких экранов */
-    }
-
-    .carousel button.prev, .carousel button.next {
-        left: 0.3vh; /* Уменьшение отступов для очень маленьких экранов */
-        right: 0.3vh; /* Уменьшение отступов для очень маленьких экранов */
-    }
-
-    .messenger-icons img.icon, .social-media-icons img.icon, .social-icon {
-        width: 1.5vh; /* Уменьшение размера иконок для очень маленьких экранов */
-        height: 1.5vh; /* Уменьшение размера иконок для очень маленьких экранов */
-    }
-
-    .social-media-icons {
-        gap: 0.3vh; /* Уменьшение промежутков между иконками для очень маленьких экранов */
-        margin-top: 0.3vh; /* Уменьшение отступов для очень маленьких экранов */
-    }
-
-    .full-width-nav {
-        margin-top: 0.3vh; /* Уменьшение пространства между заголовком и меню для очень маленьких экранов */
-    }
-
-    .welcome-message {
-        margin-left: 0.3vh; /* Уменьшение отступов для очень маленьких экранов */
-    }
-}
-
 
 .date-selection {
-    position: sticky;
-    top: 100px; /* Отступ от верхнего края */
+    position: fixed;
+    top: 150px; /* Отступ от верхнего края */
     background: rgba(255, 255, 255, 0.9);
-    padding: 10px;
+    padding-top: 10px;
+    /*padding: 10px;*/
     border-radius: 8px;
     z-index: 1000; /* Чтобы форма была поверх других элементов */
-    ext-align: center;
-    margin-bottom: 20px; /* Уменьшите значение по своему усмотрению */
+    /*ext-align: center;*/
+    /*margin-bottom: 10px;*/ /* Уменьшите значение по своему усмотрению */
     padding-bottom: 10px; /* Добавлено для уменьшения пустого пространства
-}
 
-.date-selection h3 {
-    margin-bottom: 15px;
-}
-
-.date-selection form {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.date-selection label {
-    font-weight: bold;
-}
-
-.date-selection input {
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-}
-
-.date-selection button {
-    padding: 10px;
-    background: #007bff;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.date-selection button:hover {
-    background: #0056b3;
-}
-
-#price-display {
-    margin-top: 15px;
-    font-size: 1.2em;
-    color: #28a745;
-}
 
 /* Стили для мастера бронирования */
-#wizard-form {
-    background: rgba(255, 255, 255, 0.8);
-    padding: 20px;
-    border-radius: 8px;
-    margin-bottom: 20px;
+    #wizard-form {
+        background: rgba(255, 255, 255, 0.8);
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+
+    #wizard-form label {
+        font-weight: bold;
+    }
+
+    #wizard-form input {
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        margin-bottom: 10px;
+    }
+
+    #wizard-form button {
+        padding: 10px;
+        background: #007bff;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    #wizard-form button:hover {
+        background: #0056b3;
+    }
+
+    #apartments-list {
+        margin-top: 20px;
+    }
+
+    .apartment {
+        background: rgba(255, 255, 255, 0.8);
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+
+    .apartment h3 {
+        margin-top: 0;
+    }
+
+    .apartment button {
+        padding: 10px;
+        background: #28a745;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .apartment button:hover {
+        background: #218838;
+    }
+    /* Новые стили для блоков апартаментов */
+    .apartment-block {
+        width: 100%;
+        margin: 20px 0;
+        padding: 20px;
+        background: rgba(255, 255, 255, 0.9);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        box-sizing: border-box; /* Важно для правильной ширины */
+    }
+
+    .apartment-combination {
+        display: flex;
+        gap: 20px;
+        overflow-x: auto;
+        padding: 10px 0;
+    }
+
+    .apartment-card {
+        display: flex;
+        gap: 30px;
+        padding: 20px;
+        background: rgba(255, 255, 255, 0.8);
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+
+
+    .book-button {
+        background: #28a745 !important;
+        padding: 10px 20px !important;
+        margin-top: 15px !important;
+    }
+
+    .alert-error {
+        background: #ffebee;
+        color: #b71c1c;
+        padding: 15px;
+        border-radius: 4px;
+        margin: 20px 0;
+        border: 1px solid #ffcdd2;
+    }
+
+    /* эти стили будут работать только для booking_wizard1 */
+    .apartment-blocks .apartment-card {
+        display: flex !important;
+        gap: 20px;
+        padding: 15px;
+        background: rgba(255, 255, 255, 0.8);
+        border-radius: 8px;
+        margin-bottom: 15px;
+    }
+
+    /* Левая часть - описание */
+    .apartment-blocks .apartment-details {
+        flex: 1;
+        order: 1;
+        padding-right: 20px;
+    }
+
+    /* Правая часть - карусель */
+    .apartment-blocks .carousel {
+        flex: 1;
+        order: 2;
+        min-width: 300px;
+    }
+
+    /* Соответствие стилям apartments_list */
+    .apartment-blocks h4 {
+        font-size: 1.2rem;
+        margin-top: 0;
+        color: #003366;
+    }
+
+    .apartment-blocks p {
+        margin: 8px 0;
+        font-size: 0.9rem;
+    }
 }
 
-#wizard-form label {
-    font-weight: bold;
-}
 
-#wizard-form input {
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    margin-bottom: 10px;
-}
 
-#wizard-form button {
-    padding: 10px;
-    background: #007bff;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
 
-#wizard-form button:hover {
-    background: #0056b3;
-}
-
-#apartments-list {
-    margin-top: 20px;
-}
-
-.apartment {
-    background: rgba(255, 255, 255, 0.8);
-    padding: 20px;
-    border-radius: 8px;
-    margin-bottom: 20px;
-}
-
-.apartment h3 {
-    margin-top: 0;
-}
-
-.apartment button {
-    padding: 10px;
-    background: #28a745;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.apartment button:hover {
-    background: #218838;
-}
