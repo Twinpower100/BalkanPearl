@@ -70,6 +70,9 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'allauth.account.middleware.AccountMiddleware',
 ]
+SESSION_COOKIE_SAMESITE = 'Lax'  # Или 'None', если работаем со сторонними доменами (требует HTTPS)
+SESSION_COOKIE_SECURE = True  # Для работы по HTTPS
+
 
 LANGUAGES = [
     ('en', _('English')),
@@ -89,7 +92,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            BASE_DIR / 'templates',  # Используем Path вместо os.path.join
+            BASE_DIR / 'templates',
         ],
         'APP_DIRS': True,
         'OPTIONS': {

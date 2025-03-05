@@ -2,18 +2,31 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load static %}
-{% block title %} {% trans 'Главная - Balkan Pearl' %}{% endblock %}
+{% block title %} {% trans 'Список апартаментов' %}{% endblock %}
 
 {% block content %}
 <!-- Заголовок и форма выбора дат -->
 <div class="date-selection" style="position: fixed; top: 130px; width: 100%; background: rgba(255, 255, 255, 0.9); padding: 10px; z-index: 999;">
-    <h2 style="margin: 0; text-align: center;">{% trans 'Список апартаментов' %}</h2>
-    <form id="date-form" style="display: flex; gap: 10px; justify-content: center; margin-top: 10px;">
-        <input type="date" id="check_in" name="check_in" required style="padding: 8px;">
-        <input type="date" id="check_out" name="check_out" required style="padding: 8px;">
-        <button type="submit" style="padding: 8px 20px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">
-            {% trans "Рассчитать стоимость" %}
-        </button>
+    <h2 style="margin: 0; text-align: center;">{% trans "Для проверки стоимости и доступности апартаментов укажите желаемые даты бронирования" %}</h2>
+    <form id="date-form" method="get" style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 10px;">
+        <input type="date" id="check_in" name="check_in" required style="padding: 8px;" value="{{ check_in|default:'' }}">
+        <input type="date" id="check_out" name="check_out" required style="padding: 8px;" value="{{ check_out|default:'' }}">
+        <input type="number" name="min_price" placeholder="{% trans 'Мин. стоимость' %}" style="padding: 8px; width: 150px;" value="{{ min_price|default:'' }}">
+        <input type="number" name="max_price" placeholder="{% trans 'Макс. стоимость' %}" style="padding: 8px; width: 150px;" value="{{ max_price|default:'' }}">
+        <select name="sort_order" id="sort_order" style="padding: 8px;">
+            <option value="">{% trans 'Без сортировки' %}</option>
+            <option value="asc" {% if sort_order == "asc" %}selected{% endif %}>{% trans 'По возрастанию стоимости' %}</option>
+            <option value="desc" {% if sort_order == "desc" %}selected{% endif %}>{% trans 'По убыванию стоимости' %}</option>
+        </select>
+        <label style="display: flex; align-items: center; gap: 5px;">
+            <input type="checkbox" name="only_available" id="only_available" {% if only_available %}checked{% endif %}>
+            {% trans 'Показать только доступные' %}
+        </label>
+        {% if validation_error %}
+          <div class="error-message" style="color: red; margin-top: 10px;">
+             {{ validation_error }}
+          </div>
+        {% endif %}
     </form>
 </div>
 
@@ -31,10 +44,17 @@
                     <p><strong>{% trans 'Тип' %}:</strong> {{ item.apartment.type.name }}</p>
                     <p><strong>{% trans 'Вид из окна' %}:</strong> {{ item.apartment.window_view.view }}</p>
                     <p><strong>{% trans 'Вместимость номера' %}:</strong>{{ item.apartment.capacity }}</p>
-                    <div id="price-display-{{ item.apartment.id }}" style="display: none;">
-                        <p>{% trans "Стоимость бронирования:" %} <span id="price-value-{{ item.apartment.id }}"></span> €</p>
-                    </div>
-                    <a href="{% url 'booking_form' item.apartment.id %}" class="booking-link">{% trans 'Забронировать' %}</a>
+                    {% if item.calculated_price %}
+                        <p><strong>{% trans "Стоимость бронирования:" %}</strong> {{ item.calculated_price }} €</p>
+                    {% endif %}
+                    {% if item.available is not None %}
+                        <p><strong>{% trans "Доступность:" %}</strong> {% if item.available %}{% trans "Доступен" %}{% else %}{% trans "Недоступен" %}{% endif %}</p>
+                    {% endif %}
+                    <a href="{% url 'booking_form' item.apartment.id %}?check_in={{ request.GET.check_in|urlencode }}&check_out={{ request.GET.check_out|urlencode }}"
+                       class="booking-link"
+                        data-apartment-id="{{ item.apartment.id }}">
+                        {% trans 'Забронировать' %}
+                    </a>
                 </section>
                 <!-- Правый блок: Карусель -->
                 <section class="carousel-container" style="flex: 1; position: relative;">
@@ -70,62 +90,44 @@
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', () => {
-    // Обработчик формы выбора дат
-    document.getElementById('date-form').addEventListener('submit', function(event) {
-        event.preventDefault();
-        const checkIn = document.getElementById('check_in').value;
-        const checkOut = document.getElementById('check_out').value;
+    document.addEventListener('DOMContentLoaded', () => {
+        // Новый обработчик: при изменении любого поля формы, форма автоматически отправляется,
+        // что обновляет строку URL с параметрами (даты, цены, сортировка, фильтры)
+        document.getElementById('date-form').addEventListener('change', function() {
+            this.submit();
+        });
 
-        // Перебираем все апартаменты
-        document.querySelectorAll('.apartment-list li').forEach(li => {
-            const apartmentId = li.querySelector('.booking-link').href.split('/').slice(-2, -1)[0];
-            fetch(`/booking/calculate-price/${apartmentId}/?check_in=${checkIn}&check_out=${checkOut}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.price) {
-                        const priceDisplay = li.querySelector(`#price-display-${apartmentId}`);
-                        const priceValue = li.querySelector(`#price-value-${apartmentId}`);
-                        priceValue.textContent = data.price;
-                        priceDisplay.style.display = 'block';
-                    } else {
-                        alert(data.error);
-                    }
+        // Обработчик карусели
+        document.querySelectorAll('.carousel').forEach(carousel => {
+            const images = Array.from(carousel.querySelectorAll('img'));
+            const prevBtn = carousel.querySelector('.prev');
+            const nextBtn = carousel.querySelector('.next');
+            let currentIndex = 0;
+
+            function showImage(index) {
+                images.forEach((img, i) => {
+                    img.style.opacity = i === index ? '1' : '0';
+                    img.style.display = 'block';
                 });
+            }
+
+            if (images.length > 0) {
+                showImage(0);
+
+                prevBtn.addEventListener('click', () => {
+                    currentIndex = (currentIndex - 1 + images.length) % images.length;
+                    showImage(currentIndex);
+                });
+
+                nextBtn.addEventListener('click', () => {
+                    currentIndex = (currentIndex + 1) % images.length;
+                    showImage(currentIndex);
+                });
+            } else {
+                prevBtn.style.display = 'none';
+                nextBtn.style.display = 'none';
+            }
         });
     });
-
-    // Обработчик карусели
-    document.querySelectorAll('.carousel').forEach(carousel => {
-        const images = Array.from(carousel.querySelectorAll('img'));
-        const prevBtn = carousel.querySelector('.prev');
-        const nextBtn = carousel.querySelector('.next');
-        let currentIndex = 0;
-
-        function showImage(index) {
-            images.forEach((img, i) => {
-                img.style.opacity = i === index ? '1' : '0';  // Изменили на opacity
-                img.style.display = 'block';  // Всегда показываем изображения
-            });
-        }
-
-        if (images.length > 0) {
-            showImage(0);
-
-            prevBtn.addEventListener('click', () => {
-                currentIndex = (currentIndex - 1 + images.length) % images.length;
-                showImage(currentIndex);
-            });
-
-            nextBtn.addEventListener('click', () => {
-                currentIndex = (currentIndex + 1) % images.length;
-                showImage(currentIndex);
-            });
-        } else {
-            prevBtn.style.display = 'none';
-            nextBtn.style.display = 'none';
-        }
-    });
-});
 </script>
 {% endblock %}

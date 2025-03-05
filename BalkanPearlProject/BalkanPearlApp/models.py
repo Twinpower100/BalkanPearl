@@ -34,7 +34,7 @@ class WindowView(models.Model):
 
 
 class ApartmentType(models.Model):
-    name = models.CharField(verbose_name=_('Apartment type'))
+    name = models.CharField(max_length=255, verbose_name=_('Apartment type'), )
 
     def __str__(self):
         return f'Type {self.name}'
@@ -158,6 +158,9 @@ class Apartment(models.Model):
         if isinstance(check_out, str):
             check_out = timezone.datetime.strptime(check_out, "%Y-%m-%d").date()
 
+        print(f"DEBUG: [Apartment.calculate_price] Apartment ID: {self.id}, base_price_per_night: {self.base_price_per_night}")
+        print(f"DEBUG: [Apartment.calculate_price] check_in: {check_in}, check_out: {check_out}")
+
         today = timezone.now().date()
         if check_in < today:
             raise ValidationError(_("Дата заезда не может быть в прошлом"))
@@ -165,37 +168,36 @@ class Apartment(models.Model):
             raise ValidationError(_("Дата выезда должна быть позже даты заезда"))
 
         nights = (check_out - check_in).days
-        if nights <= 0:
-            raise ValidationError(_("Некорректный период бронирования"))
+        print(f"DEBUG: [Apartment.calculate_price] nights: {nights}")
 
         total_price = Decimal("0.00")
         current_date = check_in
 
         while current_date < check_out:
-            # Находим сезон, который действует на текущую дату
             season = Season.objects.filter(
                 start_date__lte=current_date,
                 end_date__gte=current_date
             ).first()
 
-            # Если сезон найден, используем его коэффициент
             if season:
                 price_for_day = self.base_price_per_night * season.price_multiplier
                 end_of_season = min(season.end_date + timezone.timedelta(days=1), check_out)
                 days_in_season = (end_of_season - current_date).days
+                print(f"DEBUG: [Apartment.calculate_price] season: {season.name}, price_for_day: {price_for_day}, days_in_season: {days_in_season}")
                 total_price += days_in_season * price_for_day
                 current_date = end_of_season
             else:
-                # Если сезон не найден, используем базовую цену
                 next_season = Season.objects.filter(start_date__gt=current_date).order_by('start_date').first()
                 if next_season:
                     end_of_period = min(next_season.start_date, check_out)
                 else:
                     end_of_period = check_out
                 days_in_period = (end_of_period - current_date).days
+                print(f"DEBUG: [Apartment.calculate_price] no season found, days_in_period: {days_in_period}, using base_price: {self.base_price_per_night}")
                 total_price += days_in_period * self.base_price_per_night
                 current_date = end_of_period
 
+        print(f"DEBUG: [Apartment.calculate_price] total_price: {total_price}")
         return total_price
 
     def is_available(self, check_in, check_out):
@@ -212,9 +214,9 @@ class Apartment(models.Model):
 
 class Booking(models.Model):
     STATUS_CHOICES = [('confirmed', _('Confirmed')), ('cancelled_by_user', _('Cancelled by User')),
-                      ('cancelled_by_admin', _('Cancelled by Admin')), ]
-    apartment = models.ForeignKey(Apartment, on_delete=models.CASCADE, related_name="bookings",
-                                  verbose_name=_("Apartment number"))
+                      ('cancelled_by_admin', _('Cancelled by Admin')),
+                      ]
+    apartments = models.ManyToManyField(Apartment, related_name='bookings', verbose_name=_('Apartments set'))
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="bookings", verbose_name=_("User"))
     check_in = models.DateField(verbose_name=_('Check in date'))
     check_out = models.DateField(verbose_name=_('Check out date'))
@@ -232,14 +234,6 @@ class Booking(models.Model):
     class Meta:
         verbose_name = _('Booking')
         verbose_name_plural = _('Bookings')
-        # unique_together = ('apartment', 'check_in', 'check_out')
-        constraints = [
-            models.UniqueConstraint(
-                fields=['apartment', 'check_in', 'check_out', ],
-                name='unique_confirmed_booking',
-                condition=Q(status='confirmed')
-            )
-        ]
         indexes = [
             models.Index(fields=['check_in', 'check_out'])
         ]
@@ -252,54 +246,82 @@ class Booking(models.Model):
         if self.check_in < timezone.now().date():
             raise ValidationError(_("Дата заезда не может быть в прошлом"))
 
-    def save(self, *args, **kwargs):
-        self.update_total_value()
-        super().save(*args, **kwargs)
-        if 'update_fields' not in kwargs or 'debt' not in kwargs['update_fields']:
-            self.update_debt_value()
+        if self.pk:
+            apartments = list(self.apartments.all())
+            total_capacity = sum(a.capacity for a in apartments)
+            if total_capacity < self.people_quantity:
+                raise ValidationError(_('Total apartments capacity is insufficient'))
 
-    def update_total_value(self):
-        """ Обновляет total_value: ручное значение или авторасчёт только для подтвержденных бронирований"""
-        if self.status == 'confirmed':
-            if self.manual_value is not None:
-                self.total_value = self.manual_value
-            else:
-                # Используем актуальные значения объекта, а не аргументы
-                self.total_value = self.apartment.calculate_price(self.check_in, self.check_out)
-        else:
-            self.total_value = Decimal(0.00)
+            if not apartments:
+                raise ValidationError(_("At least one apartment must be selected"))
+
+            if self.status == 'confirmed':
+                for apartment in apartments:
+                    overlapping = Booking.objects.filter(
+                        apartments=apartment,
+                        check_in__lt=self.check_out,
+                        check_out__gt=self.check_in,
+                        status='confirmed'
+                    ).exclude(pk=self.pk)
+
+                    if overlapping.exists():
+                        raise ValidationError(
+                            _("Apartment %(apartment)s is already booked for these dates"),
+                            params={'apartment': apartment.number}
+                        )
+
+            overlapping_group = Booking.objects.filter(
+                apartments__in=apartments,
+                check_in__lt=self.check_out,
+                check_out__gt=self.check_in,
+                status='confirmed'
+                ).exclude(pk=self.pk).distinct()
+            if overlapping_group.exists():
+                raise ValidationError(_("Один или несколько апартаментов уже заняты в выбранные даты"))
+
+    def calculate_total_value(self):
+        if not self.pk:
+            return Decimal('0.00')
+        apartments = self.apartments.all()
+        print(f"DEBUG: Booking ID {self.pk} - Количество апартаментов: {apartments.count()}")
+        total = Decimal('0.00')
+        for apartment in apartments:
+            price = apartment.calculate_price(self.check_in, self.check_out)
+            print(f"DEBUG: Апартамент ID {apartment.id} - Цена: {price}")
+            total += price
+        return total
+
+    def save(self, *args, **kwargs):
+        # Убираю автоматический пересчет total_value и debt, чтобы пересчет производился в представлении
+        super().save(*args, **kwargs)
 
     def get_total_payments(self):
-        """Возвращает сумму всех платежей"""
         return self.payments.aggregate(Sum('payment_value'))['payment_value__sum'] or Decimal(0.00)
 
     def get_total_refunds(self):
-        """Возвращает сумму всех возвратов платежей"""
         return self.refunds.aggregate(Sum('refund_value'))['refund_value__sum'] or Decimal(0.00)
 
     def update_debt_value(self):
-        """Обновляем поле задолженности после оплаты / отмены бронирования"""
         self.debt = self.total_value - self.get_total_payments() + self.get_total_refunds()
         super().save(update_fields=['debt'])
 
     def cancel_booking(self, cancelled_by, reason=None):
-        """
-        Отмена бронирования с учетом уже внесенных платежей.
-        Если сумма платежей больше суммы брони, создается задолженность отеля перед клиентом.
-
-        :param cancelled_by: 'user' или 'admin'
-        :param reason: Причина отмены (опционально)
-        """
-
         if self.status != 'confirmed':
             raise ValueError(_("Cannot cancel a booking that is not confirmed."))
 
-        # Проверяем сумму оплаченных платежей
-        self.debt = - self.get_total_payments() if self.get_total_payments() > 0 else Decimal(0.00)
-        # Обнуляем поле total_value
+        total_payments = self.get_total_payments()
+        total_refunds = self.get_total_refunds()
+        net_payments = total_payments - total_refunds
+
+        # При отмене обнуляем стоимость
         self.total_value = Decimal(0.00)
 
-        # Устанавливаем новый статус
+        # if self.total_value != 0:
+        #     self.debt = self.total_value - net_payments
+        # else:
+        self.debt = -net_payments
+
+
         if cancelled_by == 'user':
             self.status = 'cancelled_by_user'
         elif cancelled_by == 'admin':
@@ -309,16 +331,14 @@ class Booking(models.Model):
 
         super().save(update_fields=['status', 'total_value', 'debt'])
 
+
     def __str__(self):
-        try:
-            debt_value = self.debt
-        except:
-            debt_value = 'N/A'
-        return _("Booking {id} by user {user} for {apartment} has a debt {debt} ").format(
+        if not self.pk:
+            return f"Booking (unsaved) by {self.user}"
+        return _("Booking {id} by user {user} has a debt {debt}").format(
             id=self.id,
             user=self.user.username,
-            apartment=self.apartment.number,
-            debt=debt_value,
+            debt=self.debt
         )
 
 

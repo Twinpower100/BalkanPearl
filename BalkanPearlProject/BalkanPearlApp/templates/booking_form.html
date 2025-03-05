@@ -3,32 +3,172 @@
 {% load i18n %}
 
 {% block content %}
-<h2>{% trans 'Бронирование апартамента' %} {{ apartment.number }}</h2>
-
-<form method="post" action="{% url 'create_booking' %}">
-    {% csrf_token %}
-    <input type="hidden" name="apartment_id" value="{{ apartment.id }}">
-
-    <div class="form-group">
-        <label for="check_in">{% trans "Дата заезда:" %}</label>
-        <input type="date" id="check_in" name="check_in" required>
+<div class="booking-container" style="display: flex; flex-direction: column; align-items: flex-start;">
+    <h1 style="margin-bottom: 10px;">{% trans 'Бронирование апартамента' %} {{ apartment.number }}</h1>
+    <div class="apartment-info" style="background: white; padding: 10px; border-radius: 5px; margin-bottom: 20px; font-size: 1em; font-weight: bold;">
+        <p>{% trans "Capacity" %}: {{ apartment.capacity }}</p>
+        <p>{% trans "Apartment type" %}: {{ apartment.type.name }}</p>
+        <p>{% trans "Window view" %}: {{ apartment.window_view.view }}</p>
+        <p>
+            {% trans "Стоимость бронирования:" %}
+            <span id="price-value">0</span>
+            <span> €</span>
+        </p>
+        <p>{% trans "Доступность:" %} <span id="availability-status"></span></p>
     </div>
 
-    <div class="form-group">
-        <label for="check_out">{% trans "Дата выезда:" %}</label>
-        <input type="date" id="check_out" name="check_out" required>
+    <div class="booking-form">
+        <form method="post" action="{% url 'create_booking' %}" id="bookingForm">
+            {% csrf_token %}
+            <input type="hidden" name="apartment_id" value="{{ apartment.id }}">
+            <!-- Скрытое поле для клиентской стоимости -->
+            <input type="hidden" id="total_price_input" name="total_price" value="0">
+            <div class="date-selection" style="background: rgba(255, 255, 255, 0.9); padding: 10px;">
+                <h2 style="margin: 0; text-align: center;">{% trans 'Внесите желаемые даты и количество гостей' %}</h2>
+                <input type="date" id="check_in" name="check_in" required value="{{ check_in }}">
+                <input type="date" id="check_out" name="check_out" required value="{{ check_out }}">
+                <input type="number" id="people_quantity" name="people_quantity" min="1" required value="{{ people_quantity }}">
+                <button type="submit">{% trans 'Book' %}</button>
+            </div>
+        </form>
     </div>
 
-    <!-- Добавляем поле для количества гостей -->
-    <div class="form-group">
-        <label for="people_quantity">{% trans "Количество гостей:" %}</label>
-        <input type="number" id="people_quantity" name="people_quantity" min="1" max="{{ apartment.capacity }}" required>
+    <!-- Поле для отображения ошибок валидации на клиенте -->
+    <div id="validation-error" style="color: red; margin-top: 10px; padding: 10px; background: white; border-radius: 5px; display: none;"></div>
+</div>
+
+<!-- Модальное окно для ошибок с сервера -->
+<div id="error-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999;">
+    <div style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border-radius: 5px; min-width: 300px; text-align: center;">
+        <p id="error-modal-message" style="margin-bottom: 20px; font-size: 16px;"></p>
+        <button onclick="window.location.reload();" style="padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">
+            {% trans "Вернуться" %}
+        </button>
     </div>
+</div>
 
-    <button type="submit">{% trans "Забронировать" %}</button>
-</form>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.querySelector('#bookingForm');
+        const validationError = document.getElementById('validation-error');
+        const errorModal = document.getElementById('error-modal');
+        const errorModalMessage = document.getElementById('error-modal-message');
+        const checkInInput = document.getElementById('check_in');
+        const checkOutInput = document.getElementById('check_out');
+        const peopleQuantityInput = document.getElementById('people_quantity');
+        const priceValue = document.getElementById('price-value');
+        const availabilityStatus = document.getElementById('availability-status');
+        const totalPriceInput = document.getElementById('total_price_input');
 
-{% if error %}
-    <p style="color: red;">{{ error }}</p>
-{% endif %}
+        function updatePriceAndAvailability() {
+            const checkIn = checkInInput.value;
+            const checkOut = checkOutInput.value;
+
+            if (!checkIn || !checkOut) {
+                validationError.textContent = "{% trans 'Пожалуйста, заполните обе даты' %}";
+                validationError.style.display = 'block';
+                return;
+            }
+
+            fetch(`/ru/booking/calculate-price/{{ apartment.id }}/?check_in=${checkIn}&check_out=${checkOut}`)
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Received price from server:', data.price);
+                    if (data.price) {
+                        // Обновляем как видимую стоимость, так и значение скрытого поля
+                        priceValue.textContent = data.price;
+                        totalPriceInput.value = data.price;
+                    }
+                    availabilityStatus.textContent = data.available ?
+                        "{% trans 'Доступен' %}" : "{% trans 'Недоступен' %}";
+
+                    if (!data.available) {
+                        validationError.textContent = "{% trans 'Апартамент недоступен на выбранные даты' %}";
+                        validationError.style.display = 'block';
+                    } else {
+                        validationError.style.display = 'none';
+                    }
+                })
+                .catch(error => {
+                    console.error("Error in fetching price:", error);
+                });
+        }
+
+        function validateForm() {
+            const checkIn = new Date(checkInInput.value);
+            const checkOut = new Date(checkOutInput.value);
+            const peopleQuantity = parseInt(peopleQuantityInput.value);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            if (checkIn < today) {
+                validationError.textContent = "{% trans 'Дата заезда не может быть в прошлом' %}";
+                validationError.style.display = 'block';
+                return false;
+            }
+
+            if (checkIn >= checkOut) {
+                validationError.textContent = "{% trans 'Дата выезда должна быть позже даты заезда' %}";
+                validationError.style.display = 'block';
+                return false;
+            }
+
+            if (peopleQuantity > {{ apartment.capacity }}) {
+                validationError.textContent = "{% trans 'Количество гостей превышает вместимость апартамента' %}";
+                validationError.style.display = 'block';
+                return false;
+            }
+
+            return true;
+        }
+
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault(); // Останавливаем стандартную отправку формы
+
+            if (!validateForm()) {
+                return;
+            }
+
+            try {
+                const formData = new FormData(this);
+
+                console.log('FormData entries before submit:');
+                for (let pair of formData.entries()) {
+                    console.log(pair[0] + ': ' + pair[1]);
+                }
+
+                const response = await fetch(this.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                    }
+                });
+
+                const data = await response.json();
+                console.log('Server response:', data);
+
+                if (data.error) {
+                    errorModalMessage.textContent = data.error;
+                    errorModal.style.display = 'block';
+                } else if (data.success && data.redirect_url) {
+                    window.location.href = data.redirect_url;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                errorModalMessage.textContent = "{% trans 'Произошла ошибка при обработке запроса' %}";
+                errorModal.style.display = 'block';
+            }
+        });
+
+        checkInInput.addEventListener('change', updatePriceAndAvailability);
+        checkOutInput.addEventListener('change', updatePriceAndAvailability);
+        peopleQuantityInput.addEventListener('change', validateForm);
+
+        if (checkInInput.value && checkOutInput.value) {
+            updatePriceAndAvailability();
+        }
+    });
+</script>
 {% endblock %}

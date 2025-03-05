@@ -8,18 +8,22 @@
 <div class="content-container" style="display: flex; flex-wrap: nowrap; height: calc(90vh - 100px); ">
     <!-- Левый блок: Описание и контакты -->
     <section class="description" style="flex: 1; padding: 20px; overflow-y: auto; min-width: 300px;">
-        <h2>{% trans 'Описание отеля' %}</h2>
-        <p>
-            {{ hotel.description|default:"Описание недоступно." }}
-        </p>
+        <h1>{% trans 'About hotel' %}</h1>
+        <h3>
+            {% if hotel.description %}
+                {{ hotel.description|linebreaks }}
+            {% else %}
+                {{ no_description }}
+            {% endif %}
+        </h3>
         <h3>{% trans 'Контакты' %}</h3>
         <ul>
-            <li><strong>{% trans 'Адрес' %}:</strong> {{ hotel.address|default:"Не указан" }}</li>
+            <li><strong>{% trans 'Адрес' %}:</strong> {{ hotel.address|default:_("Не указан") }}</li>
             <li><strong>{% trans 'Электронная почта' %}:</strong>
-                <a href="mailto:{{ hotel.contact_email }}">{{ hotel.contact_email|default:"Нет данных" }}</a>
+                <a href="mailto:{{ hotel.contact_email }}">{{ hotel.contact_email|default:_("Нет данных") }}</a>
             </li>
             <li><strong>{% trans 'Телефон' %}:</strong>
-                <a href="tel:{{ hotel.contact_phone }}">{{ hotel.contact_phone|default:"Нет данных" }}</a>
+                <a href="tel:{{ hotel.contact_phone }}">{{ hotel.contact_phone|default:_("Нет данных") }}</a>
                 <!-- Иконки мессенджеров -->
                 <div class="messenger-icons">
                     <a href="https://wa.me/{{ hotel.contact_phone|cut:'+' }}" target="_blank" title="WhatsApp">

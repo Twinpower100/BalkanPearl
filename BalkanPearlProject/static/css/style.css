@@ -10,7 +10,7 @@
     height: 6vh; /* Фиксированная высота логотипа */
     width: auto; /* Ширина подстраивается пропорционально */
     object-fit: contain; /* Сохраняем пропорции */
-    filter: brightness(0.1) invert(1); /* Делаем лого белым */
+    filter: none; /* Делаем лого белым */
 }
 
 /* Адаптация заголовка */
@@ -87,6 +87,17 @@ nav.full-width-nav {
     justify-content: center;
     background-color: #003366;
     padding: 1vh 0; /* Используем vh для адаптивности */
+    margin: 0; /* Убираем отступы */
+    width: 100%; /* Устанавливаем ширину на 100% */
+}
+
+nav.full-width-nav .nav-links {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1vh; /* Добавляем промежуток между пунктами меню */
+    margin-left: 35vh;
+    margin-right: 10vh;
 }
 
 nav.full-width-nav a {
@@ -352,7 +363,7 @@ header h3 {
 .date-selection {
     position: fixed;
     top: 150px; /* Отступ от верхнего края */
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.9;
     padding-top: 10px;
     /*padding: 10px;*/
     border-radius: 8px;
@@ -360,7 +371,18 @@ header h3 {
     /*ext-align: center;*/
     /*margin-bottom: 10px;*/ /* Уменьшите значение по своему усмотрению */
     padding-bottom: 10px; /* Добавлено для уменьшения пустого пространства
-
+}
+.booking-form .date-selection {
+    position: fixed;
+    top: 150px; /* Отступ от верхнего края */
+    left: 50%; /* Центрирование по горизонтали */
+    transform: translateX(-50%); /* Смещение на половину ширины для точного центрирования */
+    background: rgba(255, 255, 255, 0.9);
+    padding: 10px;
+    border-radius: 8px;
+    z-index: 1000; /* Чтобы форма была поверх других элементов */
+    text-align: center; /* Центрирование текста внутри формы */
+}    
 
 /* Стили для мастера бронирования */
     #wizard-form {

@@ -6,6 +6,7 @@ from django.core.exceptions import ValidationError
 from django.urls import path, reverse
 from django.utils.encoding import force_str
 from openpyxl.styles import Font
+from decimal import Decimal
 
 from BalkanPearlApp.models import Hotel, Address, HotelPhoto, WindowView, ApartmentType, Apartment, Season, \
     ApartmentPhoto, Booking, Review, BlogPost, SiteImage, Payment, Refund
@@ -15,6 +16,7 @@ from django.shortcuts import render, HttpResponse
 from django.db.models import Sum, Q
 from django.http import HttpResponseForbidden
 from openpyxl import Workbook
+from .forms import BookingForm  # добавлено
 
 
 # Register your models here.
@@ -55,13 +57,13 @@ class ApartmentTypeAdmin(admin.ModelAdmin):
 
 @admin.register(Apartment)
 class ApartmentAdmin(admin.ModelAdmin):
-    list_display = ('hotel', 'number', 'type', 'is_closed', 'capacity', 'base_price_per_night', 'window_view', 'floor',  'balcony', 'rooms_quantity',
+    list_display = ( 'number', 'type', 'is_closed', 'capacity', 'base_price_per_night', 'window_view', 'floor',  'balcony', 'rooms_quantity',
                     'mini_kitchen', 'bathrooms_quantity', 'beds_quantity', 'sofa', 'washing_machine', 'desk',
-                    'iron_and_board', 'child_bed', 'microwave', 'square',
+                    'iron_and_board', 'child_bed', 'microwave', 'square', 'hotel',
                     )
-    list_filter = ('hotel', 'number', 'window_view', 'floor', 'type', 'balcony', 'rooms_quantity',
-                   'base_price_per_night', 'is_closed')
-    ordering = ('hotel', 'number')
+    list_filter = ( 'number', 'window_view', 'floor', 'type', 'balcony', 'rooms_quantity',
+                   'base_price_per_night', 'is_closed', 'hotel',)
+    ordering = ('number', 'floor', 'hotel', )
 
 
 @admin.register(Season)
@@ -71,7 +73,11 @@ class SeasonAdmin(admin.ModelAdmin):
 
 @admin.register(ApartmentPhoto)
 class ApartmentPhotoAdmin(admin.ModelAdmin):
-    list_display = ('apartment__number', 'photo', 'description', 'uploaded_at')
+    list_display = ('get_apartment_number', 'photo', 'description', 'uploaded_at')
+
+    def get_apartment_number(self, obj):
+        return obj.apartment.number
+    get_apartment_number.short_description = _('Apartment Number')
 
 
 @admin.register(Payment)
@@ -101,15 +107,46 @@ class RefundAdmin(admin.ModelAdmin):
             self.message_user(request, _("Error: %s") % e.message, level='error', )
 
 
+class BookingAdminForm(forms.ModelForm):
+    class Meta:
+        model = Booking
+        fields = '__all__'
+
+    def clean(self):
+        cleaned_data = super().clean()
+        people_quantity = cleaned_data.get('people_quantity')
+        apartments = cleaned_data.get('apartments')
+        check_in = cleaned_data.get('check_in')
+        check_out = cleaned_data.get('check_out')
+
+        # Если какие-то поля отсутствуют, пропускаем проверку
+        if not (apartments and people_quantity and check_in and check_out):
+            return cleaned_data
+
+        for apt in apartments:
+            # Проверка вместимости
+            if people_quantity > apt.capacity:
+                raise ValidationError(f"Количество гостей превышает вместимость апартамента {apt.number}")
+            # Проверка на перекрытие дат бронирований
+            qs = Booking.objects.filter(apartments=apt, status='confirmed')
+            if self.instance.pk:
+                qs = qs.exclude(pk=self.instance.pk)
+            qs = qs.filter(check_in__lt=check_out, check_out__gt=check_in)
+            if qs.exists():
+                raise ValidationError(f"Апартамент {apt.number} уже забронирован на выбранные даты")
+        return cleaned_data
+
+
 @admin.register(Booking)
 class BookingAdmin(admin.ModelAdmin):
-    # form = BookingAdminForm
-    list_display = ('id', 'apartment__number', 'user', 'check_in', 'check_out', 'status', 'total_value',
-                    'created_at', 'debt', 'people_quantity')
-    list_filter = ('status', 'apartment', 'user')
-    search_fields = ('apartment__number', 'user__username', 'status')
+    form = BookingAdminForm
+    list_display = ('id', 'get_apartments', 'user', 'check_in', 'check_out', 'status', 'total_value',
+                    'debt', 'people_quantity', 'created_at', )
+    list_filter = ('status', 'user')
+    search_fields = ('user__username', 'status')
     readonly_fields = ('created_at', 'total_value', 'debt')
     actions = ['cancel_booking']
+
 
     def get_urls(self):
         urls = [
@@ -147,6 +184,25 @@ class BookingAdmin(admin.ModelAdmin):
 
     cancel_booking.short_description = _("Отменить выбранные бронирования")
 
+    def get_apartments(self, obj):
+        if not obj.pk:
+            return ""
+        return ", ".join(str(apartment.number) for apartment in obj.apartments.all())
+    get_apartments.short_description = _('Апартаменты')
+
+    def save_related(self, request, form, formsets, change):
+        super().save_related(request, form, formsets, change)
+        booking = form.instance
+        if booking.status == 'confirmed':
+            if booking.manual_value is not None:
+                booking.total_value = booking.manual_value
+            else:
+                booking.total_value = booking.calculate_total_value()
+        else:
+            booking.total_value = Decimal('0.00')
+        booking.debt = booking.total_value
+        booking.save(update_fields=['total_value', 'debt'])
+
     def reports_view(self, request):
         if not request.user.is_staff:
             return HttpResponseForbidden(_('Доступ запрещен'))
@@ -180,7 +236,7 @@ class BookingAdmin(admin.ModelAdmin):
                 Q(check_out__gte=start_date)
             )
             if hotel:
-                bookings = bookings.filter(apartment__hotel=hotel)
+                bookings = bookings.filter(apartments__hotel=hotel)
             if apartment:
                 bookings = bookings.filter(apartment=apartment)
             if status:
@@ -316,6 +372,17 @@ class BookingAdmin(admin.ModelAdmin):
 
         return render(request, 'admin/BalkanPearlApp/booking/availability_report.html',
                       {'report_data': report_data})
+
+    def get_fields(self, request, obj=None, **kwargs):
+        # Не исключаем поле apartments, чтобы его можно было выбрать при создании бронирования
+        return super().get_fields(request, obj, **kwargs)
+
+    def get_form(self, request, obj=None, **kwargs):
+        form = super().get_form(request, obj, **kwargs)
+        if obj is None and 'apartments' in form.base_fields:  # добавление нового объекта
+            # Если объект еще не сохранён, используем стандартный SelectMultiple
+            form.base_fields['apartments'].widget = forms.SelectMultiple()
+        return form
 
 
 @admin.register(Review)

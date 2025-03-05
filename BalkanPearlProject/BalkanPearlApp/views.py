@@ -1,5 +1,8 @@
 # C:\Mail.ru\CodeIt\Django\BalkanPearl\BalkanPearlProject\BalkanPearlApp\views.py
 # -*- coding: utf-8 -*-
+import datetime
+from datetime import timedelta
+
 from allauth.account.views import LoginView
 from django.contrib.auth.views import LogoutView
 from django.core.exceptions import ValidationError
@@ -11,8 +14,8 @@ from django.utils import timezone
 from django.shortcuts import render, get_object_or_404, redirect
 from decouple import config  # Добавляем импорт config
 from allauth.socialaccount.providers.google.views import oauth2_login
-from .forms import CustomLoginForm
-from .models import Hotel, Apartment, Review, BlogPost, SiteImage, HotelPhoto, ApartmentPhoto, Booking
+from BalkanPearlApp.forms import CustomLoginForm
+from BalkanPearlApp.models import Hotel, Apartment, Review, BlogPost, SiteImage, HotelPhoto, ApartmentPhoto, Booking
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.utils.translation import gettext_lazy as _
@@ -21,6 +24,8 @@ from django import forms
 import emoji
 from django.shortcuts import render, get_object_or_404, redirect
 from itertools import combinations
+from decimal import Decimal
+from .forms import BookingForm
 
 """Делаем по запросу поиска"""
 
@@ -36,25 +41,131 @@ def home(request):
         'search_query': search_query,  # Передаём строку поиска в контекст
         'site_image': site_image,
         'hotel_photos': hotel_photos,
+        'no_description': _("No description available"),
     })
 
 
 def apartments_list(request):
     hotel = Hotel.objects.first()
-    apartments = Apartment.objects.filter(is_closed=False)  # Получение всех открытых апартаментов
+
+    # Получение GET параметров для фильтрации и сортировки
+    check_in = request.GET.get('check_in')
+    check_out = request.GET.get('check_out')
+    min_price = request.GET.get('min_price')
+    max_price = request.GET.get('max_price')
+    sort_order = request.GET.get('sort_order')
+    if sort_order:
+        sort_order = sort_order.strip().lower()
+    else:
+        sort_order = ""
+    only_available = request.GET.get('only_available')  # будет присутствовать, если чекбокс установлен
+
+    apartments_qs = Apartment.objects.filter(is_closed=False)
     apartments_with_photos = []
-    for apartment in apartments:
-        apartments_with_photos.append(
-            {
-                'apartment': apartment,
-                'apartment_photos': ApartmentPhoto.objects.filter(apartment=apartment),
-                'hotel': hotel,
-            }
-        )
+
+    # Вычисляем сегодняшнюю и завтрашнюю даты для установки значений по умолчанию
+    today = datetime.datetime.today().date()
+    tomorrow = today + timedelta(days=1)
+
+    # Если даты не заданы, устанавливаем значения по умолчанию
+    if not check_in:
+        check_in = today.strftime('%Y-%m-%d')
+    if not check_out:
+        check_out = tomorrow.strftime('%Y-%m-%d')
+
+    # Если даты указаны, пытаемся их распарсить
+    try:
+        check_in_date = datetime.datetime.strptime(check_in, '%Y-%m-%d').date()
+        check_out_date = datetime.datetime.strptime(check_out, '%Y-%m-%d').date()
+    except ValueError:
+        check_in_date = check_out_date = None
+
+    # Проверка корректности выбранных дат
+    validation_error = ""
+    if not (check_in_date and check_out_date):
+        validation_error = _("Пожалуйста, заполните обе даты")
+    elif check_in_date < today:
+        validation_error = _("Дата заезда не может быть в прошлом")
+    elif check_in_date >= check_out_date:
+        validation_error = _("Дата выезда должна быть позже даты заезда")
+
+    for apartment in apartments_qs:
+        if not (check_in_date and check_out_date):
+            calculated_price = None
+            available = None
+            error_message = _("Введите корректные даты")
+        else:
+            try:
+                calculated_price = apartment.calculate_price(check_in_date, check_out_date)
+                available = apartment.is_available(check_in_date, check_out_date)
+                error_message = ""
+            except (ValidationError, TypeError) as e:
+                calculated_price = None
+                available = None
+                error_message = e.messages[0] if hasattr(e, 'messages') and e.messages else str(e)
+
+        apt_dict = {
+            'apartment': apartment,
+            'apartment_photos': ApartmentPhoto.objects.filter(apartment=apartment),
+            'hotel': hotel,
+            'calculated_price': calculated_price,
+            'available': available,
+            'error': error_message,
+        }
+        apartments_with_photos.append(apt_dict)
+
+    # Фильтрация по цене и доступности, если даты указаны
+    if check_in_date and check_out_date:
+        filtered = []
+        for apt in apartments_with_photos:
+            price = apt.get('calculated_price')
+            available = apt.get('available')
+
+            if only_available and available is not None:
+                if not available:
+                    continue
+
+            if price is not None:
+                if min_price:
+                    try:
+                        if price < float(min_price):
+                            continue
+                    except ValueError:
+                        pass
+                if max_price:
+                    try:
+                        if price > float(max_price):
+                            continue
+                    except ValueError:
+                        pass
+            filtered.append(apt)
+        apartments_with_photos = filtered
+
+        # Отладочное сообщение для сортировки
+        print("Sort order:", sort_order)
+        for apt in apartments_with_photos:
+            print("Apartment", apt['apartment'].id, "calculated_price:", apt.get('calculated_price'))
+
+        try:
+            if sort_order == 'asc':
+                apartments_with_photos = sorted(apartments_with_photos, key=lambda x: float(x.get('calculated_price') or 0))
+            elif sort_order == 'desc':
+                apartments_with_photos = sorted(apartments_with_photos, key=lambda x: float(x.get('calculated_price') or 0), reverse=True)
+        except Exception as e:
+            print("Sorting error:", e)
 
     context = {
         'apartments_with_photos': apartments_with_photos,
-        'hotel': hotel
+        'hotel': hotel,
+        'check_in': check_in,
+        'check_out': check_out,
+        'min_price': min_price,
+        'max_price': max_price,
+        'sort_order': sort_order,
+        'only_available': only_available,
+        'today': today,
+        'tomorrow': tomorrow,
+        'validation_error': validation_error,
     }
     return render(request, 'apartments_list.html', context)
 
@@ -63,120 +174,312 @@ def calculate_price(request, apartment_id):
     apartment = get_object_or_404(Apartment, id=apartment_id)
     check_in = request.GET.get('check_in')
     check_out = request.GET.get('check_out')
+    print(f"DEBUG: check_in = {check_in}, check_out = {check_out}")
+
+    if not check_in or not check_out:
+        return JsonResponse({'error': 'Missing check_in or check_out parameters'}, status=400)
 
     try:
         check_in_date = timezone.datetime.strptime(check_in, '%Y-%m-%d').date()
         check_out_date = timezone.datetime.strptime(check_out, '%Y-%m-%d').date()
+
+        if check_in_date >= check_out_date:
+            return JsonResponse({'error': _('Check-out date must be after check-in')}, status=400)
+        if check_in_date < timezone.now().date():
+            return JsonResponse({'error': _("Check-in date can't be in the past")})
+
         price = apartment.calculate_price(check_in_date, check_out_date)
-        return JsonResponse({'price': price})
+        available = apartment.is_available(check_in_date, check_out_date)
+        return JsonResponse({'price': price, 'available': available})
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=400)
 
 
+# @login_required
+# def booking_form(request, apartment_id):
+#     hotel = Hotel.objects.first()
+#     apartment = get_object_or_404(Apartment, id=apartment_id)
+#
+#
+#     check_in = request.GET.get('check_in', '')
+#     check_out = request.GET.get('check_out', '')
+#     people_quantity = 1
+#
+#     from datetime import timedelta
+#     today = timezone.now().date()
+#     tomorrow = today + timedelta(days=1)
+#     if not check_in:
+#         check_in = today.strftime('%Y-%m-%d')
+#     if not check_out:
+#         check_out = tomorrow.strftime('%Y-%m-%d')
+#
+#     error = None
+#     if request.method == "POST":
+#         try:
+#             price = apartment.calculate_price(
+#                 request.POST.get("check_in"),
+#                 request.POST.get("check_out")
+#             )
+#
+#             check_in = request.POST.get('check_in')
+#             check_out = request.POST.get('check_out')
+#             people_quantity = int(request.POST.get("people_quantity", 1))
+#             check_in_date = timezone.datetime.strptime(check_in, '%Y-%m-%d').date()
+#             check_out_date = timezone.datetime.strptime(check_out, '%Y-%m-%d').date()
+#
+#             if not all([apartment_id, check_in, check_out, people_quantity]):
+#                 raise ValidationError(_("Не все обязательные поля заполнены"))
+#             if check_in_date < timezone.now().date():
+#                 raise ValidationError(_("Check-in date can't be in the past"))
+#             if people_quantity > apartment.capacity:
+#                 raise ValidationError(_("Guests quantity is exceeding apartment's capacity"))
+#
+#             with transaction.atomic():
+#                 booking = Booking.objects.create(
+#                     user=request.user,
+#                     check_in=check_in_date,
+#                     check_out=check_out_date,
+#                     people_quantity=people_quantity,
+#                     status='confirmed',
+#                     total_value=price,
+#                 )
+#                 booking.apartments.add(apartment)
+#                 booking.save()
+#                 booking.refresh_from_db()
+#                 print(f"DEBUG: booking.apartments.count(): {booking.apartments.count()}")
+#                 # Пересчет стоимости и долга после установки many-to-many связи
+#                 if booking.status == 'confirmed':
+#                     if booking.manual_value is not None:
+#                         booking.total_value = booking.manual_value
+#                     else:
+#                         booking.total_value = booking.calculate_total_value()
+#                 else:
+#                     booking.total_value = Decimal('0.00')
+#                 booking.debt = booking.total_value
+#                 booking.save()
+#                 # Отладочный вывод: выводим значение total_value из базы
+#                 refreshed_booking = Booking.objects.get(pk=booking.pk)
+#                 print(f"DEBUG: Final booking.total_value from DB: {refreshed_booking.total_value}")
+#
+#                 messages.success(request, _("Booking created successfully"))
+#                 return redirect('booking_confirmation', booking.id)
+#
+#         except ValidationError as e:
+#             error = e.message
+#         except Exception as e:
+#             error = str(e)
+#
+#     context = {
+#         "apartment": apartment,
+#         "check_in": check_in,
+#         "check_out": check_out,
+#         "people_quantity": people_quantity,
+#         "error": error,
+#         'hotel': hotel
+#     }
+#     return render(request, "booking_form.html", context)
+@login_required
 def booking_form(request, apartment_id):
     hotel = Hotel.objects.first()
     apartment = get_object_or_404(Apartment, id=apartment_id)
-    check_in = request.GET.get('check_in')
-    check_out = request.GET.get('check_out')
-    error = None
 
-    if request.method == "POST":
-        try:
-            price = apartment.calculate_price(
-                request.POST.get("check_in"),
-                request.POST.get("check_out")
-            )
-        except ValidationError as e:
-            error = e.message
+    # Получаем параметры из GET или подставляем значения по умолчанию.
+    check_in = request.GET.get('check_in', '')
+    check_out = request.GET.get('check_out', '')
+    people_quantity = 1
 
+    from datetime import timedelta
+    today = timezone.now().date()
+    tomorrow = today + timedelta(days=1)
+    if not check_in:
+        check_in = today.strftime('%Y-%m-%d')
+    if not check_out:
+        check_out = tomorrow.strftime('%Y-%m-%d')
+
+    # Здесь нам нет логики POST – мы просто готовим данные для отображения формы.
     context = {
         "apartment": apartment,
         "check_in": check_in,
         "check_out": check_out,
-        "error": error,
-        'hotel': hotel
+        "people_quantity": people_quantity,
+        "error": None,        # Если шаблон учитывает error, передаём None
+        "hotel": hotel
     }
     return render(request, "booking_form.html", context)
 
 
-def blog_home(request):
-    # Если есть модель блога, замените пустой список на запрос к базе
-    hotel = Hotel.objects.first()
-    blog_posts = BlogPost.objects.all()
-    context = {
-        'blog_posts': blog_posts,
-        'hotel': hotel
-    }
-    return render(request, 'blog_home.html', context)
 
-
-@login_required
-def profile(request):
-    hotel = Hotel.objects.first()
-    context = {
-        'hotel': hotel
-    }
-    return render(request, 'profile.html', context)
-
+# @login_required
+# def create_booking(request):
+#     if request.method != 'POST':
+#         return JsonResponse({
+#             'success': False,
+#             'error': _("Неверный метод запроса")
+#         }, content_type='application/json')
+#
+#     try:
+#         apartment_id = request.POST.get('apartment_id')
+#         check_in = request.POST.get('check_in')
+#         check_out = request.POST.get('check_out')
+#         people_quantity = request.POST.get('people_quantity')
+#
+#         # Базовая валидация
+#         if not all([apartment_id, check_in, check_out, people_quantity]):
+#             return JsonResponse({
+#                 'success': False,
+#                 'error': _("Не все обязательные поля заполнены")
+#             }, content_type='application/json')
+#
+#         apartment = get_object_or_404(Apartment, id=apartment_id)
+#         check_in_date = timezone.datetime.strptime(check_in, '%Y-%m-%d').date()
+#         check_out_date = timezone.datetime.strptime(check_out, '%Y-%m-%d').date()
+#         people_quantity = int(people_quantity)
+#
+#         # Валидация дат
+#         if check_in_date < timezone.now().date():
+#             return JsonResponse({
+#                 'success': False,
+#                 'error': _("Дата заезда не может быть в прошлом")
+#             }, content_type='application/json')
+#
+#         if check_in_date >= check_out_date:
+#             return JsonResponse({
+#                 'success': False,
+#                 'error': _("Дата выезда должна быть позже даты заезда")
+#             }, content_type='application/json')
+#
+#         # Проверка количества гостей
+#         if people_quantity > apartment.capacity:
+#             return JsonResponse({
+#                 'success': False,
+#                 'error': _("Количество гостей превышает вместимость апартамента")
+#             }, content_type='application/json')
+#
+#         # Проверка доступности
+#         if not apartment.is_available(check_in_date, check_out_date):
+#             return JsonResponse({
+#                 'success': False,
+#                 'error': _("Апартамент уже забронирован на выбранные даты")
+#             }, content_type='application/json')
+#
+#         # Создание бронирования
+#         with transaction.atomic():
+#             booking = Booking.objects.create(
+#                 user=request.user,
+#                 check_in=check_in_date,
+#                 check_out=check_out_date,
+#                 people_quantity=people_quantity,
+#                 status='confirmed'
+#             )
+#             booking.apartments.add(apartment)
+#             booking.save()
+#
+#             from django.urls import reverse
+#             return JsonResponse({
+#                 'success': True,
+#                 'redirect_url': reverse('booking_confirmation', args=[booking.id])
+#             }, content_type='application/json')
+#
+#     except Exception as e:
+#         print(f"Error in create_booking: {str(e)}")  # Отладочный вывод
+#         return JsonResponse({
+#             'success': False,
+#             'error': str(e)
+#         }, content_type='application/json')
 
 @login_required
 def create_booking(request):
-    if request.method == 'POST':
-        apartment_id = request.POST.get('apartment_id')
-        check_in = request.POST.get('check_in')
-        check_out = request.POST.get('check_out')
-        people_quantity = int(request.POST.get('people_quantity', 1))  # Получаем количество гостей
+    if request.method != 'POST':
+        return JsonResponse({
+            'success': False,
+            'error': _("Неверный метод запроса")
+        }, content_type='application/json')
 
-        try:
-            # Проверка обязательных полей
+    try:
+        with transaction.atomic():
+            # Данные из клиента
+            apartment_id = request.POST.get('apartment_id')
+            check_in = request.POST.get('check_in')
+            check_out = request.POST.get('check_out')
+            people_quantity = int(request.POST.get('people_quantity', 1))
+            client_price = Decimal(request.POST.get('total_price', '0.00'))
+
+            # Проверка обязательных данных
             if not all([apartment_id, check_in, check_out]):
-                raise ValueError(_("Не все обязательные поля заполнены"))
+                return JsonResponse({
+                    'success': False,
+                    'error': _("Не все обязательные поля заполнены")
+                }, content_type='application/json')
 
+            # Проверяем и преобразуем данные
             apartment = get_object_or_404(Apartment, id=apartment_id)
-
-            # Проверка количества гостей
-            if people_quantity > apartment.capacity:
-                raise ValueError(_("Количество гостей превышает вместимость апартамента"))
-
-            # Парсинг дат
             check_in_date = timezone.datetime.strptime(check_in, '%Y-%m-%d').date()
             check_out_date = timezone.datetime.strptime(check_out, '%Y-%m-%d').date()
 
             # Валидация дат
-            if check_in_date >= check_out_date:
-                raise ValueError(_("Дата выезда должна быть позже даты заезда"))
-
             if check_in_date < timezone.now().date():
-                raise ValueError(_("Дата заезда не может быть в прошлом"))
+                return JsonResponse({
+                    'success': False,
+                    'error': _("Дата заезда не может быть в прошлом")
+                }, content_type='application/json')
+            if check_in_date >= check_out_date:
+                return JsonResponse({
+                    'success': False,
+                    'error': _("Дата выезда должна быть позже даты заезда")
+                }, content_type='application/json')
 
-            # Проверка доступности
+            # Проверка доступности апартамента
             if not apartment.is_available(check_in_date, check_out_date):
-                messages.error(request, _("Апартамент занят на выбранные даты"))
-                return redirect('booking_form', apartment_id=apartment_id)
+                return JsonResponse({
+                    'success': False,
+                    'error': _("Апартамент недоступен в указанный период")
+                }, content_type='application/json')
 
-            # Создание бронирования
-            new_booking = Booking.objects.create(
+            # Перерасчёт стоимости на сервере
+            server_price = apartment.calculate_price(check_in_date, check_out_date)
+
+            # Сравнение цен
+            if client_price != server_price:
+                return JsonResponse({
+                    'success': False,
+                    'error': _("Стоимость изменилась с момента просмотра. Ожидаемая стоимость: %(expected_price)s €") % {'expected_price': server_price},
+                }, content_type='application/json')
+
+            # Сохранение бронирования
+            booking = Booking.objects.create(
                 user=request.user,
-                apartment=apartment,
                 check_in=check_in_date,
                 check_out=check_out_date,
-                people_quantity=people_quantity, # Сохраняем количество гостей
+                people_quantity=people_quantity,
+                total_value=server_price,
+                status='confirmed'
             )
+            booking.apartments.add(apartment)
+            # Пересчёт total_value и расчёт долга (debt)
+            if booking.status == 'confirmed':
+                if booking.manual_value is not None:
+                    booking.total_value = booking.manual_value
+                else:
+                    booking.total_value = booking.calculate_total_value()
+            else:
+                booking.total_value = Decimal('0.00')
+            booking.debt = booking.total_value
+            booking.save()
+            
+            # Переадресация на страницу подтверждения
+            from django.urls import reverse
+            return JsonResponse({
+                'success': True,
+                'redirect_url': reverse('booking_confirmation', args=[booking.id])
+            }, content_type='application/json')
 
-            messages.success(request, _("Бронирование успешно создано!"))
-            return redirect('booking_confirmation', booking_id=new_booking.id)
-
-        except ValueError as e:
-            print("ValueError:", str(e))  # Отладочное сообщение
-            messages.error(request, str(e))
-            return redirect('booking_form', apartment_id=apartment_id)
-        except Exception as e:
-            print("Exception:", str(e))  # Отладочное сообщение
-            messages.error(request, _("Системная ошибка: ") + str(e))
-            return redirect('booking_form', apartment_id=apartment_id)
-
-    return redirect('home')
-
+    except Exception as e:
+        # Логирование для отладки
+        print(f"Error in create_booking: {str(e)}")
+        return JsonResponse({
+            'success': False,
+            'error': _("Произошла ошибка: %(error)s") % {'error': str(e)}
+        }, content_type='application/json')
 
 @login_required
 def booking_confirmation(request, booking_id):
@@ -201,17 +504,6 @@ def booking_details(request, booking_id):
 
 
 @login_required
-def profile(request):
-    hotel = Hotel.objects.first()
-    user_bookings = Booking.objects.filter(user=request.user, status='confirmed').order_by('check_in')
-    context = {
-        'user_bookings': user_bookings,
-        'hotel': hotel,
-    }
-    return render(request, 'profile.html', context)
-
-
-@login_required
 @require_POST
 def cancel_booking(request, booking_id):
     booking = get_object_or_404(Booking, id=booking_id, user=request.user)
@@ -232,6 +524,28 @@ def payment_page(request, booking_id):
         'stripe_public_key': 'ваш_публичный_ключ_stripe'  # Из settings.py
     }
     return render(request, 'payment.html', context)
+
+
+def blog_home(request):
+    # Если есть модель блога, замените пустой список на запрос к базе
+    hotel = Hotel.objects.first()
+    blog_posts = BlogPost.objects.all()
+    context = {
+        'blog_posts': blog_posts,
+        'hotel': hotel
+    }
+    return render(request, 'blog_home.html', context)
+
+
+@login_required
+def profile(request):
+    hotel = Hotel.objects.first()
+    user_bookings = Booking.objects.filter(user=request.user, status='confirmed').order_by('check_in')
+    context = {
+        'user_bookings': user_bookings,
+        'hotel': hotel,
+    }
+    return render(request, 'profile.html', context)
 
 
 def reviews(request):
@@ -273,10 +587,10 @@ def create_review(request):
     else:
         form = ReviewForm()
 
-    return render(request, 'create_review.html', {'form': form, 'hotel': hotel,})
+    return render(request, 'create_review.html', {'form': form, 'hotel': hotel, })
 
 
-from .models import SiteImage
+from BalkanPearlApp.models import SiteImage
 
 
 class CustomLoginView(LoginView):
@@ -292,54 +606,13 @@ class CustomLogoutView(LogoutView):
     template_name = 'account/logout.html'
     extra_context = {'site_image': SiteImage.objects.first()}
 
+
 def login_form(request):
     return render(request, 'account/login_form.html')
 
+
 def google_login(request):
     return render(request, 'account/google_login.html')
-
-# @login_required
-# def booking_wizard(request):
-#     hotel = Hotel.objects.first()
-#     check_in = request.GET.get('check_in')
-#     check_out = request.GET.get('check_out')
-#     people_quantity = int(request.GET.get('people_quantity', 1))
-#
-#     # Если даты не переданы, отображаем форму для их ввода
-#     if not check_in or not check_out:
-#         return render(request, 'booking_wizard.html', {'show_form': True, 'hotel': hotel})
-#
-#     # Проверяем, что даты корректны
-#     try:
-#         check_in_date = timezone.datetime.strptime(check_in, '%Y-%m-%d').date()
-#         check_out_date = timezone.datetime.strptime(check_out, '%Y-%m-%d').date()
-#     except ValueError:
-#         return JsonResponse({'error': 'Некорректный формат даты'}, status=400)
-#
-#     apartments = Apartment.objects.filter(is_closed=False)
-#     available_apartments = []
-#     for apartment in apartments:
-#         if apartment.is_available(check_in_date, check_out_date):
-#             price = apartment.calculate_price(check_in_date, check_out_date)
-#             photos = ApartmentPhoto.objects.filter(apartment=apartment)
-#             available_apartments.append({
-#                 'id': apartment.id,
-#                 'number': apartment.number,
-#                 'description': apartment.description,
-#                 'price': price,
-#                 'photos': [{'photo': photo.photo.url} for photo in photos],
-#                 'hotel': hotel
-#             })
-#
-#     return render(request, 'booking_wizard.html', {
-#         'apartments': available_apartments,
-#         'check_in': check_in,
-#         'check_out': check_out,
-#         'people_quantity': people_quantity,
-#         'show_form': False,
-#         'hotel': hotel,
-#     })
-
 
 
 @login_required
@@ -375,7 +648,6 @@ def booking_wizard(request):
             'check_out': check_out,
             'people_quantity': people_quantity,
         })
-
 
     apartment_blocks = create_apartment_blocks(available_apartments, people_quantity, check_in_date, check_out_date)
     for block in apartment_blocks:
@@ -421,42 +693,65 @@ def booking_wizard(request):
 #     # 4. Возврат отсортированных блоков
 #     return possible_blocks
 
-def create_apartment_blocks(available_apartments, people_quantity, check_in_date, check_out_date):
-    # Сортируем по вместимости (сначала самые большие)
-    sorted_apartments = sorted(
-        available_apartments,
-        key=lambda x: (-x.capacity, x.calculate_price(check_in_date, check_out_date))
-    )
+def create_apartment_blocks(
+        available_apartments,  # Все доступные апартаменты (QuerySet)
+        people_quantity,  # Количество гостей (int)
+        check_in_date,  # Дата заезда (date)
+        check_out_date  # Дата выезда (date)
+):
+    """
+    Возвращает список вариантов бронирования, отсортированных по стоимости.
+    Каждый вариант - комбинация апартаментов, удовлетворяющих требованиям.
+    """
+    valid_blocks = []
 
-    # Вычисляем минимальное количество номеров
-    max_capacity = max([apt.capacity for apt in sorted_apartments], default=0)
-    min_apartments = (people_quantity // max_capacity) + 1 if max_capacity > 0 else 0
+    # 1. Фильтрация: оставляем только апартаменты, доступные на эти даты
+    available = [
+        apt for apt in available_apartments
+        if apt.is_available(check_in_date, check_out_date)
+    ]
 
-    blocks = []
+    # 2. Генерация всех возможных комбинаций апартаментов
+    for n in range(1, len(available) + 1):
+        # Перебираем комбинации из n апартаментов
+        for apartment_group in combinations(available, n):
 
-    # Перебираем возможные комбинации
-    for n in range(min_apartments, len(sorted_apartments) + 1):
-        for combo in combinations(sorted_apartments, n):
-            total_capacity = sum(apt.capacity for apt in combo)
+            # 3. Проверка общей вместимости
+            total_capacity = sum(apt.capacity for apt in apartment_group)
+            if total_capacity < people_quantity:
+                continue  # Пропускаем, если не хватает мест
 
-            if total_capacity >= people_quantity:
-                # Проверка доступности всех в комбинации
-                if all(apt.is_available(check_in_date, check_out_date) for apt in combo):
-                    price = sum(apt.calculate_price(check_in_date, check_out_date) for apt in combo)
-                    blocks.append({
-                        'apartments': combo,
-                        'total_price': price,
-                        'total_capacity': total_capacity,
-                        'num_apartments': n
-                    })
-        # Прерываем, если нашли варианты
-        if blocks:
-            break
+            # 4. Проверка доступности ВСЕХ апартаментов в группе
+            # (чтобы не было пересечений бронирований внутри группы)
+            all_available = True
+            for apt in apartment_group:
+                if not apt.is_available(check_in_date, check_out_date):
+                    all_available = False
+                    break
+            if not all_available:
+                continue
 
-    # Сортируем по цене и вместимости
-    blocks.sort(key=lambda x: (x['total_price'], -x['total_capacity']))
+            # 5. Расчет общей стоимости
+            total_price = sum(
+                apt.calculate_price(check_in_date, check_out_date)
+                for apt in apartment_group
+            )
 
-    return blocks[:5]  # Ограничиваем до 5 вариантов
+            # 6. Сохранение варианта
+            valid_blocks.append({
+                'apartments': apartment_group,
+                'total_price': total_price,
+                'total_capacity': total_capacity,
+                'num_apartments': n
+            })
+
+    # 7. Сортировка результатов:
+    # - Сначала самые дешёвые
+    # - При равной цене - варианты с меньшим количеством апартаментов
+    valid_blocks.sort(key=lambda x: (x['total_price'], x['num_apartments']))
+
+    # 8. Возвращаем все варианты или пустой список
+    return valid_blocks if valid_blocks else []
 
 
 @transaction.atomic
@@ -510,3 +805,25 @@ def create_booking_from_block(request):
             return redirect('booking_wizard')
 
     return redirect('home')
+
+
+def booking_create(request):
+    if request.method == 'POST':
+        form = BookingForm(request.POST, request.FILES)
+        if form.is_valid():
+            booking = form.save()
+            form.save_m2m()
+            # Пересчет стоимости и долга бронирования
+            if booking.status == 'confirmed':
+                if booking.manual_value is not None:
+                    booking.total_value = booking.manual_value
+                else:
+                    booking.total_value = booking.calculate_total_value()
+            else:
+                booking.total_value = Decimal('0.00')
+            booking.debt = booking.total_value
+            booking.save(update_fields=['total_value', 'debt'])
+            return redirect('booking_confirmation', booking_id=booking.id)
+    else:
+        form = BookingForm()
+    return render(request, 'booking_create.html', {'form': form})

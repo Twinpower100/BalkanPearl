@@ -4,16 +4,21 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0ff082ee-8a75-425f-b889-1e11787c2ed4" name="Changes" comment="В таблицу бронирований добавлено количество людей&#10;TODO&#10;&#10;- показ стоимости не зарегистрированным пользователям. Бронирование - только авторизованным. При переходе со страницы апартаменты на авторизацию выбор дат должен сохраняться &#10;- обязательное поле в модель бронирования количество людей. Проверять по максимальной вместимости номера&#10;- мастер бронирования. Количество людей, даты. Вывод апартаментов с количеством людей, сортировка по цене (?), если количество людей больше вместимости, нужен функционал одновременного бронирования нескольких номеров&#10;- отчет по свободным / занятым датам / апартаментам на период &#10;- лупа на фотки&#10;- лента смайликов под отзывом&#10;&#10;отложено&#10;- добавить авторизацию через еще что-то. Apple ID стоит 100USD/month, Facebook требует регистрации фирмы у них (мэйл и т.д.) &#10;- Оплату прописать. Надо сначала понять, с помощью какого сервиса. Это все платно. На Жене">
+    <list default="true" id="0ff082ee-8a75-425f-b889-1e11787c2ed4" name="Changes" comment="В таблицу бронирований добавлено количество людей&#10;&#10;&#10;- показ стоимости не зарегистрированным пользователям&#10;done&#10;&#10;Бронирование - только авторизованным. &#10;done&#10;&#10;- обязательное поле в модель бронирования количество людей.&#10; done&#10; &#10;TODO&#10;При переходе со страницы апартаменты на &#10;авторизацию выбор дат должен сохраняться &#10;&#10;- мастер бронирования. Количество людей, даты. Вывод апартаментов с количеством людей, сортировка по цене (?), если количество людей больше вместимости, нужен функционал одновременного бронирования нескольких номеров&#10;done particularly.&#10;&#10;&#10; &#10; Проверять по максимальной вместимости номера&#10; done&#10; &#10;- отчет по свободным / занятым датам / апартаментам на период &#10;- лупа на фотки&#10;- лента смайликов под отзывом&#10;&#10;отложено&#10;- добавить авторизацию через еще что-то. Apple ID стоит 100USD/month, Facebook требует регистрации фирмы у них (мэйл и т.д.) &#10;- Оплату прописать. Надо сначала понять, с помощью какого сервиса. Это все платно. На Жене">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/admin.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/forms.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/templates/apartments_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/templates/apartments_list.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/templates/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/templates/base.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/templates/booking_wizard1.html" beforeDir="false" afterPath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/templates/booking_wizard1.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/templates/blog_home.html" beforeDir="false" afterPath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/templates/blog_home.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/templates/booking_confirmation.html" beforeDir="false" afterPath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/templates/booking_confirmation.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/templates/booking_form.html" beforeDir="false" afterPath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/templates/booking_form.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/templates/booking_wizard1.html" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/templates/home.html" beforeDir="false" afterPath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/templates/home.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlProject/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/BalkanPearlProject/BalkanPearlProject/settings.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/BalkanPearlProject/static/css/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/BalkanPearlProject/static/css/style.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/css/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/BalkanPearlProject/staticfiles/css/style.css" afterDir="false" />
     </list>
@@ -58,20 +63,20 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
-    &quot;Python.manage.executor&quot;: &quot;Run&quot;,
-    &quot;Python.raw_translate.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Mail.ru/CodeIt/Django/BalkanPearl/BalkanPearlProject/BalkanPearlApp/templates/archive&quot;,
-    &quot;run.code.analysis.last.selected.profile&quot;: &quot;aDefault&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;PyConsoleConfigurable.Python Console&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "DefaultHtmlFileTemplate": "HTML File",
+    "Python.manage.executor": "Run",
+    "Python.raw_translate.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "master",
+    "ignore.virus.scanning.warn.message": "true",
+    "last_opened_file_path": "C:/Mail.ru/CodeIt/Django/BalkanPearl/BalkanPearlProject/BalkanPearlApp/templates/archive",
+    "run.code.analysis.last.selected.profile": "aDefault",
+    "settings.editor.selected.configurable": "settings.codegpt.prompts"
   }
-}</component>
+}]]></component>
   <component name="PyConsoleOptionsProvider">
     <option name="myPythonConsoleState">
       <console-settings module-name="BalkanPearl" is-module-sdk="true" working-directory="$PROJECT_DIR$/BalkanPearlProject">
@@ -108,7 +113,7 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-python-sdk-fc1d50d2d915-aa17d162503b-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-243.24978.54" />
+        <option value="bundled-python-sdk-14705d77f0bb-aa17d162503b-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-243.25659.43" />
       </set>
     </attachedChunks>
   </component>
@@ -465,7 +470,23 @@
       <option name="project" value="LOCAL" />
       <updated>1740307280328</updated>
     </task>
-    <option name="localTasksCounter" value="44" />
+    <task id="LOCAL-00044" summary="В таблицу бронирований добавлено количество людей&#10;&#10;&#10;- показ стоимости не зарегистрированным пользователям&#10;done&#10;&#10;Бронирование - только авторизованным. &#10;done&#10;&#10;- обязательное поле в модель бронирования количество людей.&#10; done&#10; &#10;TODO&#10;При переходе со страницы апартаменты на &#10;авторизацию выбор дат должен сохраняться &#10;&#10;- мастер бронирования. Количество людей, даты. Вывод апартаментов с количеством людей, сортировка по цене (?), если количество людей больше вместимости, нужен функционал одновременного бронирования нескольких номеров&#10;done particularly.&#10;&#10;&#10; &#10; Проверять по максимальной вместимости номера&#10; done&#10; &#10;- отчет по свободным / занятым датам / апартаментам на период &#10;- лупа на фотки&#10;- лента смайликов под отзывом&#10;&#10;отложено&#10;- добавить авторизацию через еще что-то. Apple ID стоит 100USD/month, Facebook требует регистрации фирмы у них (мэйл и т.д.) &#10;- Оплату прописать. Надо сначала понять, с помощью какого сервиса. Это все платно. На Жене">
+      <option name="closed" value="true" />
+      <created>1740413562043</created>
+      <option name="number" value="00044" />
+      <option name="presentableId" value="LOCAL-00044" />
+      <option name="project" value="LOCAL" />
+      <updated>1740413562043</updated>
+    </task>
+    <task id="LOCAL-00045" summary="В таблицу бронирований добавлено количество людей&#10;&#10;&#10;- показ стоимости не зарегистрированным пользователям&#10;done&#10;&#10;Бронирование - только авторизованным. &#10;done&#10;&#10;- обязательное поле в модель бронирования количество людей.&#10; done&#10; &#10;TODO&#10;При переходе со страницы апартаменты на &#10;авторизацию выбор дат должен сохраняться &#10;&#10;- мастер бронирования. Количество людей, даты. Вывод апартаментов с количеством людей, сортировка по цене (?), если количество людей больше вместимости, нужен функционал одновременного бронирования нескольких номеров&#10;done particularly.&#10;&#10;&#10; &#10; Проверять по максимальной вместимости номера&#10; done&#10; &#10;- отчет по свободным / занятым датам / апартаментам на период &#10;- лупа на фотки&#10;- лента смайликов под отзывом&#10;&#10;отложено&#10;- добавить авторизацию через еще что-то. Apple ID стоит 100USD/month, Facebook требует регистрации фирмы у них (мэйл и т.д.) &#10;- Оплату прописать. Надо сначала понять, с помощью какого сервиса. Это все платно. На Жене">
+      <option name="closed" value="true" />
+      <created>1740414538693</created>
+      <option name="number" value="00045" />
+      <option name="presentableId" value="LOCAL-00045" />
+      <option name="project" value="LOCAL" />
+      <updated>1740414538693</updated>
+    </task>
+    <option name="localTasksCounter" value="46" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -492,7 +513,8 @@
     <MESSAGE value="ToDo&#10;- показ стоимости не зарегистрированным пользователям. Бронирование - только авторизованным. При переходе со страницы апартаменты на авторизацию выбор дат должен сохраняться &#10;- обязательное поле в модель бронирования количество людей. Проверять по максимальной вместимости номера&#10;- мастер бронирования. Количество людей, даты. Вывод апартаментов с количеством людей, сортировка по цене (?), если количество людей больше вместимости, нужен функционал одновременного бронирования нескольких номеров&#10;- отчет по свободным / занятым датам / апартаментам на период &#10;- лупа на фотки&#10;- лента смайликов под отзывом&#10;&#10;отложено&#10;- добавить авторизацию через еще что-то. Apple ID стоит 100USD/month, Facebook требует регистрации фирмы у них (мэйл и т.д.) &#10;- Оплату прописать. Надо сначала понять, с помощью какого сервиса. Это все платно. На Жене" />
     <MESSAGE value="В таблицу бронирований добавлено количество людей&#10;&#10;ToDo&#10;&#10;- показ стоимости не зарегистрированным пользователям. Бронирование - только авторизованным. При переходе со страницы апартаменты на авторизацию выбор дат должен сохраняться &#10;- обязательное поле в модель бронирования количество людей. Проверять по максимальной вместимости номера&#10;- мастер бронирования. Количество людей, даты. Вывод апартаментов с количеством людей, сортировка по цене (?), если количество людей больше вместимости, нужен функционал одновременного бронирования нескольких номеров&#10;- отчет по свободным / занятым датам / апартаментам на период &#10;- лупа на фотки&#10;- лента смайликов под отзывом&#10;&#10;отложено&#10;- добавить авторизацию через еще что-то. Apple ID стоит 100USD/month, Facebook требует регистрации фирмы у них (мэйл и т.д.) &#10;- Оплату прописать. Надо сначала понять, с помощью какого сервиса. Это все платно. На Жене" />
     <MESSAGE value="В таблицу бронирований добавлено количество людей&#10;TODO&#10;&#10;- показ стоимости не зарегистрированным пользователям. Бронирование - только авторизованным. При переходе со страницы апартаменты на авторизацию выбор дат должен сохраняться &#10;- обязательное поле в модель бронирования количество людей. Проверять по максимальной вместимости номера&#10;- мастер бронирования. Количество людей, даты. Вывод апартаментов с количеством людей, сортировка по цене (?), если количество людей больше вместимости, нужен функционал одновременного бронирования нескольких номеров&#10;- отчет по свободным / занятым датам / апартаментам на период &#10;- лупа на фотки&#10;- лента смайликов под отзывом&#10;&#10;отложено&#10;- добавить авторизацию через еще что-то. Apple ID стоит 100USD/month, Facebook требует регистрации фирмы у них (мэйл и т.д.) &#10;- Оплату прописать. Надо сначала понять, с помощью какого сервиса. Это все платно. На Жене" />
-    <option name="LAST_COMMIT_MESSAGE" value="В таблицу бронирований добавлено количество людей&#10;TODO&#10;&#10;- показ стоимости не зарегистрированным пользователям. Бронирование - только авторизованным. При переходе со страницы апартаменты на авторизацию выбор дат должен сохраняться &#10;- обязательное поле в модель бронирования количество людей. Проверять по максимальной вместимости номера&#10;- мастер бронирования. Количество людей, даты. Вывод апартаментов с количеством людей, сортировка по цене (?), если количество людей больше вместимости, нужен функционал одновременного бронирования нескольких номеров&#10;- отчет по свободным / занятым датам / апартаментам на период &#10;- лупа на фотки&#10;- лента смайликов под отзывом&#10;&#10;отложено&#10;- добавить авторизацию через еще что-то. Apple ID стоит 100USD/month, Facebook требует регистрации фирмы у них (мэйл и т.д.) &#10;- Оплату прописать. Надо сначала понять, с помощью какого сервиса. Это все платно. На Жене" />
+    <MESSAGE value="В таблицу бронирований добавлено количество людей&#10;&#10;&#10;- показ стоимости не зарегистрированным пользователям&#10;done&#10;&#10;Бронирование - только авторизованным. &#10;done&#10;&#10;- обязательное поле в модель бронирования количество людей.&#10; done&#10; &#10;TODO&#10;При переходе со страницы апартаменты на &#10;авторизацию выбор дат должен сохраняться &#10;&#10;- мастер бронирования. Количество людей, даты. Вывод апартаментов с количеством людей, сортировка по цене (?), если количество людей больше вместимости, нужен функционал одновременного бронирования нескольких номеров&#10;done particularly.&#10;&#10;&#10; &#10; Проверять по максимальной вместимости номера&#10; done&#10; &#10;- отчет по свободным / занятым датам / апартаментам на период &#10;- лупа на фотки&#10;- лента смайликов под отзывом&#10;&#10;отложено&#10;- добавить авторизацию через еще что-то. Apple ID стоит 100USD/month, Facebook требует регистрации фирмы у них (мэйл и т.д.) &#10;- Оплату прописать. Надо сначала понять, с помощью какого сервиса. Это все платно. На Жене" />
+    <option name="LAST_COMMIT_MESSAGE" value="В таблицу бронирований добавлено количество людей&#10;&#10;&#10;- показ стоимости не зарегистрированным пользователям&#10;done&#10;&#10;Бронирование - только авторизованным. &#10;done&#10;&#10;- обязательное поле в модель бронирования количество людей.&#10; done&#10; &#10;TODO&#10;При переходе со страницы апартаменты на &#10;авторизацию выбор дат должен сохраняться &#10;&#10;- мастер бронирования. Количество людей, даты. Вывод апартаментов с количеством людей, сортировка по цене (?), если количество людей больше вместимости, нужен функционал одновременного бронирования нескольких номеров&#10;done particularly.&#10;&#10;&#10; &#10; Проверять по максимальной вместимости номера&#10; done&#10; &#10;- отчет по свободным / занятым датам / апартаментам на период &#10;- лупа на фотки&#10;- лента смайликов под отзывом&#10;&#10;отложено&#10;- добавить авторизацию через еще что-то. Apple ID стоит 100USD/month, Facebook требует регистрации фирмы у них (мэйл и т.д.) &#10;- Оплату прописать. Надо сначала понять, с помощью какого сервиса. Это все платно. На Жене" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -503,7 +525,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/BalkanPearlProject/BalkanPearlApp/views.py</url>
-          <line>2</line>
+          <line>5</line>
           <option name="timeStamp" value="4" />
         </line-breakpoint>
       </breakpoints>
