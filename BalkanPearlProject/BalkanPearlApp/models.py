@@ -3,7 +3,7 @@
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator
 from django.db import models, transaction
-from decimal import Decimal
+from decimal import Decimal, ROUND_HALF_UP
 from django.db.models import Sum, Q
 from django.utils import timezone
 from phonenumber_field.modelfields import PhoneNumberField
@@ -158,8 +158,7 @@ class Apartment(models.Model):
         if isinstance(check_out, str):
             check_out = timezone.datetime.strptime(check_out, "%Y-%m-%d").date()
 
-        print(f"DEBUG: [Apartment.calculate_price] Apartment ID: {self.id}, base_price_per_night: {self.base_price_per_night}")
-        print(f"DEBUG: [Apartment.calculate_price] check_in: {check_in}, check_out: {check_out}")
+
 
         today = timezone.now().date()
         if check_in < today:
@@ -167,23 +166,25 @@ class Apartment(models.Model):
         if check_in >= check_out:
             raise ValidationError(_("Дата выезда должна быть позже даты заезда"))
 
-        nights = (check_out - check_in).days
-        print(f"DEBUG: [Apartment.calculate_price] nights: {nights}")
-
         total_price = Decimal("0.00")
         current_date = check_in
 
         while current_date < check_out:
+            # season = Season.objects.filter(
+            #     start_date__lte=current_date,
+            #     end_date__gte=current_date
+            # ).first()
             season = Season.objects.filter(
                 start_date__lte=current_date,
-                end_date__gte=current_date
+                end_date__gt=current_date
             ).first()
 
             if season:
                 price_for_day = self.base_price_per_night * season.price_multiplier
-                end_of_season = min(season.end_date + timezone.timedelta(days=1), check_out)
+                # Граница сезона – если бронирование пересекается, то до check_out:
+                #end_of_season = min(season.end_date + timezone.timedelta(days=1), check_out)
+                end_of_season = min(season.end_date, check_out) # Не прибавляем 1 день
                 days_in_season = (end_of_season - current_date).days
-                print(f"DEBUG: [Apartment.calculate_price] season: {season.name}, price_for_day: {price_for_day}, days_in_season: {days_in_season}")
                 total_price += days_in_season * price_for_day
                 current_date = end_of_season
             else:
@@ -193,12 +194,10 @@ class Apartment(models.Model):
                 else:
                     end_of_period = check_out
                 days_in_period = (end_of_period - current_date).days
-                print(f"DEBUG: [Apartment.calculate_price] no season found, days_in_period: {days_in_period}, using base_price: {self.base_price_per_night}")
                 total_price += days_in_period * self.base_price_per_night
                 current_date = end_of_period
 
-        print(f"DEBUG: [Apartment.calculate_price] total_price: {total_price}")
-        return total_price
+        return total_price.quantize(Decimal("0.00"), rounding=ROUND_HALF_UP)
 
     def is_available(self, check_in, check_out):
         overlapping_bookings = self.bookings.filter(
@@ -283,11 +282,9 @@ class Booking(models.Model):
         if not self.pk:
             return Decimal('0.00')
         apartments = self.apartments.all()
-        print(f"DEBUG: Booking ID {self.pk} - Количество апартаментов: {apartments.count()}")
         total = Decimal('0.00')
         for apartment in apartments:
             price = apartment.calculate_price(self.check_in, self.check_out)
-            print(f"DEBUG: Апартамент ID {apartment.id} - Цена: {price}")
             total += price
         return total
 
@@ -315,10 +312,6 @@ class Booking(models.Model):
 
         # При отмене обнуляем стоимость
         self.total_value = Decimal(0.00)
-
-        # if self.total_value != 0:
-        #     self.debt = self.total_value - net_payments
-        # else:
         self.debt = -net_payments
 
 

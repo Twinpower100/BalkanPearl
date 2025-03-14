@@ -2,12 +2,13 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load static %}
+{% load custom_filters %}
 {% block title %} {% trans 'Главная - Balkan Pearl' %}{% endblock %}
 
 {% block content %}
 
 <style>
-    /* Стили ТОЛЬКО для карусели (новые) */
+    /* Стили карусели */
     .carousel {
         position: relative;
         height: 300px;
@@ -15,7 +16,6 @@
         border-radius: 8px;
         margin: 20px 0;
     }
-
     .carousel img {
         position: absolute;
         width: 100%;
@@ -24,12 +24,10 @@
         opacity: 0;
         transition: opacity 0.5s ease;
     }
-
     .carousel img.active {
         opacity: 1;
         z-index: 1;
     }
-
     .carousel button {
         position: absolute;
         top: 50%;
@@ -43,15 +41,63 @@
         font-size: 1.5rem;
         border-radius: 5px;
     }
-
     .carousel button.prev { left: 15px; }
     .carousel button.next { right: 15px; }
-
     .carousel button:hover {
         background: rgba(0, 0, 0, 0.8);
     }
+    /* Zoom‑режим для контейнера карусели */
+    .carousel.zoomed {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.8);  /* затемнение фона, чтобы под фото не просвечивала информация */
+        z-index: 999;
+        display: flex;
+        justify-content: center;
+        border-radius:  10px !important;
+        align-items: center;
+        overflow: hidden;
+    }
 
-    /* Оригинальные стили формы (без изменений) */
+    /* Скрываем все картинки в zoom‑режиме по умолчанию */
+    .carousel.zoomed img {
+        display: none !important;
+        position: static !important;  /* отменяем absolute */
+        z-index: 999;
+    }
+
+    /* Отображаем только активную картинку */
+    .carousel.zoomed img.active {
+        display: block !important;
+        max-width: 90vw;    /* чтобы фото не заходило за края экрана */
+        max-height: 90vh;
+        object-fit: contain; /* сохраняем пропорции и показываем всё изображение */
+        margin: auto;
+        transform: scale(2.3);         /* Увеличиваем фото */
+        transform-origin: center center; /* Центрируем */
+        transition: transform 0.3s ease; /*анимируем переключение */
+        border-radius: 100px !important;
+    }
+
+    /* Переопределяем стили стрелок (если их базовые стили не подходят) */
+    .carousel.zoomed button {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 10000;
+    }
+
+    .carousel.zoomed button.prev {
+        left: 15px;
+    }
+
+    .carousel.zoomed button.next {
+        right: 15px;
+}
+    /* Стили формы выбора дат */
     .date-selection {
         position: fixed;
         top: 130px;
@@ -64,33 +110,28 @@
         gap: 10px;
         margin-bottom: 5px;
     }
-
     #date-form {
         display: flex;
         justify-content: center;
         gap: 10px;
         align-items: center;
     }
-
     #date-form input,
     #date-form button {
         padding: 10px 15px;
         border-radius: 5px;
         border: 1px solid #ced4da;
     }
-
     #date-form button {
         background-color: #007bff;
         color: white;
         border: none;
         transition: background-color 0.3s ease;
     }
-
     #date-form button:hover {
         background-color: #0056b3;
     }
-
-    /* Остальные оригинальные стили */
+    /* Остальные стили для блока с апартаментами */
     .apartment-block {
         margin-bottom: 30px;
         border: 1px solid #ddd;
@@ -98,14 +139,13 @@
         overflow: hidden;
         background-color: rgba(255, 255, 255, 0.8);
         box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        padding-top: 20px;
     }
-
     .block-header {
         padding: 20px;
         background-color: #f8f9fa;
         border-bottom: 1px solid #eee;
     }
-
     .apartment-card {
         display: flex;
         gap: 30px;
@@ -114,7 +154,6 @@
         border-radius: 8px;
         margin-bottom: 20px;
     }
-
     @media (max-width: 768px) {
         .apartment-card {
             flex-direction: column;
@@ -122,13 +161,13 @@
     }
 </style>
 
-<!-- Оригинальная верстка формы выбора дат -->
+<!-- Форма выбора дат (без изменений) -->
 <div class="date-selection" style="position: fixed; top: 130px; background: rgba(255, 255, 255, 0.9); padding: 10px; z-index: 999">
     <h2 style="margin: 0; text-align: center;">{% trans 'Внесите желаемые даты и количество гостей' %}</h2>
     <form id="date-form">
-        <input type="date" id="check_in" name="check_in" required value="{{ check_in }}">
-        <input type="date" id="check_out" name="check_out" required value="{{ check_out }}">
-        <input type="number" id="people_quantity" name="people_quantity" min="1" required value="{{ people_quantity }}">
+        <input type="date" id="check_in" name="check_in" required value="{{ check_in|default:'' }}">
+        <input type="date" id="check_out" name="check_out" required value="{{ check_out|default:'' }}">
+        <input type="number" id="people_quantity" name="people_quantity" min="1" required value="{{ people_quantity|default:1 }}">
         <button type="submit">
             {% trans "Найти доступные номера и показать стоимость" %}
         </button>
@@ -136,7 +175,7 @@
 </div>
 
 {% if messages %}
-<div class="error-messages">
+<div class="error-messages" style="display: none;"> <!--не показываем ошибку-->
     {% for message in messages %}
     <div class="alert alert-{{ message.tags }}">
         {{ message }}
@@ -145,10 +184,11 @@
 </div>
 {% endif %}
 
-<div class="apartment-blocks">
+<div class="apartment-blocks" style="padding-top: 20px">
     {% if apartment_blocks %}
         {% for block in apartment_blocks %}
-        <div class="apartment-block">
+
+        <div class="apartment-block" >
             <div class="block-header">
                 <h3>{% trans 'Вариант' %} {{ forloop.counter }}</h3>
                 <div class="block-info">
@@ -168,11 +208,12 @@
                             <p>{% trans 'Тип' %}: {{ apartment.type.name }}</p>
                             <p>{% trans 'Вид из окна' %}: {{ apartment.window_view.view }}</p>
                         </div>
-
+                        <!-- Карусель -->
                         <div class="carousel-container">
                             <div class="carousel">
                                 {% if apartment.photos %}
                                     {% for photo in apartment.photos %}
+
                                     <img src="{{ photo.photo.url }}"
                                          class="{% if forloop.first %}active{% endif %}"
                                          alt="{% trans 'Фото апартамента' %}">
@@ -188,11 +229,14 @@
                 {% endfor %}
             </div>
 
-            <form method="POST" action="{% url 'create_booking_from_block' %}">
+            <!-- Форма бронирования для выбранного варианта -->
+            <form method="POST" action="{% url 'create_booking_from_block' %}" class="booking-form">
                 {% csrf_token %}
                 <input type="hidden" name="check_in" value="{{ check_in }}">
                 <input type="hidden" name="check_out" value="{{ check_out }}">
                 <input type="hidden" name="people_quantity" value="{{ people_quantity }}">
+                <!-- Скрытое поле для цены, которую видел юзер (будет отправлено на сервер) -->
+                <input type="hidden" name="displayed_total_price" value="{{ block.total_price|floatformat:2|replace:",=>." }}">
                 {% for apartment in block.apartments %}
                 <input type="hidden" name="apartment_ids" value="{{ apartment.id }}">
                 {% endfor %}
@@ -204,45 +248,204 @@
         {% endfor %}
 
     {% elif no_apartments_available %}
-        <p class="no-results">{% trans 'Нет доступных вариантов' %}</p>
+        <!--&lt;!&ndash;<p class="no-results">{% trans 'Нет доступных вариантов, попробуйте другие даты или уменьшить количество гостей' %}</p>&ndash;&gt;-->
+        <!--<script>-->
+        <!--    // Вывод сообщения через alert-->
+        <!--    alert("{% trans 'Нет доступных вариантов, попробуйте другие даты или уменьшить количество гостей' %}");-->
+        <!--</script>-->
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                // Используем существующее модальное окно, но переопределяем его поведение
+                var modal = document.getElementById('price-change-modal');
+                var messageElem = document.getElementById('price-change-message');
+                var confirmButton = document.getElementById('confirm-price-change');
+                var cancelButton = document.getElementById('cancel-price-change');
+
+                // Устанавливаем текст сообщения для случая отсутствия вариантов
+                messageElem.innerText = "{% trans 'Нет доступных вариантов для бронирования. Проверьте, достаточно ли свободных номеров для выбранного количества гостей.' %}";
+
+                // Скрываем кнопку подтверждения, поскольку здесь не нужно подтверждать цену
+                confirmButton.style.display = 'none';
+
+                // Переопределяем кнопку отмены, чтобы она просто закрывала окно
+                cancelButton.textContent = "{% trans 'Закрыть' %}";
+                cancelButton.onclick = function() {
+                    modal.style.display = 'none';
+                };
+
+                modal.style.display = 'block';
+            });
+            </script>
     {% endif %}
 </div>
 
+<!-- Модальное окно для уведомления об изменении цены в конце страницы, чтобы отображалось поверх всего контента-->
+<!--<div id="price-change-modal" class="modal" style="display: none;">-->
+<!--    <div class="modal-content">-->
+<!--        <p id="price-change-message"></p>-->
+<!--        &lt;!&ndash; Кнопка для подтверждения новой цены &ndash;&gt;-->
+<!--        <button id="confirm-price-change">{% trans 'Accept new price' %}</button>-->
+<!--        &lt;!&ndash; Кнопка для отмены (возврат к форме) &ndash;&gt;-->
+<!--        <button id="cancel-price-change">{% trans 'Cancel' %}</button>-->
+<!--    </div>-->
+<!--</div>-->
+
+<!-- Модальное окно для подтверждения изменения цены или вывода ошибок -->
+<div id="price-change-modal" class="modal" style="display: none;">
+  <div class="modal-content">
+    <p id="price-change-message">{% trans "Сообщение" %}</p>
+    <div class="modal-buttons">
+      <!-- Кнопка подтверждения (будет скрыта в случае ошибки) -->
+      <button id="confirm-price-change">{% trans "Accept new price" %}</button>
+      <!-- Кнопка отмены/закрытия -->
+      <button id="cancel-price-change" class="btn btn-secondary">{% trans "Cancel" %}</button>
+    </div>
+  </div>
+</div>
+
+
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-    // Скрипт ТОЛЬКО для карусели
+    // --- Скрипт для карусели ---
     document.querySelectorAll('.carousel').forEach(carousel => {
         const images = carousel.querySelectorAll('img');
         let currentIndex = 0;
 
+        // Функция для показа изображения по индексу
         const showImage = (index) => {
             images.forEach(img => img.classList.remove('active'));
-            if(images[index]) images[index].classList.add('active');
-        }
+            if (images[index]) images[index].classList.add('active');
+        };
 
-        carousel.querySelector('.prev').addEventListener('click', () => {
+        // Обработчики для стрелок переключения
+        carousel.querySelector('.prev').addEventListener('click', (e) => {
+            e.stopPropagation();  // чтобы клик по стрелке не переключал зум
             currentIndex = (currentIndex - 1 + images.length) % images.length;
             showImage(currentIndex);
         });
-
-        carousel.querySelector('.next').addEventListener('click', () => {
+        carousel.querySelector('.next').addEventListener('click', (e) => {
+            e.stopPropagation();
             currentIndex = (currentIndex + 1) % images.length;
             showImage(currentIndex);
         });
 
-        if(images.length > 0) showImage(0);
+        // Клик по изображению внутри карусели переключает состояние зума карусели
+        carousel.addEventListener('click', (e) => {
+            if (e.target.tagName.toLowerCase() === 'img') {
+                // Переключаем класс зума у всей карусели
+                carousel.classList.toggle('zoomed');
+            }
+        });
+
+        // Настройка курсора для изображений при наведении
+        images.forEach(img => {
+            img.addEventListener('mouseenter', () => {
+                if (carousel.classList.contains('zoomed')) {
+                    img.style.cursor = 'zoom-out';
+                } else {
+                    img.style.cursor = 'zoom-in';
+                }
+            });
+            img.addEventListener('mouseleave', () => {
+                img.style.cursor = 'default';
+            });
+        });
+
+        // Первый слайд по умолчанию
+        if (images.length > 0) showImage(0);
     });
 
-    // Оригинальный скрипт для формы
-    document.querySelectorAll('form').forEach(form => {
-        form.addEventListener('submit', function(e) {
+    // --- Валидация формы выбора дат ---
+    const dateForm = document.getElementById('date-form');
+    if (dateForm) {
+        dateForm.addEventListener('submit', function(e) {
             const checkIn = new Date(this.querySelector('[name="check_in"]').value);
             const checkOut = new Date(this.querySelector('[name="check_out"]').value);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
 
             if (checkIn >= checkOut) {
                 e.preventDefault();
                 alert('{% trans "Дата выезда должна быть позже даты заезда" %}');
             }
+            if (checkIn < today) {
+                e.preventDefault();
+                alert('{% trans "Дата заезда не может быть в прошлом" %}');
+            }
+        });
+    }
+
+    // --- AJAX-обработка форм бронирования ---
+    // Выбираем все формы бронирования по атрибуту action, содержащему create_booking_from_block
+    const bookingForms = document.querySelectorAll('form.booking-form');
+    bookingForms.forEach(form => {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();  // Предотвращаем стандартную отправку формы
+            const formData = new FormData(this);
+            fetch(this.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Если сервер сообщает, что цена изменилась
+                if (data.price_changed) {
+                    // Отображаем модальное окно с новым значением цены
+                    const modal = document.getElementById('price-change-modal');
+                    const priceMessage = document.getElementById('price-change-message');
+                    priceMessage.innerText = "{% trans 'Извините, цена изменилась. Новая цена:' %} " + data.new_price + " €";
+                    modal.style.display = 'block';
+
+                    // Обработчики для кнопок модального окна
+                    const confirmButton = document.getElementById('confirm-price-change');
+                    const cancelButton = document.getElementById('cancel-price-change');
+
+                    // Если пользователь подтверждает новую цену:
+                    const confirmHandler = function() {
+                        // Добавляем скрытое поле для подтверждения изменения цены
+                        let confirmInput = document.createElement('input');
+                        confirmInput.type = 'hidden';
+                        confirmInput.name = 'confirm_price_change';
+                        confirmInput.value = 'true';
+                        form.appendChild(confirmInput);
+                        modal.style.display = 'none';
+                        // Убираем обработчики, чтобы не было дублирования
+                        confirmButton.removeEventListener('click', confirmHandler);
+                        cancelButton.removeEventListener('click', cancelHandler);
+                        form.submit();  // Отправляем форму повторно с подтверждением
+                    };
+                    // Если пользователь отменяет, закрываем модальное окно без отправки формы
+                    const cancelHandler = function() {
+                        modal.style.display = 'none';
+                        confirmButton.removeEventListener('click', confirmHandler);
+                        cancelButton.removeEventListener('click', cancelHandler);
+                    };
+
+                    confirmButton.addEventListener('click', confirmHandler);
+                    cancelButton.addEventListener('click', cancelHandler);
+                    } else if (data.error){ //сценарий ошибки
+                        // настраиваем модальное окно для ошибки
+                        priceMessage.innerText = data.error;
+                        // Скрываем кнопку подтверждения, она не нужна при ошибке
+                        confirmButton.style.display = 'none';
+                        // Переименовываем кнопку отмены в "Закрыть"
+                        cancelButton.textContent = "{% trans 'Закрыть' %}";
+                    } else if (data.success) {
+                        // Если бронирование успешно, перенаправляем на страницу подтверждения
+                        window.location.href = data.redirect_url;
+                        //                } else if (data.error) {
+                        //                    alert(data.error);
+                        //                }
+                    }
+            })
+            .catch(error => {
+                console.error('Ошибка:', error);
+                alert('Произошла ошибка при обработке запроса.');
+            });
         });
     });
 });

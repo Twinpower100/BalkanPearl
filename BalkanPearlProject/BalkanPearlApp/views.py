@@ -8,10 +8,9 @@ from django.contrib.auth.views import LogoutView
 from django.core.exceptions import ValidationError
 from allauth.core.internal.httpkit import redirect
 from django.db import transaction
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse
 from django.templatetags.i18n import language
 from django.utils import timezone
-from django.shortcuts import render, get_object_or_404, redirect
 from decouple import config  # Добавляем импорт config
 from allauth.socialaccount.providers.google.views import oauth2_login
 from BalkanPearlApp.forms import CustomLoginForm
@@ -25,7 +24,7 @@ import emoji
 from django.shortcuts import render, get_object_or_404, redirect
 from itertools import combinations
 from decimal import Decimal
-from .forms import BookingForm
+from django.urls import reverse
 
 """Делаем по запросу поиска"""
 
@@ -141,16 +140,13 @@ def apartments_list(request):
             filtered.append(apt)
         apartments_with_photos = filtered
 
-        # Отладочное сообщение для сортировки
-        print("Sort order:", sort_order)
-        for apt in apartments_with_photos:
-            print("Apartment", apt['apartment'].id, "calculated_price:", apt.get('calculated_price'))
-
         try:
             if sort_order == 'asc':
-                apartments_with_photos = sorted(apartments_with_photos, key=lambda x: float(x.get('calculated_price') or 0))
+                apartments_with_photos = sorted(apartments_with_photos,
+                                                key=lambda x: float(x.get('calculated_price') or 0))
             elif sort_order == 'desc':
-                apartments_with_photos = sorted(apartments_with_photos, key=lambda x: float(x.get('calculated_price') or 0), reverse=True)
+                apartments_with_photos = sorted(apartments_with_photos,
+                                                key=lambda x: float(x.get('calculated_price') or 0), reverse=True)
         except Exception as e:
             print("Sorting error:", e)
 
@@ -174,7 +170,6 @@ def calculate_price(request, apartment_id):
     apartment = get_object_or_404(Apartment, id=apartment_id)
     check_in = request.GET.get('check_in')
     check_out = request.GET.get('check_out')
-    print(f"DEBUG: check_in = {check_in}, check_out = {check_out}")
 
     if not check_in or not check_out:
         return JsonResponse({'error': 'Missing check_in or check_out parameters'}, status=400)
@@ -195,89 +190,6 @@ def calculate_price(request, apartment_id):
         return JsonResponse({'error': str(e)}, status=400)
 
 
-# @login_required
-# def booking_form(request, apartment_id):
-#     hotel = Hotel.objects.first()
-#     apartment = get_object_or_404(Apartment, id=apartment_id)
-#
-#
-#     check_in = request.GET.get('check_in', '')
-#     check_out = request.GET.get('check_out', '')
-#     people_quantity = 1
-#
-#     from datetime import timedelta
-#     today = timezone.now().date()
-#     tomorrow = today + timedelta(days=1)
-#     if not check_in:
-#         check_in = today.strftime('%Y-%m-%d')
-#     if not check_out:
-#         check_out = tomorrow.strftime('%Y-%m-%d')
-#
-#     error = None
-#     if request.method == "POST":
-#         try:
-#             price = apartment.calculate_price(
-#                 request.POST.get("check_in"),
-#                 request.POST.get("check_out")
-#             )
-#
-#             check_in = request.POST.get('check_in')
-#             check_out = request.POST.get('check_out')
-#             people_quantity = int(request.POST.get("people_quantity", 1))
-#             check_in_date = timezone.datetime.strptime(check_in, '%Y-%m-%d').date()
-#             check_out_date = timezone.datetime.strptime(check_out, '%Y-%m-%d').date()
-#
-#             if not all([apartment_id, check_in, check_out, people_quantity]):
-#                 raise ValidationError(_("Не все обязательные поля заполнены"))
-#             if check_in_date < timezone.now().date():
-#                 raise ValidationError(_("Check-in date can't be in the past"))
-#             if people_quantity > apartment.capacity:
-#                 raise ValidationError(_("Guests quantity is exceeding apartment's capacity"))
-#
-#             with transaction.atomic():
-#                 booking = Booking.objects.create(
-#                     user=request.user,
-#                     check_in=check_in_date,
-#                     check_out=check_out_date,
-#                     people_quantity=people_quantity,
-#                     status='confirmed',
-#                     total_value=price,
-#                 )
-#                 booking.apartments.add(apartment)
-#                 booking.save()
-#                 booking.refresh_from_db()
-#                 print(f"DEBUG: booking.apartments.count(): {booking.apartments.count()}")
-#                 # Пересчет стоимости и долга после установки many-to-many связи
-#                 if booking.status == 'confirmed':
-#                     if booking.manual_value is not None:
-#                         booking.total_value = booking.manual_value
-#                     else:
-#                         booking.total_value = booking.calculate_total_value()
-#                 else:
-#                     booking.total_value = Decimal('0.00')
-#                 booking.debt = booking.total_value
-#                 booking.save()
-#                 # Отладочный вывод: выводим значение total_value из базы
-#                 refreshed_booking = Booking.objects.get(pk=booking.pk)
-#                 print(f"DEBUG: Final booking.total_value from DB: {refreshed_booking.total_value}")
-#
-#                 messages.success(request, _("Booking created successfully"))
-#                 return redirect('booking_confirmation', booking.id)
-#
-#         except ValidationError as e:
-#             error = e.message
-#         except Exception as e:
-#             error = str(e)
-#
-#     context = {
-#         "apartment": apartment,
-#         "check_in": check_in,
-#         "check_out": check_out,
-#         "people_quantity": people_quantity,
-#         "error": error,
-#         'hotel': hotel
-#     }
-#     return render(request, "booking_form.html", context)
 @login_required
 def booking_form(request, apartment_id):
     hotel = Hotel.objects.first()
@@ -296,96 +208,17 @@ def booking_form(request, apartment_id):
     if not check_out:
         check_out = tomorrow.strftime('%Y-%m-%d')
 
-    # Здесь нам нет логики POST – мы просто готовим данные для отображения формы.
+    # Здесь нет логики POST – мы просто готовим данные для отображения формы.
     context = {
         "apartment": apartment,
         "check_in": check_in,
         "check_out": check_out,
         "people_quantity": people_quantity,
-        "error": None,        # Если шаблон учитывает error, передаём None
+        "error": None,  # Если шаблон учитывает error, передаём None
         "hotel": hotel
     }
     return render(request, "booking_form.html", context)
 
-
-
-# @login_required
-# def create_booking(request):
-#     if request.method != 'POST':
-#         return JsonResponse({
-#             'success': False,
-#             'error': _("Неверный метод запроса")
-#         }, content_type='application/json')
-#
-#     try:
-#         apartment_id = request.POST.get('apartment_id')
-#         check_in = request.POST.get('check_in')
-#         check_out = request.POST.get('check_out')
-#         people_quantity = request.POST.get('people_quantity')
-#
-#         # Базовая валидация
-#         if not all([apartment_id, check_in, check_out, people_quantity]):
-#             return JsonResponse({
-#                 'success': False,
-#                 'error': _("Не все обязательные поля заполнены")
-#             }, content_type='application/json')
-#
-#         apartment = get_object_or_404(Apartment, id=apartment_id)
-#         check_in_date = timezone.datetime.strptime(check_in, '%Y-%m-%d').date()
-#         check_out_date = timezone.datetime.strptime(check_out, '%Y-%m-%d').date()
-#         people_quantity = int(people_quantity)
-#
-#         # Валидация дат
-#         if check_in_date < timezone.now().date():
-#             return JsonResponse({
-#                 'success': False,
-#                 'error': _("Дата заезда не может быть в прошлом")
-#             }, content_type='application/json')
-#
-#         if check_in_date >= check_out_date:
-#             return JsonResponse({
-#                 'success': False,
-#                 'error': _("Дата выезда должна быть позже даты заезда")
-#             }, content_type='application/json')
-#
-#         # Проверка количества гостей
-#         if people_quantity > apartment.capacity:
-#             return JsonResponse({
-#                 'success': False,
-#                 'error': _("Количество гостей превышает вместимость апартамента")
-#             }, content_type='application/json')
-#
-#         # Проверка доступности
-#         if not apartment.is_available(check_in_date, check_out_date):
-#             return JsonResponse({
-#                 'success': False,
-#                 'error': _("Апартамент уже забронирован на выбранные даты")
-#             }, content_type='application/json')
-#
-#         # Создание бронирования
-#         with transaction.atomic():
-#             booking = Booking.objects.create(
-#                 user=request.user,
-#                 check_in=check_in_date,
-#                 check_out=check_out_date,
-#                 people_quantity=people_quantity,
-#                 status='confirmed'
-#             )
-#             booking.apartments.add(apartment)
-#             booking.save()
-#
-#             from django.urls import reverse
-#             return JsonResponse({
-#                 'success': True,
-#                 'redirect_url': reverse('booking_confirmation', args=[booking.id])
-#             }, content_type='application/json')
-#
-#     except Exception as e:
-#         print(f"Error in create_booking: {str(e)}")  # Отладочный вывод
-#         return JsonResponse({
-#             'success': False,
-#             'error': str(e)
-#         }, content_type='application/json')
 
 @login_required
 def create_booking(request):
@@ -432,7 +265,7 @@ def create_booking(request):
             if not apartment.is_available(check_in_date, check_out_date):
                 return JsonResponse({
                     'success': False,
-                    'error': _("Апартамент недоступен в указанный период")
+                    'error': _("Апартамент более недоступен в указанный период, попробуйте выбрать либо другие даты, либо апартамент, либо воспользуйтесь мастером бронирования")
                 }, content_type='application/json')
 
             # Перерасчёт стоимости на сервере
@@ -442,7 +275,9 @@ def create_booking(request):
             if client_price != server_price:
                 return JsonResponse({
                     'success': False,
-                    'error': _("Стоимость изменилась с момента просмотра. Ожидаемая стоимость: %(expected_price)s €") % {'expected_price': server_price},
+                    'error': _(
+                        "Стоимость изменилась с момента просмотра. Ожидаемая стоимость: %(expected_price)s €") % {
+                                 'expected_price': server_price},
                 }, content_type='application/json')
 
             # Сохранение бронирования
@@ -465,7 +300,7 @@ def create_booking(request):
                 booking.total_value = Decimal('0.00')
             booking.debt = booking.total_value
             booking.save()
-            
+
             # Переадресация на страницу подтверждения
             from django.urls import reverse
             return JsonResponse({
@@ -480,6 +315,7 @@ def create_booking(request):
             'success': False,
             'error': _("Произошла ошибка: %(error)s") % {'error': str(e)}
         }, content_type='application/json')
+
 
 @login_required
 def booking_confirmation(request, booking_id):
@@ -529,10 +365,10 @@ def payment_page(request, booking_id):
 def blog_home(request):
     # Если есть модель блога, замените пустой список на запрос к базе
     hotel = Hotel.objects.first()
-    blog_posts = BlogPost.objects.all()
+    blog_posts = BlogPost.objects.all().order_by('-created_at')
     context = {
-        'blog_posts': blog_posts,
-        'hotel': hotel
+        'blog_posts':blog_posts,
+        'hotel':hotel
     }
     return render(request, 'blog_home.html', context)
 
@@ -541,6 +377,13 @@ def blog_home(request):
 def profile(request):
     hotel = Hotel.objects.first()
     user_bookings = Booking.objects.filter(user=request.user, status='confirmed').order_by('check_in')
+
+    # Для каждого бронирования вычисляем строку с номерами апартаментов
+    for booking in user_bookings:
+        booking.apartments_str = ", ".join(
+            [str(apartment.number) for apartment in booking.apartments.all()]
+        )
+
     context = {
         'user_bookings': user_bookings,
         'hotel': hotel,
@@ -548,9 +391,10 @@ def profile(request):
     return render(request, 'profile.html', context)
 
 
+
 def reviews(request):
     hotel = Hotel.objects.first()
-    reviews_list = Review.objects.all()  # Получите список отзывов из базы данных
+    reviews_list = Review.objects.all().order_by('-created_at')  # Получаем список отзывов из базы данных и сортируем от нового к старому
     context = {
         'reviews': reviews_list,
         'hotel': hotel,
@@ -564,7 +408,7 @@ class ReviewForm(forms.ModelForm):
 
     class Meta:
         model = Review
-        fields = ['apartment', 'rating', 'commentary', 'anonymous']
+        fields = ['rating', 'commentary', 'anonymous']
         widgets = {'commentary': forms.Textarea(attrs={'rows': 4, 'cols': 40})}
 
     def clean_commentary(self):
@@ -622,20 +466,32 @@ def booking_wizard(request):
     check_out = request.GET.get('check_out')
     people_quantity = int(request.GET.get('people_quantity', 1))
 
-    if not check_in or not check_out:
+    # Вычисляем сегодняшнюю и завтрашнюю даты для установки значений по умолчанию
+    today = datetime.datetime.today().date()
+    tomorrow = today + timedelta(days=1)
+
+    # Если даты не заданы, устанавливаем значения по умолчанию
+    if not check_in:
+        check_in = today.strftime('%Y-%m-%d')
+    if not check_out:
+        check_out = tomorrow.strftime('%Y-%m-%d')
+
+    if not check_in or not check_out or not people_quantity:
         return render(request, 'booking_wizard.html', {'show_form': True, 'hotel': hotel})
 
     try:
         check_in_date = timezone.datetime.strptime(check_in, '%Y-%m-%d').date()
         check_out_date = timezone.datetime.strptime(check_out, '%Y-%m-%d').date()
+        if check_in_date < today:
+            return JsonResponse({'error': _("Check-in date can't be in the past")}, status=400)
+        elif check_in_date >= check_out_date:
+            return JsonResponse({'error': _("Check-out date should be greater than check-in date")}, status=400)
     except ValueError:
-        return JsonResponse({'error': 'Некорректный формат даты'}, status=400)
+        return JsonResponse({'error': _('Некорректный формат даты')}, status=400)
 
-    available_apartments = list(Apartment.objects.filter(is_closed=False))
-
-    # Фильтруем доступные апартаменты на выбранные даты
+    # Фильтрация открытых и доступных апартаментов
     available_apartments = [
-        apt for apt in available_apartments
+        apt for apt in Apartment.objects.filter(is_closed=False)
         if apt.is_available(check_in_date, check_out_date)
     ]
 
@@ -650,12 +506,18 @@ def booking_wizard(request):
         })
 
     apartment_blocks = create_apartment_blocks(available_apartments, people_quantity, check_in_date, check_out_date)
+    # если блоков с апартаментами не создать (например, количество гостей не воткнуть в свободные номера, выводим ИСТИНУ или ЛОЖЬ и передаем в шаблон)
+    if not apartment_blocks:
+        no_apartments_available = True
+    else:
+        no_apartments_available = False
+
+    # Подгрузка фотографий
     for block in apartment_blocks:
         for apartment in block['apartments']:
             apartment.photos = ApartmentPhoto.objects.filter(apartment=apartment)
-    # Сортируем блоки по общей стоимости
-    apartment_blocks.sort(key=lambda block: block['total_price'])
 
+    # Отправка данных в шаблон
     context = {
         'apartment_blocks': apartment_blocks,
         'check_in': check_in,
@@ -663,81 +525,35 @@ def booking_wizard(request):
         'people_quantity': people_quantity,
         'show_form': False,
         'hotel': hotel,
+        'no_apartments_available': no_apartments_available,
     }
     return render(request, 'booking_wizard.html', context)
 
 
-# def create_apartment_blocks(available_apartments, people_quantity, check_in_date, check_out_date):
-#     """
-# Создает блоки апартаментов, комбинируя различные варианты,
-# и сортирует их по общей стоимости.
-#     """
-#     possible_blocks = []
-#     min_block_capacity = people_quantity
-#
-#     # 1. Генерируем все возможные комбинации апартаментов (подмножества)
-#     for block_size in range(1, len(available_apartments) + 1): # Рассматриваем блоки размером от 1 до всех доступных номеров
-#         for apartment_combination in combinations(available_apartments, block_size):
-#             block_capacity = sum(apt.capacity for apt in apartment_combination)
-#
-#             if block_capacity >= min_block_capacity: # 2. Фильтруем комбинации по вместимости
-#                 block_price = sum(apt.calculate_price(check_in_date, check_out_date) for apt in apartment_combination)
-#                 possible_blocks.append({
-#                     'apartments': list(apartment_combination), # Преобразуем tuple в list для удобства шаблона
-#                     'total_capacity': block_capacity,
-#                     'total_price': block_price,
-#                     'num_apartments': len(apartment_combination) # Добавляем количество апартаментов в блоке
-#                 })
-#
-#     # 3. Сортировка по цене (уже делается в booking_wizard1 представлении после вызова этой функции)
-#     # 4. Возврат отсортированных блоков
-#     return possible_blocks
-
-def create_apartment_blocks(
-        available_apartments,  # Все доступные апартаменты (QuerySet)
-        people_quantity,  # Количество гостей (int)
-        check_in_date,  # Дата заезда (date)
-        check_out_date  # Дата выезда (date)
-):
+def create_apartment_blocks(available_apartments, people_quantity, check_in_date, check_out_date):
     """
     Возвращает список вариантов бронирования, отсортированных по стоимости.
     Каждый вариант - комбинация апартаментов, удовлетворяющих требованиям.
     """
     valid_blocks = []
 
-    # 1. Фильтрация: оставляем только апартаменты, доступные на эти даты
-    available = [
-        apt for apt in available_apartments
-        if apt.is_available(check_in_date, check_out_date)
-    ]
+    # Генерация всех возможных комбинаций апартаментов
+    for n in range(1, len(available_apartments) + 1):
+        for apartment_group in combinations(available_apartments, n):
 
-    # 2. Генерация всех возможных комбинаций апартаментов
-    for n in range(1, len(available) + 1):
-        # Перебираем комбинации из n апартаментов
-        for apartment_group in combinations(available, n):
-
-            # 3. Проверка общей вместимости
+            # Проверка общей вместимости
             total_capacity = sum(apt.capacity for apt in apartment_group)
             if total_capacity < people_quantity:
                 continue  # Пропускаем, если не хватает мест
 
-            # 4. Проверка доступности ВСЕХ апартаментов в группе
-            # (чтобы не было пересечений бронирований внутри группы)
-            all_available = True
-            for apt in apartment_group:
-                if not apt.is_available(check_in_date, check_out_date):
-                    all_available = False
-                    break
-            if not all_available:
+            # Проверка доступности всех апартаментов
+            if not all(apt.is_available(check_in_date, check_out_date) for apt in apartment_group):
                 continue
 
-            # 5. Расчет общей стоимости
-            total_price = sum(
-                apt.calculate_price(check_in_date, check_out_date)
-                for apt in apartment_group
-            )
+            # Расчет общей стоимости
+            total_price = sum(apt.calculate_price(check_in_date, check_out_date) for apt in apartment_group)
 
-            # 6. Сохранение варианта
+            # Сохранение варианта
             valid_blocks.append({
                 'apartments': apartment_group,
                 'total_price': total_price,
@@ -745,85 +561,110 @@ def create_apartment_blocks(
                 'num_apartments': n
             })
 
-    # 7. Сортировка результатов:
-    # - Сначала самые дешёвые
-    # - При равной цене - варианты с меньшим количеством апартаментов
+    # Фильтрация блоков: оставляем минимально возможное количество апартаментов
+    if valid_blocks:
+        min_apartments = min(block['num_apartments'] for block in valid_blocks)
+        valid_blocks = [
+            block for block in valid_blocks
+            if block['num_apartments'] <= min(min_apartments + 1, people_quantity)
+        ]
+
+    # Сортировка по цене, затем по количеству апартаментов
     valid_blocks.sort(key=lambda x: (x['total_price'], x['num_apartments']))
 
-    # 8. Возвращаем все варианты или пустой список
-    return valid_blocks if valid_blocks else []
+    return valid_blocks
 
 
 @transaction.atomic
+@transaction.atomic
 def create_booking_from_block(request):
+    # Функция обрабатывает POST-запрос для создания бронирования по выбранному блоку апартаментов
     if request.method == 'POST':
         try:
+            # 1. Извлекаем данные из POST-запроса:
             apartment_ids = request.POST.getlist('apartment_ids')
             check_in = request.POST.get('check_in')
             check_out = request.POST.get('check_out')
             people_quantity = int(request.POST.get('people_quantity', 1))
+            # Цена, которую видел пользователь (передана через скрытое поле формы)
+            displayed_total_price_str = request.POST.get('displayed_total_price', '0.00').strip().replace(',', '.')
+            displayed_total_price = Decimal(displayed_total_price_str)
+            # Флаг, указывающий, что пользователь подтвердил новую цену, если она изменилась
+            confirm_price_change = request.POST.get('confirm_price_change', 'false') == 'true'
 
-            # 1. Блокировка записей для проверки доступности
+            # 2. Блокировка записей апартаментов для обеспечения целостности данных
             apartments = Apartment.objects.select_for_update().filter(
                 id__in=apartment_ids,
                 is_closed=False
             )
 
-            # 2. Проверка что все ID валидны
+            # 3. Проверка, что все запрошенные апартаменты существуют и доступны (не закрыты)
             if len(apartments) != len(apartment_ids):
-                raise ValidationError("Некоторые апартаменты не найдены или закрыты")
+                raise ValidationError(_("Некоторые апартаменты не найдены или закрыты"))
 
-            # 3. Проверка доступности каждого апартамента
+            # 4. Проверка доступности каждого апартамента на указанные даты
             for apartment in apartments:
                 if not apartment.is_available(check_in, check_out):
-                    raise ValidationError(f"Апартамент {apartment.number} занят")
+                    raise ValidationError(
+                        _("Apartment %(apartment)s is already booked for these dates"),
+                        params={'apartment': apartment.number}
+                    )
 
-            # 4. Создание бронирований
-            bookings = [
-                Booking(
-                    user=request.user,
-                    apartment=apartment,
-                    check_in=check_in,
-                    check_out=check_out,
-                    people_quantity=people_quantity,
-                    status='confirmed'
-                ) for apartment in apartments
-            ]
+            # 5. Создание объекта бронирования (без установки ManyToMany-связей)
+            booking = Booking.objects.create(
+                user=request.user,
+                check_in=check_in,
+                check_out=check_out,
+                people_quantity=people_quantity,
+                status='confirmed'
+            )
 
-            # 5. Сохранение всех бронирований одним запросом
-            Booking.objects.bulk_create(bookings)
+            # 6. Устанавливаем связь бронирования с выбранными апартаментами
+            booking.apartments.set(apartments)
 
-            messages.success(request, "Все апартаменты успешно забронированы!")
-            return redirect('booking_confirmation')
+            # 7. Пересчитываем стоимость бронирования с учетом установленных апартаментов
+            recalculated_total = booking.calculate_total_value()
+
+            # 8. Сравниваем пересчитанную стоимость с ценой, которую видел пользователь
+            if recalculated_total != displayed_total_price and not confirm_price_change:
+                if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                    return JsonResponse({
+                        'price_changed': True,
+                        'new_price': str(recalculated_total)
+                    })
+                else:
+                    raise ValidationError(
+                        _("We are sorry. Booking price has been changed. Actual booking price: %(price)s"),
+                        params={'price': recalculated_total}
+                    )
+
+            # 9. Обновляем стоимость бронирования в базе данных
+            booking.total_value = recalculated_total
+            booking.save(update_fields=['total_value'])
+            booking.update_debt_value()
+
+            # 10. Если запрос был отправлен через AJAX, возвращаем JSON с успешным результатом и URL для редиректа,
+            # передавая в URL аргумент booking_id
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                return JsonResponse({
+                    'success': True,
+                    'redirect_url': reverse('booking_confirmation', kwargs={'booking_id': booking.id})
+                })
+
+            # 11. При обычном запросе добавляем сообщение об успехе и перенаправляем пользователя на страницу подтверждения
+            messages.success(request, _("Апартаменты успешно забронированы!"))
+            return redirect('booking_confirmation', booking_id=booking.id)
 
         except ValidationError as e:
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                return JsonResponse({'error': str(e)}, status=400)
             messages.error(request, str(e))
             return redirect('booking_wizard')
 
         except Exception as e:
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                return JsonResponse({'error': f"Ошибка бронирования: {str(e)}"}, status=400)
             messages.error(request, f"Ошибка бронирования: {str(e)}")
             return redirect('booking_wizard')
 
-    return redirect('home')
-
-
-def booking_create(request):
-    if request.method == 'POST':
-        form = BookingForm(request.POST, request.FILES)
-        if form.is_valid():
-            booking = form.save()
-            form.save_m2m()
-            # Пересчет стоимости и долга бронирования
-            if booking.status == 'confirmed':
-                if booking.manual_value is not None:
-                    booking.total_value = booking.manual_value
-                else:
-                    booking.total_value = booking.calculate_total_value()
-            else:
-                booking.total_value = Decimal('0.00')
-            booking.debt = booking.total_value
-            booking.save(update_fields=['total_value', 'debt'])
-            return redirect('booking_confirmation', booking_id=booking.id)
-    else:
-        form = BookingForm()
-    return render(request, 'booking_create.html', {'form': form})
+    return redirect('booking_confirmation')

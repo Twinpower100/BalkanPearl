@@ -4,16 +4,21 @@
 {% block title %}{% trans 'Блог - Balkan Pearl' %}{% endblock %}
 
 {% block content %}
-<head>
-    <meta charset="UTF-8">
-    </head>
-<h2>{% trans "Блог '...а Женя говорила!'" %}</h2>
+
+<h2 style="background: rgba(255,255,255,0.8); gap: 20px; align-content: center; border-radius: 8px; width:100%; text-align: center; display: compact;">{% trans "Блог '...а Женя говорила!'" %}</h2>
 
 {% if blog_posts %}
-    <ul>
+    <ul style="background: rgba(255,255,255,0.8); gap: 20px; border-radius: 8px; width:100%; display: block; list-style: none">
         {% for post in blog_posts %}
-            <li style="margin-bottom: 20px;">{{ post.title }}</li>
-            <li style="font-size: 1.2em; line-height: 1.6">{{ post.content }}</li>
+            <li style="margin-bottom: 20px; background: rgba(255,255,255,0.8); gap: 20px; border-radius: 8px;  display: block;">
+                {{ post.title }}
+            </li>
+            <li style="margin-bottom: 20px; background: rgba(255,255,255,0.8); gap: 20px; border-radius: 8px;  display: block;">
+                {% trans "Publication date" %}: {{ blog_posts.created_at }}
+            </li>
+            <li style="margin-bottom: 20px; background: rgba(255,255,255,0.8); gap: 20px; border-radius: 8px;  display:block; width: 100%">
+                {{ post.content|safe|linebreaksbr }}
+            </li>
         {% endfor %}
     </ul>
 {% else %}

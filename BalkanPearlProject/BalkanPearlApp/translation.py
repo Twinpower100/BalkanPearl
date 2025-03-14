@@ -6,11 +6,6 @@ from .models import Hotel, Apartment, HotelPhoto, WindowView, ApartmentType, Sea
 from .models import *
 
 
-@register(Address)
-class AddressTranslationOptions(TranslationOptions):
-    fields = ('street', 'city', 'state', 'country')
-
-
 @register(Hotel)
 class HotelTranslationOptions(TranslationOptions):
     fields = ('description',)
@@ -28,7 +23,7 @@ class WindowViewTranslationOptions(TranslationOptions):
 
 @register(ApartmentType)
 class ApartmentTypeTranslationOptions(TranslationOptions):
-    fields = ('name',)  # Убедитесь, что поле называется "name", а не "type".
+    fields = ('name',)
 
 
 @register(Apartment)
@@ -36,20 +31,9 @@ class ApartmentTranslationOptions(TranslationOptions):
     fields = ('description',)  # Убрали "balcony", если это BooleanField.
 
 
-@register(Season)
-class SeasonTranslationOptions(TranslationOptions):
-    fields = ('name',)
-
-
 @register(ApartmentPhoto)
 class ApartmentPhotoTranslationOptions(TranslationOptions):
     fields = ('description',)  # Убрали "apartment", так как это ForeignKey.
-
-
-
-@register(Review)
-class ReviewTranslationOptions(TranslationOptions):
-    fields = ('commentary',)
 
 
 @register(BlogPost)

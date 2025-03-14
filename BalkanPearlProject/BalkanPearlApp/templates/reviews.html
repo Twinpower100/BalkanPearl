@@ -4,18 +4,18 @@
 {% block title %}{% trans 'Отзывы - Balkan Pearl' %}{% endblock %}
 
 {% block content %}
-<h2>{% trans 'Отзывы' %}</h2>
+<h2 style="background: rgba(255,255,255,0.8); gap: 20px; align-content: center; border-radius: 8px; width:100%; text-align: center; display: compact;">{% trans 'Отзывы' %}</h2>
 
-<a href="{% url 'create_review' %}" class="btn btn-primary"
+<a href="{% url 'create_review' %}" class="btn btn-primary" style="background: rgba(255,255,255,0.8); gap: 20px; width: 100%; border-radius: 8px; display: compact; list-style: none"
     {% if not user.is_authenticated %}
         onclick="alert('{% trans 'Функция доступна только для авторизованных пользователей.' %}'); return false;"
     {% endif %}
 >{% trans 'Создать новый' %}</a>
 
 {% if reviews %}
-    <ul class="review-list">
+    <ul class="review-list" style="background: rgba(255,255,255,0.8); gap: 20px; border-radius: 8px; width:100%; display: block; list-style: none">
         {% for review in reviews %}
-            <li style="margin-bottom: 20px;">
+            <li style="margin-bottom: 20px; background: rgba(255,255,255,0.8); gap: 20px; border-radius: 8px;  display: compact;">
                 <strong>
                     {% if review.anonymous %}
                         {% trans "Аноним" %}
@@ -23,8 +23,8 @@
                         {{ review.user.username }}
                     {% endif %}
                 </strong>:
-                <div style="font-size: 1.2em; line-height: 1.6;">
-                    {{ review.commentary|safe }}
+                <div style="font-size: 1.2em; line-height: 1.6; white-space: pre-wrap; overflow-wrap: break-word;">
+                    {{ review.commentary|safe|linebreaksbr }}
                 </div>
                 <br>{% trans 'Оценка:' %}{{ review.rating }}/5
                 <br>{% trans 'Дата:' %}{{ review.created_at }}

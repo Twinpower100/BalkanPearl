@@ -19,12 +19,12 @@
 
     <div class="booking-form">
         <form method="post" action="{% url 'create_booking' %}" id="bookingForm">
-            {% csrf_token %}
-            <input type="hidden" name="apartment_id" value="{{ apartment.id }}">
+        {% csrf_token %}
+        <input type="hidden" name="apartment_id" value="{{ apartment.id }}">
             <!-- Скрытое поле для клиентской стоимости -->
             <input type="hidden" id="total_price_input" name="total_price" value="0">
-            <div class="date-selection" style="background: rgba(255, 255, 255, 0.9); padding: 10px;">
-                <h2 style="margin: 0; text-align: center;">{% trans 'Внесите желаемые даты и количество гостей' %}</h2>
+        <div class="date-selection" style="background: rgba(255, 255, 255, 0.9); padding: 10px;">
+            <h2 style="margin: 0; text-align: center;">{% trans 'Внесите желаемые даты и количество гостей' %}</h2>
                 <input type="date" id="check_in" name="check_in" required value="{{ check_in }}">
                 <input type="date" id="check_out" name="check_out" required value="{{ check_out }}">
                 <input type="number" id="people_quantity" name="people_quantity" min="1" required value="{{ people_quantity }}">
@@ -43,8 +43,8 @@
         <p id="error-modal-message" style="margin-bottom: 20px; font-size: 16px;"></p>
         <button onclick="window.location.reload();" style="padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">
             {% trans "Вернуться" %}
-        </button>
-    </div>
+            </button>
+        </div>
 </div>
 
 <script>
@@ -60,13 +60,21 @@
         const availabilityStatus = document.getElementById('availability-status');
         const totalPriceInput = document.getElementById('total_price_input');
 
+//        checkInInput.addEventListener('change', updatePriceAndAvailability);
+//        checkOutInput.addEventListener('change', updatePriceAndAvailability);
+//        peopleQuantityInput.addEventListener('change', validateForm);
+
         function updatePriceAndAvailability() {
             const checkIn = checkInInput.value;
             const checkOut = checkOutInput.value;
 
             if (!checkIn || !checkOut) {
-                validationError.textContent = "{% trans 'Пожалуйста, заполните обе даты' %}";
-                validationError.style.display = 'block';
+//                validationError.textContent = "{% trans 'Пожалуйста, заполните обе даты' %}";
+//                validationError.style.display = 'block';
+                alert('{% trans "Пожалуйста, заполните обе даты"%}')
+                return;
+            }
+            if (!validateForm()) {
                 return;
             }
 
@@ -83,7 +91,7 @@
                         "{% trans 'Доступен' %}" : "{% trans 'Недоступен' %}";
 
                     if (!data.available) {
-                        validationError.textContent = "{% trans 'Апартамент недоступен на выбранные даты' %}";
+                        alert("{% trans 'Извините, апартамент более недоступен на выбранные даты' %}");
                         validationError.style.display = 'block';
                     } else {
                         validationError.style.display = 'none';
@@ -102,20 +110,23 @@
             today.setHours(0, 0, 0, 0);
 
             if (checkIn < today) {
-                validationError.textContent = "{% trans 'Дата заезда не может быть в прошлом' %}";
-                validationError.style.display = 'block';
+//                validationError.textContent = "{% trans 'Дата заезда не может быть в прошлом' %}";
+//                validationError.style.display = 'block';
+                alert('{% trans "Дата заезда не может быть в прошлом" %}')
                 return false;
             }
 
             if (checkIn >= checkOut) {
-                validationError.textContent = "{% trans 'Дата выезда должна быть позже даты заезда' %}";
-                validationError.style.display = 'block';
+//                validationError.textContent = "{% trans 'Дата выезда должна быть позже даты заезда' %}";
+//                validationError.style.display = 'block';
+                alert('{% trans "Дата выезда должна быть позже даты заезда" %}')
                 return false;
             }
 
             if (peopleQuantity > {{ apartment.capacity }}) {
-                validationError.textContent = "{% trans 'Количество гостей превышает вместимость апартамента' %}";
-                validationError.style.display = 'block';
+//                validationError.textContent = "{% trans 'Количество гостей превышает вместимость апартамента' %}";
+//                validationError.style.display = 'block';
+                alert('{% trans "Количество гостей превышает вместимость апартамента" %}')
                 return false;
             }
 

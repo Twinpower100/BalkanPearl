@@ -3,13 +3,13 @@
 {% load i18n %}
 
 {% block content %}
-<div class="profile-container">
-    <h2>{% trans 'Ваши бронирования' %}</h2>
+<div class="profile-container" style="align-items: center">
+    <h2 style="background: rgba(255,255,255,0.8); gap: 20px; align-content: center; border-radius: 810px; width:fit-content; text-align: center; display: compact;">{% trans 'Ваши бронирования' %}</h2>
     {% if user_bookings %}
         <ul class="booking-list">
             {% for booking in user_bookings %}
-            <li>
-                <p>{% trans 'Апартамент' %}: {{ booking.apartment.number }}</p>
+            <li style="background: rgba(255,255,255,0.8); gap: 20px; border-radius: 8px; width:fit-content; display: compact; list-style: none">
+                <p>{% trans 'Апартаменты' %}: {{ booking.apartments_str }}</p>
                 <p>{% trans 'Дата заезда' %}: {{ booking.check_in }}</p>
                 <p>{% trans 'Дата выезда' %}: {{ booking.check_out }}</p>
                 <p>{% trans 'Статус' %}: {{ booking.get_status_display }}</p>
@@ -24,7 +24,7 @@
             {% endfor %}
         </ul>
     {% else %}
-        <p>{% trans 'У вас нет бронирований.' %}</p>
+        <p style="background: rgba(255,255,255,0.8); gap: 20px; border-radius: 10px; width:fit-content; display: compact;">{% trans 'У вас нет бронирований.' %}</p>
     {% endif %}
 </div>
 {% endblock %}

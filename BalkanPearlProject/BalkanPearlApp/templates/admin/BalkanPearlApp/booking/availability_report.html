@@ -1,38 +1,86 @@
-<!-- C:\Mail.ru\CodeIt\Django\BalkanPearl\BalkanPearlProject\BalkanPearlApp\templates\admin\BalkanPearlApp\booking\availability_report.html -->
+<!--C:\Mail.ru\CodeIt\Django\BalkanPearl\BalkanPearlProject\BalkanPearlApp\templates\admin\BalkanPearlApp\booking\availability_report.html-->
 {% extends "admin/base_site.html" %}
 {% load i18n %}
 
 {% block content %}
-<h1>{% trans "Отчет о доступности номеров" %}</h1>
+  <h1>{% trans "Отчет по доступности" %}</h1>
 
-<form method="get" class="report-filters">
-    <label for="start_date">{% trans "Начало периода:" %}</label>
-    <input type="date" id="start_date" name="start_date" required>
+  <!-- Форма фильтров -->
+  <form method="get" style="margin-bottom:20px;">
+    <fieldset>
+      <legend>{% trans "Параметры отчета" %}</legend>
 
-    <label for="end_date">{% trans "Конец периода:" %}</label>
-    <input type="date" id="end_date" name="end_date" required>
+      <label for="id_start_date">{% trans "Дата с" %}:</label>
+      <input type="date" id="id_start_date" name="start_date" value="{{ request.GET.start_date }}" required>
 
-    <button type="submit">{% trans "Применить фильтры" %}</button>
-</form>
+      <label for="id_end_date">{% trans "Дата по" %}:</label>
+      <input type="date" id="id_end_date" name="end_date" value="{{ request.GET.end_date }}" required>
 
-{% if report_data %}
-<table>
-    <thead>
-        <tr>
-            <th>{% trans "Номер" %}</th>
-            <th>{% trans "Статус" %}</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for item in report_data %}
-            <tr>
-                <td>{{ item.apartment }}</td>
-                <td>{{ item.status }}</td>
-            </tr>
+      <label for="id_hotel">{% trans "Отель" %}:</label>
+      <select id="id_hotel" name="hotel">
+        <option value="">{% trans "Все отели" %}</option>
+        {% for h in form.fields.hotel.queryset %}
+          <option value="{{ h.id }}" {% if request.GET.hotel == h.id|stringformat:"s" %}selected{% endif %}>
+            {{ h.name }}
+          </option>
         {% endfor %}
-    </tbody>
-</table>
-{% else %}
-    <p>{% trans "Нет данных для отображения." %}</p>
-{% endif %}
+      </select>
+
+      <label for="id_apartments">{% trans "Апартаменты" %}:</label>
+      <select id="id_apartments" name="apartments" multiple>
+        {% for a in form.fields.apartments.queryset %}
+          <option value="{{ a.id }}"
+            {% if request.GET.apartments and a.id|stringformat:"s" in selected_apartments %}selected{% endif %}>
+            {{ a.number }} ({{ a.hotel.name }})
+          </option>
+        {% endfor %}
+      </select>
+
+      <button type="submit" name="action" value="filter">{% trans "Показать отчет" %}</button>
+      <button type="submit" name="action" value="export">{% trans "Экспортировать в Excel" %}</button>
+    </fieldset>
+  </form>
+
+  {% if date_range %}
+    <h2>
+      {% if hotel_selected %}
+        {% trans "Отель" %}: {{ hotel_selected.name }}
+      {% else %}
+        {% trans "Все отели" %}
+      {% endif %} | {% trans "Период" %}: {{ start_date }} – {{ end_date }}
+    </h2>
+
+    <table border="1" cellspacing="0" cellpadding="5" style="border-collapse: collapse;">
+      <thead>
+        <tr>
+          <th>{% trans "Апартамент" %}</th>
+          {% for day in date_range %}
+            <th>{{ day|date:"Y-m-d" }}</th>
+          {% endfor %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in occupancy_matrix %}
+          <tr>
+            <td>{{ row.apartment }}</td>
+            {% for status in row.occupancy %}
+              {% if status == "booked" %}
+                <td style="background-color: #ffcccc; text-align: center;">{% trans "Занят" %}</td>
+              {% elif status == "free" %}
+                <td style="background-color: #ccffcc; text-align: center;">{% trans "Свободен" %}</td>
+              {% elif status == "closed" %}
+                <td style="background-color: #d3d3d3; text-align: center;">{% trans "Закрыт" %}</td>
+              {% else %}
+                <td>&nbsp;</td>
+              {% endif %}
+            {% endfor %}
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    {% if request.GET.action == "filter" %}
+      <p>{% trans "Нет данных для выбранных параметров." %}</p>
+    {% endif %}
+  {% endif %}
 {% endblock %}

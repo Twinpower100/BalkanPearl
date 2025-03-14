@@ -5,13 +5,115 @@
 {% block title %} {% trans 'Главная - Balkan Pearl' %}{% endblock %}
 
 {% block content %}
+
+<style>
+    /* Стили карусели */
+    .carousel {
+        position: relative;
+        height: 40%;
+        overflow:visible;
+        border-radius: 8px;
+        margin: 20px 0;
+    }
+    .carousel img {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        object-position: center center;
+        transform: translateX(-50%) translateY(-25%);
+        opacity: 0;
+        transition: opacity 0.5s ease;
+    }
+    .carousel img.active {
+        opacity: 1;
+        z-index: 1;
+    }
+    .carousel button {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(0, 0, 0, 0.5);
+        color: white;
+        border: none;
+        padding: 12px 18px;
+        cursor: pointer;
+        z-index: 2;
+        font-size: 1.5rem;
+        border-radius: 5px;
+    }
+    .carousel button.prev { left: 15px; }
+    .carousel button.next { right: 15px; }
+    .carousel button:hover {
+        background: rgba(0, 0, 0, 0.8);
+    }
+    /* Zoom‑режим для контейнера карусели */
+    .carousel.zoomed {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.8);  /* затемнение фона, чтобы под фото не просвечивала информация */
+        z-index: 999;
+        display: flex;
+        justify-content: center;
+        border-radius:  10px !important;
+        align-items: flex-start; /* Начать выравнивание от верха */
+        overflow: hidden;
+        transform: scale(0.8) translateX(-20%) translateY(-20%);
+    }
+
+    /* Скрываем все картинки в zoom‑режиме по умолчанию */
+    .carousel.zoomed img {
+        display: none !important;
+        position: static !important;  /* отменяем absolute */
+        z-index: 999;
+    }
+
+    /* Отображаем только активную картинку */
+    .carousel.zoomed img.active {
+        display: block !important;
+        max-width: 80vw;    /* чтобы фото не заходило за края экрана */
+        max-height: 80vh;
+        object-fit: contain; /* сохраняем пропорции и показываем всё изображение */
+        margin: auto;
+        transform: scale(3);         /* Увеличиваем фото */
+        transform-origin: center center; /* Центрируем */
+        transition: transform 0.3s ease; /*анимируем переключение */
+        border-radius: 100px !important;
+
+    }
+
+    /* Переопределяем стили стрелок (если их базовые стили не подходят) */
+    .carousel.zoomed button {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 9999;
+    }
+
+    .carousel.zoomed button.prev {
+        left: 15px;
+    }
+
+    .carousel.zoomed button.next {
+        right: 15px;
+    }
+
+    .content-container{
+        transform: translateY(-8%);
+    }
+</style>
 <div class="content-container" style="display: flex; flex-wrap: nowrap; height: calc(90vh - 100px); ">
     <!-- Левый блок: Описание и контакты -->
-    <section class="description" style="flex: 1; padding: 20px; overflow-y: auto; min-width: 300px;">
+    <section class="description" style="flex: 1; padding: 20px; overflow-y: auto; min-width: 300px; background: rgba(136, 232, 198, 0.9)">
         <h1>{% trans 'About hotel' %}</h1>
         <h3>
             {% if hotel.description %}
-                {{ hotel.description|linebreaks }}
+                <div style="white-space: pre-wrap; overflow-wrap: break-word; transform: translateY(-15%)">
+                    {{ hotel.description|linebreaks }}
+                </div>
             {% else %}
                 {{ no_description }}
             {% endif %}
@@ -60,8 +162,13 @@
         <div class="carousel-container" style="flex: 1; margin-bottom: 20px;">
             <h3>{% trans 'Наши фото' %}</h3>
             <div class="carousel" style="position: relative; text-align: center;">
+                {% for photo in hotel_photos %}
+                    <img src="{{ photo.photo.url }}"
+                        alt="{% trans 'Our photos' %}"
+                        class="{% if forloop.first %} active {% endif %}">
+                {% endfor %}
                 <button class="prev">&laquo;</button>
-                <img id="carousel-image" src="" alt="{% trans 'Наши фото' %}" style="max-width: 100%; max-height: 300px; display: block; margin: 0 auto;">
+                <!--<img id="carousel-image" src="" alt="{% trans 'Наши фото' %}" style="max-width: 100%; max-height: 300px; display: block; margin: 0 auto;">-->
                 <button class="next">&raquo;</button>
             </div>
         </div>
@@ -89,40 +196,55 @@
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', () => {
-    const prevButton = document.querySelector('.prev');
-    const nextButton = document.querySelector('.next');
-    const carouselImage = document.querySelector('#carousel-image');
+    document.addEventListener('DOMContentLoaded', () => {
+        //Обработчик карусели
+        document.querySelectorAll('.carousel').forEach(carousel => {
+            const images = carousel.querySelectorAll('img');
+            let currentIndex = 0;
 
-    // Получение списка изображений
-    const photos = [
-        {% for photo in hotel_photos %}
-        { url: "{{ photo.photo.url }}", alt: "{{ photo.description|default:'Фото отеля' }}" },
-        {% endfor %}
-    ];
+            //Функция показа изображения по индексу
+            const showImage = (index) => {
+                images.forEach(img => img.classList.remove('active'));
+                if (images[index]) images[index].classList.add('active');
+            };
 
-    let currentIndex = 0;
+            // Обработчики для стрелок переключения
+            carousel.querySelector('.prev').addEventListener('click', (e) => {
+                e.stopPropagation(); // запрет переключения зума в случае клика по стрелке
+                currentIndex = (currentIndex - 1 + images.length) % images.length;
+                showImage(currentIndex);
+            });
+            carousel.querySelector('.next').addEventListener('click', (e) => {
+                e.stopPropagation();
+                currentIndex = (currentIndex - 1 + images.length) % images.length;
+                showImage(currentIndex);
+            });
 
-    // Функция для обновления изображения
-    function updateImage() {
-        const photo = photos[currentIndex];
-        carouselImage.src = photo.url;
-        carouselImage.alt = photo.alt;
-    }
+            // Клик по изображению внутри карусели переключает состояние зума карусели
+            carousel.addEventListener('click', (e) => {
+                if (e.target.tagName.toLowerCase() === 'img') {
+                    // Переключаем класс зума у всей карусели
+                    carousel.classList.toggle('zoomed');
+                }
+            });
 
-    // Обработчики для кнопок
-    prevButton.addEventListener('click', () => {
-        currentIndex = (currentIndex - 1 + photos.length) % photos.length;
-        updateImage();
+            // Настройка курсора для изображений при наведении
+            images.forEach(img => {
+                img.addEventListener('mouseenter', () => {
+                    if (carousel.classList.contains('zoomed')) {
+                        img.style.cursor = 'zoom-out';
+                    }
+                    else {
+                        img.style.cursor = 'zoom-in';
+                    }
+                });
+                img.addEventListener('mouseleave', () => {
+                    img.style.cursor = 'default';
+                });
+            });
+            //первый слайд по умолчанию
+            if (images.length > 0) showImage(0);
+        })
     });
-
-    nextButton.addEventListener('click', () => {
-        currentIndex = (currentIndex + 1) % photos.length;
-        updateImage();
-    });
-
-    // Инициализация карусели
-    updateImage();
-});
 </script>
 {% endblock %}

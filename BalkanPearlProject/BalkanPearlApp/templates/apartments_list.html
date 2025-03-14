@@ -5,6 +5,101 @@
 {% block title %} {% trans 'Список апартаментов' %}{% endblock %}
 
 {% block content %}
+
+<style>
+    /* Стили карусели */
+    .carousel {
+        position: relative;
+        height: 300px;
+        overflow: hidden;
+        border-radius: 8px;
+        margin: 20px 0;
+    }
+    .carousel img {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        opacity: 0;
+        transition: opacity 0.5s ease;
+    }
+    .carousel img.active {
+        opacity: 1;
+        z-index: 1;
+    }
+    .carousel button {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(0, 0, 0, 0.5);
+        color: white;
+        border: none;
+        padding: 12px 18px;
+        cursor: pointer;
+        z-index: 2;
+        font-size: 1.5rem;
+        border-radius: 5px;
+    }
+    .carousel button.prev { left: 15px; }
+    .carousel button.next { right: 15px; }
+    .carousel button:hover {
+        background: rgba(0, 0, 0, 0.8);
+    }
+    /* Zoom‑режим для контейнера карусели */
+    .carousel.zoomed {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.8);  /* затемнение фона, чтобы под фото не просвечивала информация */
+        z-index: 999;
+        display: flex;
+        justify-content: center;
+        border-radius:  10px !important;
+        align-items: flex-start; /* Начать выравнивание от верха */
+        padding-top: 180px;
+        overflow: hidden;
+    }
+
+    /* Скрываем все картинки в zoom‑режиме по умолчанию */
+    .carousel.zoomed img {
+        display: none !important;
+        position: static !important;  /* отменяем absolute */
+        z-index: 999;
+    }
+
+    /* Отображаем только активную картинку */
+    .carousel.zoomed img.active {
+        display: block !important;
+        max-width: 90vw;    /* чтобы фото не заходило за края экрана */
+        max-height: 90vh;
+        object-fit: contain; /* сохраняем пропорции и показываем всё изображение */
+        margin: auto;
+        transform: scale(2.2) translateY(100px);         /* Увеличиваем фото */
+        transform-origin: center center; /* Центрируем */
+        transition: transform 0.3s ease; /*анимируем переключение */
+        border-radius: 100px !important;
+
+    }
+
+    /* Переопределяем стили стрелок (если их базовые стили не подходят) */
+    .carousel.zoomed button {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 10000;
+    }
+
+    .carousel.zoomed button.prev {
+        left: 15px;
+    }
+
+    .carousel.zoomed button.next {
+        right: 15px;
+}
+</style>
+
 <!-- Заголовок и форма выбора дат -->
 <div class="date-selection" style="position: fixed; top: 130px; width: 100%; background: rgba(255, 255, 255, 0.9); padding: 10px; z-index: 999;">
     <h2 style="margin: 0; text-align: center;">{% trans "Для проверки стоимости и доступности апартаментов укажите желаемые даты бронирования" %}</h2>
@@ -23,7 +118,7 @@
             {% trans 'Показать только доступные' %}
         </label>
         {% if validation_error %}
-          <div class="error-message" style="color: red; margin-top: 10px;">
+          <div class="error-message" style="display: none;">
              {{ validation_error }}
           </div>
         {% endif %}
@@ -88,7 +183,6 @@
         <p>{% trans 'Апартаменты недоступны' %}</p>
     {% endif %}
 </div>
-
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         // Новый обработчик: при изменении любого поля формы, форма автоматически отправляется,
@@ -99,35 +193,71 @@
 
         // Обработчик карусели
         document.querySelectorAll('.carousel').forEach(carousel => {
-            const images = Array.from(carousel.querySelectorAll('img'));
-            const prevBtn = carousel.querySelector('.prev');
-            const nextBtn = carousel.querySelector('.next');
+            const images = carousel.querySelectorAll('img');
             let currentIndex = 0;
 
-            function showImage(index) {
-                images.forEach((img, i) => {
-                    img.style.opacity = i === index ? '1' : '0';
-                    img.style.display = 'block';
-                });
-            }
+            // Функция для показа изображения по индексу
+            const showImage = (index) => {
+                images.forEach(img => img.classList.remove('active'));
+                if (images[index]) images[index].classList.add('active');
+            };
 
-            if (images.length > 0) {
-                showImage(0);
+            // Обработчики для стрелок переключения
+            carousel.querySelector('.prev').addEventListener('click', (e) => {
+                e.stopPropagation();  // чтобы клик по стрелке не переключал зум
+                currentIndex = (currentIndex - 1 + images.length) % images.length;
+                showImage(currentIndex);
+            });
+            carousel.querySelector('.next').addEventListener('click', (e) => {
+                e.stopPropagation();
+                currentIndex = (currentIndex + 1) % images.length;
+                showImage(currentIndex);
+            });
 
-                prevBtn.addEventListener('click', () => {
-                    currentIndex = (currentIndex - 1 + images.length) % images.length;
-                    showImage(currentIndex);
-                });
+            // Клик по изображению внутри карусели переключает состояние зума карусели
+            carousel.addEventListener('click', (e) => {
+                if (e.target.tagName.toLowerCase() === 'img') {
+                    // Переключаем класс зума у всей карусели
+                    carousel.classList.toggle('zoomed');
+                }
+            });
 
-                nextBtn.addEventListener('click', () => {
-                    currentIndex = (currentIndex + 1) % images.length;
-                    showImage(currentIndex);
+            // Настройка курсора для изображений при наведении
+            images.forEach(img => {
+                img.addEventListener('mouseenter', () => {
+                    if (carousel.classList.contains('zoomed')) {
+                        img.style.cursor = 'zoom-out';
+                    } else {
+                        img.style.cursor = 'zoom-in';
+                    }
                 });
-            } else {
-                prevBtn.style.display = 'none';
-                nextBtn.style.display = 'none';
-            }
-        });
+                img.addEventListener('mouseleave', () => {
+                    img.style.cursor = 'default';
+                });
+            });
+            // Первый слайд по умолчанию
+            if (images.length > 0) showImage(0);
+        })
+
+        // Валидация формы дат
+        const dateForm = document.getElementById('date-form');
+        if (dateForm) {
+            dateForm.addEventListener('change', function(e) {
+                const checkIn = new Date(this.querySelector('[name="check_in"]').value);
+                const checkOut = new Date(this.querySelector('[name="check_out"]').value);
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+
+                if (checkIn >= checkOut) {
+                    e.preventDefault();
+                    alert('{% trans "Дата выезда должна быть позже даты заезда" %}');
+                }
+                if (checkIn < today) {
+                    e.preventDefault();
+                    alert('{% trans "Дата заезда не может быть в прошлом" %}')
+                }
+            });
+        }
     });
 </script>
 {% endblock %}

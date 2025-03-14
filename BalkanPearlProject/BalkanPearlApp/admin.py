@@ -5,7 +5,7 @@ from django.contrib import admin
 from django.core.exceptions import ValidationError
 from django.urls import path, reverse
 from django.utils.encoding import force_str
-from openpyxl.styles import Font
+from openpyxl.styles import Font, PatternFill
 from decimal import Decimal
 
 from BalkanPearlApp.models import Hotel, Address, HotelPhoto, WindowView, ApartmentType, Apartment, Season, \
@@ -16,7 +16,7 @@ from django.shortcuts import render, HttpResponse
 from django.db.models import Sum, Q
 from django.http import HttpResponseForbidden
 from openpyxl import Workbook
-from .forms import BookingForm  # добавлено
+from .forms import AvailabilityReportFilterForm  # добавлено
 
 
 # Register your models here.
@@ -122,11 +122,12 @@ class BookingAdminForm(forms.ModelForm):
         # Если какие-то поля отсутствуют, пропускаем проверку
         if not (apartments and people_quantity and check_in and check_out):
             return cleaned_data
-
+        total_capacity = 0
+        apartments_numbers = []
         for apt in apartments:
-            # Проверка вместимости
-            if people_quantity > apt.capacity:
-                raise ValidationError(f"Количество гостей превышает вместимость апартамента {apt.number}")
+            # Подсчитываем суммарную вместимость номеров
+            total_capacity += apt.capacity
+            apartments_numbers.append(apt.number)
             # Проверка на перекрытие дат бронирований
             qs = Booking.objects.filter(apartments=apt, status='confirmed')
             if self.instance.pk:
@@ -134,6 +135,9 @@ class BookingAdminForm(forms.ModelForm):
             qs = qs.filter(check_in__lt=check_out, check_out__gt=check_in)
             if qs.exists():
                 raise ValidationError(f"Апартамент {apt.number} уже забронирован на выбранные даты")
+        # Проверка вместимости
+        if people_quantity > total_capacity:
+            raise ValidationError(f"Количество гостей превышает вместимость апартаментов {apartments_numbers}")
         return cleaned_data
 
 
@@ -160,12 +164,18 @@ class BookingAdmin(admin.ModelAdmin):
                 self.admin_site.admin_view(self.export_reports),
                 name='BalkanPearlApp_export_reports'
             ),
+            path(
+                'availability-report/',
+                self.admin_site.admin_view(self.availability_report_view),
+                name='BalkanPearlApp_booking_availability_report'
+            ),
         ]
         return urls + super().get_urls()  # Кастомные URL должны быть ПЕРЕД стандартными
 
     def changelist_view(self, request, extra_context=None):
         extra_context = extra_context or {}
         extra_context['report_url'] = reverse('admin:BalkanPearlApp_booking_reports')
+        extra_context['availability_url'] = reverse('admin:BalkanPearlApp_booking_availability_report')
         return super().changelist_view(request, extra_context=extra_context)
 
     def cancel_booking(self, request, queryset):
@@ -203,6 +213,139 @@ class BookingAdmin(admin.ModelAdmin):
         booking.debt = booking.total_value
         booking.save(update_fields=['total_value', 'debt'])
 
+
+    def availability_report_view(self, request):
+        """
+        Кастомное представление, которое:
+        - если GET-параметр action=export, генерирует и возвращает файл Excel,
+        - иначе отрисовывает HTML-отчет с формой фильтров и таблицей.
+        """
+        if not request.user.is_staff:
+            return HttpResponseForbidden(_("Доступ запрещён"))
+
+        action = request.GET.get('action', 'filter')  # либо "filter", либо "export"
+        form = AvailabilityReportFilterForm(request.GET or None)
+        context = {}
+
+        # Получаем список апартаментов из GET-параметров
+        selected_apartments_list = request.GET.getlist('apartments')
+        context['selected_apartments'] = selected_apartments_list  # добавляем в контекст
+
+        if form.is_valid():
+            start_date = form.cleaned_data['start_date']
+            end_date = form.cleaned_data['end_date']
+            hotel = form.cleaned_data.get('hotel')
+            selected_apartments = form.cleaned_data.get('apartments')
+
+            # Формируем список дат (включительно)
+            delta = (end_date - start_date).days + 1
+            date_range = [start_date + datetime.timedelta(days=i) for i in range(delta)]
+
+            # Фильтруем апартаменты
+            apartments_qs = Apartment.objects.all()
+            if hotel:
+                apartments_qs = apartments_qs.filter(hotel=hotel)
+            if selected_apartments:
+                apartments_qs = apartments_qs.filter(pk__in=[apt.pk for apt in selected_apartments])
+
+            # Формируем матрицу доступности:
+            # Для каждого апартамента и для каждого дня определяем статус:
+            #   - "booked"  – если есть бронирование со статусом confirmed,
+            #   - "free"    – если нет бронирования,
+            #   - "closed"  – если у апартамента is_closed=True.
+            occupancy_matrix = []
+            for apt in apartments_qs:
+                row = {
+                    'apartment': str(apt),
+                    'occupancy': []
+                }
+                for day in date_range:
+                    if apt.is_closed:
+                        status = "closed"
+                    else:
+                        # Поскольку проверка происходит для конкретного дня,
+                        # интервал для проверки – [day, day + 1)
+                        day_end = day + datetime.timedelta(days=1)
+                        booked = apt.bookings.filter(
+                            check_in__lt=day_end,
+                            check_out__gt=day,
+                            status='confirmed'
+                        ).exists()
+                        status = "booked" if booked else "free"
+                    row['occupancy'].append(status)
+                occupancy_matrix.append(row)
+
+            context.update({
+                'form': form,
+                'date_range': date_range,
+                'occupancy_matrix': occupancy_matrix,
+                'hotel_selected': hotel,
+                'start_date': start_date,
+                'end_date': end_date,
+            })
+
+            if action == 'export':
+                return self.export_availability_report_excel(date_range, occupancy_matrix, hotel, start_date, end_date)
+
+        else:
+            context['form'] = form
+
+        return render(request, 'admin/BalkanPearlApp/booking/availability_report.html', context)
+
+    def export_availability_report_excel(self, date_range, occupancy_matrix, hotel, start_date, end_date):
+        """
+        Генерирует Excel-файл, где в ячейках:
+        - 1 если апартамент забронирован,
+        - 0 если свободен,
+        - -1 если закрыт.
+        Применяются заливки для наглядности.
+        """
+        wb = Workbook()
+        ws = wb.active
+        ws.title = force_str(_("Отчет по доступности"))
+
+        # Шапка: название отеля (если выбран) и период
+        header_title = _("Отель: %(hotel)s, Период: %(start_date)s - %(end_date)s") % {
+            "hotel": hotel.name if hotel else _("Все отели"),
+            "start_date": start_date,
+            "end_date": end_date,
+        }
+        header_title = force_str(header_title)
+        ws.merge_cells(start_row=1, start_column=1, end_row=1, end_column=len(date_range) + 1)
+        ws.cell(row=1, column=1, value=header_title)
+
+        # Заголовки столбцов: апартаменты и даты
+        ws.cell(row=2, column=1, value=force_str(_("Апартамент")))
+        for col_index, day in enumerate(date_range, start=2):
+            ws.cell(row=2, column=col_index, value=day.strftime('%Y-%m-%d'))
+
+        # Определяем стили заливки для ячеек
+        fill_booked = PatternFill(fill_type="solid", start_color="FFCCCC", end_color="FFCCCC")
+        fill_free = PatternFill(fill_type="solid", start_color="CCFFCC", end_color="CCFFCC")
+        fill_closed = PatternFill(fill_type="solid", start_color="D3D3D3", end_color="D3D3D3")
+
+        # Заполнение данными: для каждого апартамента по каждой дате
+        row_number = 3
+        for row in occupancy_matrix:
+            ws.cell(row=row_number, column=1, value=row['apartment'])
+            for col_index, status in enumerate(row['occupancy'], start=2):
+                cell = ws.cell(row=row_number, column=col_index)
+                if status == "booked":
+                    cell.value = 1
+                    cell.fill = fill_booked
+                elif status == "free":
+                    cell.value = 0
+                    cell.fill = fill_free
+                elif status == "closed":
+                    cell.value = -1
+                    cell.fill = fill_closed
+            row_number += 1
+
+        response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        response['Content-Disposition'] = 'attachment; filename="availability_report.xlsx"'
+        wb.save(response)
+        return response
+
     def reports_view(self, request):
         if not request.user.is_staff:
             return HttpResponseForbidden(_('Доступ запрещен'))
@@ -214,6 +357,7 @@ class BookingAdmin(admin.ModelAdmin):
             return HttpResponseForbidden(_('Доступ запрещен'))
         context = self._process_report(request)
         return self._generate_excel(context)
+
 
     def _process_report(self, request):
         form = ReportFilterForm(request.GET or None)
@@ -238,7 +382,7 @@ class BookingAdmin(admin.ModelAdmin):
             if hotel:
                 bookings = bookings.filter(apartments__hotel=hotel)
             if apartment:
-                bookings = bookings.filter(apartment=apartment)
+                bookings = bookings.filter(apartments=apartment)
             if status:
                 bookings = bookings.filter(status=status)
             if season:
@@ -267,7 +411,7 @@ class BookingAdmin(admin.ModelAdmin):
 
             # Детализация по апартаментам
             for apt in Apartment.objects.all():
-                apt_bookings = bookings.filter(apartment=apt)
+                apt_bookings = bookings.filter(apartments=apt)
 
                 # Фактический доход
                 apt_payments = Payment.objects.filter(
@@ -306,7 +450,7 @@ class BookingAdmin(admin.ModelAdmin):
     def _generate_excel(self, context):
         wb = Workbook()
         ws = wb.active
-        ws.title = force_str("Financial Report")  # Явное преобразование
+        ws.title = force_str(_("Financial Report"))  # Явное преобразование
 
         # Заголовки
         headers = [
@@ -349,7 +493,7 @@ class BookingAdmin(admin.ModelAdmin):
             content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
             charset='utf-8'
         )
-        response['Content-Disposition'] = 'attachment; filename="report.xlsx"'
+        response['Content-Disposition'] = 'attachment; filename="finance_report.xlsx"'
         wb.save(response)
         return response
 
@@ -357,21 +501,6 @@ class BookingAdmin(admin.ModelAdmin):
     def debt_display(self, obj):
         return obj.debt
 
-    def availability_report(self, request):
-        start_date = request.GET.get('start_date')
-        end_date = request.GET.get('end_date')
-
-        apartments = Apartment.objects.all()
-        report_data = []
-        for apartment in apartments:
-            is_available = apartment.is_available(start_date, end_date)
-            report_data.append({
-                'apartment': apartment.number,
-                'status': 'Свободен' if is_available else 'Забронирован',
-            })
-
-        return render(request, 'admin/BalkanPearlApp/booking/availability_report.html',
-                      {'report_data': report_data})
 
     def get_fields(self, request, obj=None, **kwargs):
         # Не исключаем поле apartments, чтобы его можно было выбрать при создании бронирования
@@ -383,6 +512,8 @@ class BookingAdmin(admin.ModelAdmin):
             # Если объект еще не сохранён, используем стандартный SelectMultiple
             form.base_fields['apartments'].widget = forms.SelectMultiple()
         return form
+
+
 
 
 @admin.register(Review)
@@ -419,7 +550,7 @@ class ReportFilterForm(forms.Form):
     apartment = forms.ModelChoiceField(
         queryset=Apartment.objects.all(),
         required=False,
-        label=_('Апартамент')
+        label=_('Апартамент'),
     )
     status = forms.ChoiceField(
         choices=Booking.STATUS_CHOICES,

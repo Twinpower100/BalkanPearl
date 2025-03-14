@@ -1,9 +1,14 @@
 <!--C:\Mail.ru\CodeIt\Django\BalkanPearl\BalkanPearlProject\BalkanPearlApp\templates\admin\BalkanPearlApp\booking\change_list.html-->
 {% extends "admin/change_list.html" %}
+{% load i18n %}
 
 {% block object-tools-items %}
     {{ block.super }}  <!-- Важно сохранить стандартные элементы -->
     <li>
-        <a href="{{ report_url }}" class="viewlink">📊 Отчёты</a>
+        <a href="{{ report_url }}" class="viewlink">📊 {% trans "Финансовые отчёты" %}</a>
+    </li>
+    <li>
+        <a href="{{ availability_url }}" class="viewlink">📈 {% trans "Отчет по доступности" %}
+        </a>
     </li>
 {% endblock %}
