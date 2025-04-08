@@ -29,6 +29,7 @@ body, html {
     overflow-x: hidden; /* Чтобы избежать горизонтальной прокрутки */
     position: relative; /* Нужно, чтобы фон относился ко всему экрану */
     font-size: 16px;
+    font-style: italic;
     box-sizing: border-box;
 }
 
@@ -63,7 +64,7 @@ main.content-wrapper {
     top: 0;
     width: 100%;
     z-index: 1000;
-    background-color: #003366; /* Цвет фона для заголовка */
+    background-color: rgba(138, 135, 120, 0.959); /* Цвет фона для заголовка */
     color: white;
     padding: 1vh; /* Используем vh для адаптивности */
     text-align: center;
@@ -76,7 +77,7 @@ body {
 
 /* Общие стили */
 header {
-    background-color: #003366;
+    background-color: rgba(138, 135, 120, 0.959);
     color: white;
     padding: 1vh; /* Используем vh для адаптивности */
     text-align: center;
@@ -85,7 +86,7 @@ header {
 nav.full-width-nav {
     display: flex;
     justify-content: center;
-    background-color: #003366;
+    background-color: rgba(138, 135, 120, 0.959);
     padding: 1vh 0; /* Используем vh для адаптивности */
     margin: 0; /* Убираем отступы */
     width: 100%; /* Устанавливаем ширину на 100% */
@@ -111,7 +112,7 @@ nav.full-width-nav a:hover {
 }
 
 footer {
-    background-color: #003366;
+    background-color: rgba(138, 135, 120, 0.959);
     color: white;
     text-align: center;
     padding: 1vh; /* Используем vh для адаптивности */
@@ -364,7 +365,7 @@ header h3 {
 .date-selection {
     position: fixed;
     top: 150px; /* Отступ от верхнего края */
-    background: rgba(255, 255, 255, 0.9;
+    background: rgba(255, 255, 255, 0.9);
     padding-top: 10px;
     /*padding: 10px;*/
     border-radius: 8px;
@@ -522,8 +523,53 @@ header h3 {
         margin: 8px 0;
         font-size: 0.9rem;
     }
+/* ==================== Адаптивность ==================== */
+/* Мобильные устройства (<= 768px) */
+@media (max-width: 768px) {
+    .fixed-header {
+        padding: 0.5rem; /* Уменьшаем отступы */
+    }
+
+    .header-logo {
+        height: 3rem !important; /* Приоритет для маленьких экранов */
+    }
+
+    .nav-links {
+        flex-direction: column; /* Вертикальное меню */
+        margin-left: 0;
+        gap: 0.5rem;
+    }
+
+    .carousel {
+        height: 200px; /* Уменьшаем высоту карусели */
+    }
+
+    /* Скрываем переключатель языка на мобильных */
+    .language-switcher {
+        display: none;
+    }
 }
 
+/* Планшеты (769px - 1024px) */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .header-logo {
+        height: 3.5rem;
+    }
 
+    .nav-links {
+        gap: 1rem;
+        margin-left: 1rem;
+    }
 
+    .carousel {
+        height: 250px;
+    }
+}
 
+/* Десктопы (> 1024px) */
+@media (min-width: 1025px) {
+    .nav-links {
+        gap: 2rem;
+        margin-left: 3rem;
+    }
+}

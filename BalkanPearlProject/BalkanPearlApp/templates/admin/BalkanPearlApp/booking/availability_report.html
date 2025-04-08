@@ -65,11 +65,11 @@
             <td>{{ row.apartment }}</td>
             {% for status in row.occupancy %}
               {% if status == "booked" %}
-                <td style="background-color: #ffcccc; text-align: center;">{% trans "Занят" %}</td>
+                <td style="background-color: #cd6820; text-align: center;">{% trans "Занят" %}</td>
               {% elif status == "free" %}
                 <td style="background-color: #ccffcc; text-align: center;">{% trans "Свободен" %}</td>
               {% elif status == "closed" %}
-                <td style="background-color: #d3d3d3; text-align: center;">{% trans "Закрыт" %}</td>
+                <td style="background-color: #abbd49; text-align: center;">{% trans "Закрыт" %}</td>
               {% else %}
                 <td>&nbsp;</td>
               {% endif %}

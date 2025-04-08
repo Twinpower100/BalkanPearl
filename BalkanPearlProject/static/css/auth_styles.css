@@ -5,6 +5,9 @@
     --primary-color: #007bff; /* Основной синий цвет */
     --success-color: #28a745; /* Зеленый цвет для успешных действий */
     --google-border: #ddd; /* Цвет границы для кнопки Google */
+    /* Добавлено: */
+    --danger-color: #dc3545; /* Для кнопки выхода */
+    --secondary-color: #6c757d; /* Для кнопки отмены */
 }
 
 /* Центрирование и фон для контейнера авторизации */
@@ -15,6 +18,8 @@
     min-height: 100vh; /* Занимает всю высоту экрана */
     padding: 20px;
     background: rgba(0, 0, 0, 0.05); /* Легкий серый фон */
+    /* Добавлено: */
+    margin: 0 10px; /* Защита от горизонтального скролла на малых экранах */
 }
 
 /* Стили для блока с формой */
@@ -26,6 +31,9 @@
     max-width: 400px; /* Максимальная ширина формы */
     text-align: center;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Тень для выделения формы */
+    /* Добавлено медиа-запросы: */
+    @media (max-width: 768px) {padding: 2rem;}
+    @media (max-width: 480px) {padding: 1.5rem;}
 }
 
 /* Заголовок формы */
@@ -33,6 +41,8 @@
     margin: 0 0 2rem 0;
     font-size: 1.5rem;
     color: #333;
+    /* Добавлено: */
+    @media (max-width: 480px) {font-size: 1.3rem;} /* Адаптивный размер текста */
 }
 
 /* Стили для формы */
@@ -63,6 +73,8 @@
     border-radius: 6px;
     font-size: 14px;
     margin-top: 5px;
+    /* Добавлено: */
+    @media (max-width: 360px) {padding: 10px;} /* Компактный размер для маленьких экранов */
 }
 
 /* Стили для фокуса на полях ввода */
@@ -82,6 +94,8 @@
 .auth-links a {
     color: #4285f4;
     text-decoration: none;
+    /* Добавлено: */
+    &:hover {text-decoration: underline;} /* Интерактивность при наведении */
 }
 
 /* Стили для параграфов в блоке ссылок */
@@ -101,6 +115,8 @@
     cursor: pointer;
     font-size: 16px;
     transition: background 0.3s ease;
+    /* Добавлено: */
+    &:active {transform: scale(0.98);} /* Анимация нажатия */
 }
 
 /* Стили для кнопки входа */
@@ -125,7 +141,7 @@
     align-items: center;
     justify-content: center;
     gap: 12px;
-    width: 100%;
+    /* width: 100%; УДАЛЕНО (дублирует .btn) */
     padding: 12px;
     background: white;
     color: #333;
@@ -148,12 +164,16 @@
 /* Стили для кнопки выхода */
 .btn-logout {
     background: #dc3545; /* Красный цвет для кнопки выхода */
+    /* Изменено: */
+    background: var(--danger-color); /* Использование переменной */
     color: white;
 }
 
 /* Стили для кнопки отмены */
 .btn-cancel {
     background: #6c757d; /* Серый цвет для кнопки отмены */
+    /* Изменено: */
+    background: var(--secondary-color); /* Использование переменной */
     color: white;
 }
 
