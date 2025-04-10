@@ -30,7 +30,7 @@ GOOGLE_MAPS_KEY = config('GOOGLE_MAPS_KEY')
 DEBUG = True
 SITE_ID = 1
 LOGIN_URL = 'account_login'  # Путь на страницу входа
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '109.248.162.208']
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'  # Перенаправление после выхода
 
