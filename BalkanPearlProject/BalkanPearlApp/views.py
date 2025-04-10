@@ -265,7 +265,8 @@ def create_booking(request):
             if not apartment.is_available(check_in_date, check_out_date):
                 return JsonResponse({
                     'success': False,
-                    'error': _("Апартамент более недоступен в указанный период, попробуйте выбрать либо другие даты, либо апартамент, либо воспользуйтесь мастером бронирования")
+                    'error': _(
+                        "Апартамент более недоступен в указанный период, попробуйте выбрать либо другие даты, либо апартамент, либо воспользуйтесь мастером бронирования")
                 }, content_type='application/json')
 
             # Перерасчёт стоимости на сервере
@@ -367,8 +368,8 @@ def blog_home(request):
     hotel = Hotel.objects.first()
     blog_posts = BlogPost.objects.all().order_by('-created_at')
     context = {
-        'blog_posts':blog_posts,
-        'hotel':hotel
+        'blog_posts': blog_posts,
+        'hotel': hotel
     }
     return render(request, 'blog_home.html', context)
 
@@ -391,10 +392,10 @@ def profile(request):
     return render(request, 'profile.html', context)
 
 
-
 def reviews(request):
     hotel = Hotel.objects.first()
-    reviews_list = Review.objects.all().order_by('-created_at')  # Получаем список отзывов из базы данных и сортируем от нового к старому
+    reviews_list = Review.objects.all().order_by(
+        '-created_at')  # Получаем список отзывов из базы данных и сортируем от нового к старому
     context = {
         'reviews': reviews_list,
         'hotel': hotel,
@@ -404,12 +405,16 @@ def reviews(request):
 
 class ReviewForm(forms.ModelForm):
     anonymous = forms.BooleanField(required=False, label=_("Опубликовать анонимно"))
-    hotel = Hotel.objects.first()
 
     class Meta:
         model = Review
         fields = ['rating', 'commentary', 'anonymous']
         widgets = {'commentary': forms.Textarea(attrs={'rows': 4, 'cols': 40})}
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Выполняем запрос уже при создании экземпляра формы, а не при импорте модуля
+        self.hotel = Hotel.objects.first()
 
     def clean_commentary(self):
         commentary = self.cleaned_data['commentary']
@@ -448,7 +453,11 @@ class CustomLoginView(LoginView):
 
 class CustomLogoutView(LogoutView):
     template_name = 'account/logout.html'
-    extra_context = {'site_image': SiteImage.objects.first()}
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['site_image'] = SiteImage.objects.first()
+        return context
 
 
 def login_form(request):
@@ -575,7 +584,6 @@ def create_apartment_blocks(available_apartments, people_quantity, check_in_date
     return valid_blocks
 
 
-@transaction.atomic
 @transaction.atomic
 def create_booking_from_block(request):
     # Функция обрабатывает POST-запрос для создания бронирования по выбранному блоку апартаментов
