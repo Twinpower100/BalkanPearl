@@ -71,7 +71,8 @@ MIDDLEWARE = [
     'allauth.account.middleware.AccountMiddleware',
 ]
 SESSION_COOKIE_SAMESITE = 'Lax'  # Или 'None', если работаем со сторонними доменами (требует HTTPS)
-SESSION_COOKIE_SECURE = True  # Для работы по HTTPS
+SESSION_COOKIE_SECURE = False # False установлен временно, для работы по HHTP  # True Для работы по HTTPS
+CSRF_COOKIE_SECURE = False
 
 
 LANGUAGES = [
