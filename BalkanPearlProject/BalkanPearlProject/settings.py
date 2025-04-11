@@ -30,7 +30,12 @@ GOOGLE_MAPS_KEY = config('GOOGLE_MAPS_KEY')
 DEBUG = True
 SITE_ID = 1
 LOGIN_URL = 'account_login'  # Путь на страницу входа
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '109.248.162.208']
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    '109.248.162.208',
+    'a9dc-2a13-7c00-4-20-f816-3eff-fee8-7d4a.ngrok-free.app'
+]
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'  # Перенаправление после выхода
 
@@ -70,9 +75,9 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'allauth.account.middleware.AccountMiddleware',
 ]
-SESSION_COOKIE_SAMESITE = 'Lax'  # Или 'None', если работаем со сторонними доменами (требует HTTPS)
-SESSION_COOKIE_SECURE = False # False установлен временно, для работы по HHTP  # True Для работы по HTTPS
-CSRF_COOKIE_SECURE = False
+SESSION_COOKIE_SAMESITE = 'None'  # Или 'None', если работаем со сторонними доменами (требует HTTPS)
+SESSION_COOKIE_SECURE = True # False установлен временно, для работы по HHTP  # True Для работы по HTTPS
+CSRF_COOKIE_SECURE = True
 
 
 LANGUAGES = [
