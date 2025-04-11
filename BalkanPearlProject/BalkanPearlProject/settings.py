@@ -75,9 +75,9 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'allauth.account.middleware.AccountMiddleware',
 ]
-SESSION_COOKIE_SAMESITE = 'None'  # Или 'None', если работаем со сторонними доменами (требует HTTPS)
-SESSION_COOKIE_SECURE = True # False установлен временно, для работы по HHTP  # True Для работы по HTTPS
-CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SAMESITE = 'Lax'  # Или 'None', если работаем со сторонними доменами (требует HTTPS)
+SESSION_COOKIE_SECURE = False # False установлен временно, для работы по HHTP  # True Для работы по HTTPS
+CSRF_COOKIE_SECURE = False
 
 
 LANGUAGES = [
