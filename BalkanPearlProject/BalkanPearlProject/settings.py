@@ -27,7 +27,7 @@ SECRET_KEY = config('SECRET_KEY')
 GOOGLE_MAPS_KEY = config('GOOGLE_MAPS_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config('DEBUG', default=False, cast=bool)
 SITE_ID = 1
 LOGIN_URL = 'account_login'  # Путь на страницу входа
 ALLOWED_HOSTS = [
