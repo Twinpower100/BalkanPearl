@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 # -*- coding: utf-8 -*-
 
 from pathlib import Path
-from decouple import config
+from decouple import config, Csv
 from django.utils.translation import gettext_lazy as _
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -30,12 +30,13 @@ GOOGLE_MAPS_KEY = config('GOOGLE_MAPS_KEY')
 DEBUG = config('DEBUG', default=False, cast=bool)
 SITE_ID = 1
 LOGIN_URL = 'account_login'  # Путь на страницу входа
-ALLOWED_HOSTS = [
-    'localhost',
-    '127.0.0.1',
-    '109.248.162.208',
-    'a9dc-2a13-7c00-4-20-f816-3eff-fee8-7d4a.ngrok-free.app'
-]
+# ALLOWED_HOSTS = [
+#     'localhost',
+#     '127.0.0.1',
+#     '109.248.162.208',
+#     'a9dc-2a13-7c00-4-20-f816-3eff-fee8-7d4a.ngrok-free.app'
+# ]
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'  # Перенаправление после выхода
 
